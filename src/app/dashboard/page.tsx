@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useClinic } from "@/lib/clinic-context";
-import { jobPostings, applications, eventMetrics } from "@/data/seed";
+import { useAuth } from "@/lib/clinic-context";
+import { clinics, jobPostings, applications, eventMetrics } from "@/data/seed";
 import { PIPELINE_STAGES } from "@/data/types";
 import {
   Briefcase,
@@ -16,11 +16,13 @@ import {
   ArrowRight,
   Plus,
   Clock,
+  Building2,
+  Shield,
 } from "lucide-react";
 import { formatRelativeDate } from "@/lib/utils";
 
 export default function DashboardPage() {
-  const { currentClinic } = useClinic();
+  const { currentClinic, isNeco, accessibleClinics } = useAuth();
 
   const clinicJobs = jobPostings.filter(
     (j) => j.clinicId === currentClinic.id
@@ -50,6 +52,71 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 sm:p-8 space-y-8">
+      {/* Neco cross-clinic overview */}
+      {isNeco && accessibleClinics.length > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Card className="border-amber-200 bg-amber-50/50">
+            <CardContent className="p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Shield className="h-4 w-4 text-amber-700" />
+                <h2 className="text-sm font-semibold text-amber-900">
+                  Neco 横断ビュー — 全クリニック概要
+                </h2>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold">{accessibleClinics.length}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">管理クリニック数</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold">{jobPostings.filter((j) => j.isActive).length}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">公開求人数（全体）</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold">{applications.length}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">候補者数（全体）</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold">
+                    {jobPostings.reduce((s, j) => s + j.viewCount, 0).toLocaleString()}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">合計閲覧数</p>
+                </div>
+              </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {accessibleClinics.map((c) => {
+                  const cJobs = jobPostings.filter((j) => j.clinicId === c.id && j.isActive);
+                  const cApps = applications.filter((a) => a.clinicId === c.id);
+                  return (
+                    <div
+                      key={c.id}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-white/80 border border-amber-100"
+                    >
+                      <div
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base"
+                        style={{ backgroundColor: c.brand.brandColorLight }}
+                      >
+                        {c.brand.logoEmoji}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium truncate">{c.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          求人 {cJobs.length}件 · 候補者 {cApps.length}名
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

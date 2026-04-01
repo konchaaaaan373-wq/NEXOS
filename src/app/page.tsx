@@ -323,6 +323,124 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="py-20 sm:py-28 bg-muted/30">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            {...fadeUp}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              利用の流れ
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              3ステップで自院ブランドの採用活動を開始できます
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
+            {[
+              {
+                step: "01",
+                title: "採用ページを作成",
+                description:
+                  "自院のブランドカラー、理念、文化を反映した採用ページをかんたんに作成。テンプレートではなく、自院だけの採用ページが完成します。",
+              },
+              {
+                step: "02",
+                title: "求人を公開",
+                description:
+                  "医師、看護師、医療事務など、募集したいポジションの求人を作成・公開。NEXOSの共通求人ボードにも同時掲載されます。",
+              },
+              {
+                step: "03",
+                title: "応募者を管理",
+                description:
+                  "応募から選考、内定まで一気通貫で管理。必要に応じてNecoが共同運用し、採用活動を支援します。",
+              },
+            ].map((item, i) => (
+              <motion.div key={i} variants={fadeUp}>
+                <div className="relative">
+                  <div className="text-6xl font-bold text-accent/10 mb-4">
+                    {item.step}
+                  </div>
+                  <h3 className="text-lg font-semibold -mt-2">{item.title}</h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Co-management highlight */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div {...fadeUp} viewport={{ once: true }}>
+              <Badge variant="warning" className="mb-4 text-sm py-1 px-3">
+                NEXOSの特徴
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                一人で抱えない。
+                <br />
+                共同運用という選択肢。
+              </h2>
+              <p className="mt-6 text-muted-foreground leading-relaxed">
+                NEXOSは単なるセルフサーブのSaaSではありません。
+                採用ページの作成、求人票の改善、応募者対応まで、
+                必要に応じてNecoが共同で運用に入ることができます。
+              </p>
+              <p className="mt-4 text-muted-foreground leading-relaxed">
+                各医療機関が「自院の採用子会社を持ったような」体験を、
+                ソフトウェアとチームの力で実現します。
+              </p>
+              <div className="mt-8">
+                <Link href="/dashboard">
+                  <Button variant="accent" size="lg">
+                    管理画面を体験する
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              {...fadeUp}
+              viewport={{ once: true }}
+              className="grid grid-cols-2 gap-4"
+            >
+              {[
+                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", emoji: "📝" },
+                { label: "求人票の改善", desc: "応募率向上をNecoが支援", emoji: "✨" },
+                { label: "選考管理", desc: "候補者管理を共同で推進", emoji: "📋" },
+                { label: "採用分析", desc: "データに基づく改善提案", emoji: "📊" },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="p-5 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors"
+                >
+                  <span className="text-2xl block mb-3">{item.emoji}</span>
+                  <h4 className="text-sm font-semibold">{item.label}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-20 sm:py-28 bg-gradient-to-br from-slate-900 to-slate-800">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
