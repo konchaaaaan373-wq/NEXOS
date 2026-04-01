@@ -194,8 +194,8 @@ model JobPosting {
 }
 
 enum JobType {
-  full_time
-  part_time
+  full_time  @map("full-time")
+  part_time  @map("part-time")
   contract
 }
 
@@ -235,10 +235,11 @@ enum PipelineStage {
 }
 
 model CandidateNote {
-  id            String @id @default(cuid())
+  id            String    @id @default(cuid())
   applicationId String
-  content       String @db.Text
+  content       String    @db.Text
   authorId      String
+  authorRole    UserRole?
 
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   author      User        @relation(fields: [authorId], references: [id])

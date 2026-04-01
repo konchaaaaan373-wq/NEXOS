@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -24,17 +25,17 @@ export default function LoginPage() {
     const password = formData.get("password") as string;
 
     try {
-      const res = await fetch("/api/auth/callback/credentials", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (res.ok) {
+      if (result?.error) {
+        setError("メールアドレスまたはパスワードが正しくありません");
+      } else {
         router.push("/dashboard");
         router.refresh();
-      } else {
-        setError("メールアドレスまたはパスワードが正しくありません");
       }
     } catch {
       setError("ログインに失敗しました。もう一度お試しください。");
@@ -74,10 +75,11 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label htmlFor="email" className="block text-sm font-medium mb-1.5">
                   メールアドレス
                 </label>
                 <Input
+                  id="email"
                   name="email"
                   type="email"
                   placeholder="your@email.com"
@@ -86,10 +88,11 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label htmlFor="password" className="block text-sm font-medium mb-1.5">
                   パスワード
                 </label>
                 <Input
+                  id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"

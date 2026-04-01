@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { PublicHeader } from "@/components/public-header";
@@ -14,10 +15,19 @@ import { clinics, jobPostings } from "@/data/seed";
 import { MapPin, Search, Briefcase, Building2, DollarSign } from "lucide-react";
 
 export default function JobsPage() {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedClinic, setSelectedClinic] = useState("");
   const [selectedType, setSelectedType] = useState("");
+
+  // Parse URL params (e.g. /jobs?category=医師)
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) setSelectedCategory(cat);
+    const q = searchParams.get("q");
+    if (q) setSearchQuery(q);
+  }, [searchParams]);
 
   const activeJobs = jobPostings.filter((j) => j.isActive);
   const categories = [...new Set(activeJobs.map((j) => j.category))];
