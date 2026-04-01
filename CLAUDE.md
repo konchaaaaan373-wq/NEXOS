@@ -59,7 +59,7 @@ The dashboard supports role-based access:
 
 - Next.js 16 (App Router) + TypeScript
 - Tailwind CSS v4 + Framer Motion
-- Prisma 6 + PostgreSQL (Supabase recommended)
+- Prisma 6 + Neon PostgreSQL (serverless driver)
 - NextAuth.js v5 (credentials login)
 - S3-compatible storage (image uploads)
 - Resend (transactional email)
@@ -74,7 +74,7 @@ See `.env.example` for full list. Key services:
 | Service | Variable | Required? |
 |---------|----------|-----------|
 | Public URL | `NEXT_PUBLIC_SITE_URL` | Yes |
-| PostgreSQL | `DATABASE_URL` | For DB mode |
+| Neon PostgreSQL | `DATABASE_URL`, `DIRECT_DATABASE_URL` | For DB mode |
 | NextAuth | `AUTH_SECRET`, `AUTH_URL` | For auth mode |
 | S3 Storage | `S3_*` vars | For image upload |
 | Resend | `RESEND_API_KEY` | For email notifications |
