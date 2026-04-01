@@ -8,6 +8,13 @@ const DEFAULT_PASSWORD = "nexos2026";
 async function main() {
   console.log("🌱 Seeding database...");
 
+  // Skip if already seeded (idempotent)
+  const existingJobs = await prisma.jobPosting.count();
+  if (existingJobs > 0) {
+    console.log("✅ Database already seeded, skipping.");
+    return;
+  }
+
   const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
 
   // ============================================================
