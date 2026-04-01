@@ -55,31 +55,62 @@ The dashboard supports role-based access:
 - Notes and edits record `authorId` + `authorRole` for audit trail
 - Page editor shows who last edited each section
 
+## Tech Stack (Full)
+
+- Next.js 16 (App Router) + TypeScript
+- Tailwind CSS v4 + Framer Motion
+- Prisma 6 + PostgreSQL (Supabase recommended)
+- NextAuth.js v5 (credentials login)
+- S3-compatible storage (image uploads)
+- Resend (transactional email)
+- Anthropic Claude (AI features via Vercel AI SDK)
+- Zod validation on all API routes
+- Netlify deployment
+
 ## Environment Variables
 
-For Netlify deployment, set these in the Netlify dashboard:
+See `.env.example` for full list. Key services:
 
-```
-NEXT_PUBLIC_SITE_URL=https://nexos.necofindjob.com
-NEXT_PUBLIC_CONTACT_EMAIL=contact@necofindjob.com
-```
+| Service | Variable | Required? |
+|---------|----------|-----------|
+| Public URL | `NEXT_PUBLIC_SITE_URL` | Yes |
+| PostgreSQL | `DATABASE_URL` | For DB mode |
+| NextAuth | `AUTH_SECRET`, `AUTH_URL` | For auth mode |
+| S3 Storage | `S3_*` vars | For image upload |
+| Resend | `RESEND_API_KEY` | For email notifications |
+| Anthropic | `ANTHROPIC_API_KEY` | For AI features |
 
-No other env vars required for MVP (no external DB, no auth provider).
+**MVP mode**: Without `DATABASE_URL`, the app runs with in-memory seed data and mock auth.
 
 ## Development
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build
+npm run dev          # http://localhost:3000
+npm run build        # production build
+
+# Database (when DATABASE_URL is set)
+npm run db:generate  # generate Prisma client
+npm run db:push      # push schema to DB
+npm run db:seed      # seed with sample data
+npm run db:studio    # open Prisma Studio
 ```
 
-## What's Next (Priority Order)
+## Infrastructure Status
 
-1. **Real auth**: NextAuth.js / Supabase Auth with email + password
-2. **Database**: Prisma + PostgreSQL / Supabase for persistence
-3. **Image upload**: Clinic logos, cover photos via object storage
-4. **Email notifications**: Application received, status change
-5. **AI features**: Job description optimization, candidate matching
-6. **Page builder**: Drag-and-drop section reordering
-7. **Multi-tenant routing**: Subdomain per clinic (clinic-name.nexos.necofindjob.com)
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Auth (NextAuth.js) | Ready | Credentials login, JWT sessions, middleware protection |
+| Database (Prisma) | Ready | Full schema, seed script, CLI commands |
+| Image Upload (S3) | Ready | Pre-signed URLs, file validation, public URL generation |
+| Email (Resend) | Ready | 3 templates: application received, status changed, admin notification |
+| AI (Anthropic) | Ready | Job description optimizer, candidate matching scorer |
+| In-memory fallback | Active | Works without any external services |
+
+## What's Next
+
+1. **Drag-and-drop page builder**: Reorder sections, add custom blocks
+2. **Multi-tenant routing**: Subdomain per clinic (clinic-name.nexos.necofindjob.com)
+3. **Billing**: Stripe integration for clinic subscriptions
+4. **Webhooks**: Notify external systems on events
+5. **Analytics V2**: Real-time dashboards, cohort analysis

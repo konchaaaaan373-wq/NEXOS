@@ -1,0 +1,278 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// Auth — NextAuth.js models
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+
+  role     UserRole @default(clinic_editor)
+  isActive Boolean  @default(true)
+
+  accounts Account[]
+  sessions Session[]
+
+  // NEXOS relations
+  clinicMemberships ClinicMember[]
+  candidateNotes    CandidateNote[]
+  jobEdits          JobPosting[]       @relation("LastEditedBy")
+  sectionEdits      ClinicPageSection[] @relation("SectionEditedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// ============================================================
+// Roles & Clinic membership
+// ============================================================
+
+enum UserRole {
+  neco_admin
+  neco_editor
+  clinic_admin
+  clinic_editor
+}
+
+model ClinicMember {
+  id       String   @id @default(cuid())
+  userId   String
+  clinicId String
+  role     UserRole
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clinicId])
+}
+
+// ============================================================
+// Clinic & Branding
+// ============================================================
+
+model Clinic {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String  @db.Text
+  mission     String  @db.Text
+
+  // Brand config (stored as JSON for flexibility)
+  logoEmoji          String  @default("🏥")
+  coverImageGradient String  @default("from-blue-600 via-blue-500 to-cyan-400")
+  brandColor         String  @default("#2563eb")
+  brandColorLight    String  @default("#dbeafe")
+  heroTagline        String?
+  logoUrl            String? // uploaded logo image
+  coverImageUrl      String? // uploaded cover image
+
+  location      String
+  employeeCount String
+  foundedYear   Int
+  specialties   String[]
+  benefits      String[]
+  culture       String[]
+  website       String?
+
+  // Relations
+  members      ClinicMember[]
+  pageSections ClinicPageSection[]
+  jobPostings  JobPosting[]
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClinicPageSection {
+  id        String          @id @default(cuid())
+  clinicId  String
+  type      PageSectionType
+  title     String
+  content   String          @default("") @db.Text
+  order     Int             @default(0)
+  isVisible Boolean         @default(true)
+
+  lastEditedById String?
+  lastEditedAt   DateTime?
+
+  clinic       Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  lastEditedBy User?  @relation("SectionEditedBy", fields: [lastEditedById], references: [id])
+}
+
+enum PageSectionType {
+  hero
+  about
+  culture
+  benefits
+  jobs
+  custom
+}
+
+// ============================================================
+// Job Postings
+// ============================================================
+
+model JobPosting {
+  id          String  @id @default(cuid())
+  clinicId    String
+  title       String
+  type        JobType
+  category    String
+  location    String
+  salaryMin   Int
+  salaryMax   Int
+  description String  @db.Text
+  requirements String[]
+  niceToHave   String[]
+  benefits     String[]
+  isActive    Boolean @default(true)
+  publishedAt DateTime @default(now())
+
+  viewCount         Int @default(0)
+  applyStartCount   Int @default(0)
+  applyCompleteCount Int @default(0)
+
+  lastEditedById String?
+  lastEditedAt   DateTime?
+
+  clinic       Clinic       @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  lastEditedBy User?        @relation("LastEditedBy", fields: [lastEditedById], references: [id])
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum JobType {
+  full_time
+  part_time
+  contract
+}
+
+// ============================================================
+// Applications & Candidates
+// ============================================================
+
+model Application {
+  id               String        @id @default(cuid())
+  jobId            String
+  clinicId         String
+  applicantName    String
+  applicantEmail   String
+  applicantPhone   String
+  currentPosition  String        @default("")
+  yearsOfExperience Int          @default(0)
+  motivation       String        @db.Text
+  resumeFileName   String?
+  resumeUrl        String?
+  stage            PipelineStage @default(applied)
+
+  job    JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  clinic Clinic     @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  notes  CandidateNote[]
+
+  appliedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PipelineStage {
+  applied
+  screening
+  interview
+  offer
+  hired
+  rejected
+}
+
+model CandidateNote {
+  id            String @id @default(cuid())
+  applicationId String
+  content       String @db.Text
+  authorId      String
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  author      User        @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+// ============================================================
+// Analytics
+// ============================================================
+
+model EventMetric {
+  id       String   @id @default(cuid())
+  clinicId String
+  date     DateTime @db.Date
+  views    Int      @default(0)
+  applyStarts    Int @default(0)
+  applyCompletes Int @default(0)
+
+  @@unique([clinicId, date])
+}
+
+// ============================================================
+// Uploads
+// ============================================================
+
+model Upload {
+  id        String   @id @default(cuid())
+  clinicId  String?
+  fileName  String
+  fileType  String
+  fileSize  Int
+  url       String
+  key       String   // S3 key
+  uploadedById String?
+
+  createdAt DateTime @default(now())
+}
