@@ -201,12 +201,29 @@ Clinic
 
 ---
 
-## ビルド
+## ビルド & デプロイ
 
 ```bash
 npm run build   # プロダクションビルド
 npm run start   # プロダクションサーバー起動
 ```
+
+### Netlify デプロイ
+
+`netlify.toml` が設定済み。Netlifyダッシュボードで以下の環境変数を設定してください：
+
+| 環境変数 | 値 |
+|---------|---|
+| `NEXT_PUBLIC_SITE_URL` | `https://nexos.necofindjob.com` |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | `contact@necofindjob.com` |
+
+その他の設定は不要です（外部DB・認証プロバイダーはMVPでは未使用）。
+
+---
+
+## プロジェクト文脈
+
+詳細なプロジェクトコンテキスト（思想、権限設計、ロードマップ）は [CLAUDE.md](./CLAUDE.md) を参照してください。
 
 ---
 
