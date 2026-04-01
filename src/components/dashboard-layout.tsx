@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useClinic } from "@/lib/clinic-context";
 import {
   LayoutDashboard,
   Briefcase,
@@ -12,10 +13,12 @@ import {
   ChevronLeft,
   Menu,
   X,
+  ChevronDown,
+  Check,
+  ExternalLink,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { clinics } from "@/data/seed";
 
 const navItems = [
   { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
@@ -24,83 +27,156 @@ const navItems = [
   { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
 ];
 
-// MVP: use clinic-1 as default tenant
-const currentClinic = clinics[0];
+function ClinicSwitcher() {
+  const { currentClinic, allClinics, setClinicById } = useClinic();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors text-left"
+      >
+        <div
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg"
+          style={{ backgroundColor: currentClinic.brandColorLight }}
+        >
+          {currentClinic.logoEmoji}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium truncate">{currentClinic.name}</p>
+          <p className="text-xs text-muted-foreground">管理画面</p>
+        </div>
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 text-muted-foreground transition-transform",
+            open && "rotate-180"
+          )}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute left-0 right-0 top-full mt-1 bg-white border rounded-xl shadow-lg z-50 overflow-hidden"
+          >
+            <div className="p-1.5">
+              <p className="px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                クリニックを切り替え
+              </p>
+              {allClinics.map((clinic) => (
+                <button
+                  key={clinic.id}
+                  onClick={() => {
+                    setClinicById(clinic.id);
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors",
+                    clinic.id === currentClinic.id
+                      ? "bg-accent/5"
+                      : "hover:bg-muted/50"
+                  )}
+                >
+                  <div
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base"
+                    style={{ backgroundColor: clinic.brandColorLight }}
+                  >
+                    {clinic.logoEmoji}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">
+                      {clinic.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {clinic.location}
+                    </p>
+                  </div>
+                  {clinic.id === currentClinic.id && (
+                    <Check className="h-4 w-4 text-accent shrink-0" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { currentClinic } = useClinic();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const sidebarContent = (
+    <>
+      {/* Clinic selector */}
+      <div className="px-4 py-4 border-b">
+        <ClinicSwitcher />
+      </div>
+
+      <nav className="flex-1 px-3 py-4 space-y-1">
+        {navItems.map((item) => {
+          const isActive = item.exact
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setSidebarOpen(false)}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                isActive
+                  ? "bg-accent/10 text-accent"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t space-y-1">
+        <Link
+          href={`/clinics/${currentClinic.slug}`}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+        >
+          <ExternalLink className="h-4 w-4" />
+          採用ページを見る
+        </Link>
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          公開サイトへ戻る
+        </Link>
+      </div>
+    </>
+  );
 
   return (
     <div className="flex h-screen bg-muted/30">
       {/* Sidebar - Desktop */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col border-r bg-white">
         <div className="flex h-16 items-center gap-2 px-6 border-b">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white font-bold text-sm">
               N
             </div>
             <span className="font-bold text-lg">NEXOS</span>
           </Link>
         </div>
-
-        {/* Clinic selector */}
-        <div className="px-4 py-4 border-b">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg"
-              style={{ backgroundColor: currentClinic.brandColorLight }}
-            >
-              {currentClinic.logoEmoji}
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium truncate">
-                {currentClinic.name}
-              </p>
-              <p className="text-xs text-muted-foreground">管理画面</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {navItems.map((item) => {
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                  isActive
-                    ? "bg-accent/10 text-accent"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
-                )}
-              >
-                <item.icon className="h-4.5 w-4.5" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="p-4 border-t">
-          <Link
-            href={`/clinics/${currentClinic.slug}`}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            <Building2 className="h-4 w-4" />
-            採用ページを見る
-          </Link>
-          <Link
-            href="/"
-            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            公開サイトへ戻る
-          </Link>
-        </div>
+        {sidebarContent}
       </aside>
 
       {/* Mobile sidebar */}
@@ -119,7 +195,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: -280 }}
               transition={{ type: "spring", damping: 25 }}
-              className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r lg:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r lg:hidden flex flex-col"
             >
               <div className="flex h-16 items-center justify-between px-6 border-b">
                 <div className="flex items-center gap-2">
@@ -128,51 +204,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   </div>
                   <span className="font-bold text-lg">NEXOS</span>
                 </div>
-                <button onClick={() => setSidebarOpen(false)}>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  aria-label="メニューを閉じる"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-
-              <div className="px-4 py-4 border-b">
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
-                  <div
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg"
-                    style={{ backgroundColor: currentClinic.brandColorLight }}
-                  >
-                    {currentClinic.logoEmoji}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">
-                      {currentClinic.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground">管理画面</p>
-                  </div>
-                </div>
-              </div>
-
-              <nav className="px-3 py-4 space-y-1">
-                {navItems.map((item) => {
-                  const isActive = item.exact
-                    ? pathname === item.href
-                    : pathname.startsWith(item.href);
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                        isActive
-                          ? "bg-accent/10 text-accent"
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
-                      )}
-                    >
-                      <item.icon className="h-4.5 w-4.5" />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+              {sidebarContent}
             </motion.aside>
           </>
         )}
@@ -182,7 +221,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col min-h-0">
         {/* Mobile header */}
         <header className="lg:hidden flex h-14 items-center gap-4 border-b bg-white px-4">
-          <button onClick={() => setSidebarOpen(true)}>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            aria-label="メニューを開く"
+          >
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">

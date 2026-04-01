@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { clinics, jobPostings, applications } from "@/data/seed";
+import { jobPostings, applications } from "@/data/seed";
+import { useClinic } from "@/lib/clinic-context";
 import { Plus, Eye, Users, ArrowRight, Pencil } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
-const currentClinic = clinics[0];
-
 export default function JobsManagementPage() {
+  const { currentClinic } = useClinic();
   const clinicJobs = jobPostings.filter(
     (j) => j.clinicId === currentClinic.id
   );

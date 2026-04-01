@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { clinics, jobPostings, applications, eventMetrics } from "@/data/seed";
+import { jobPostings, applications, eventMetrics } from "@/data/seed";
+import { useClinic } from "@/lib/clinic-context";
 import { PIPELINE_STAGES } from "@/data/types";
 import {
   Eye,
@@ -12,9 +13,8 @@ import {
   BarChart3,
 } from "lucide-react";
 
-const currentClinic = clinics[0];
-
 export default function AnalyticsPage() {
+  const { currentClinic } = useClinic();
   const clinicJobs = jobPostings.filter(
     (j) => j.clinicId === currentClinic.id
   );

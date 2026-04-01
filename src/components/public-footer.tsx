@@ -17,6 +17,14 @@ export function PublicFooter() {
               医療機関向け採用プラットフォーム。
               分散した医療機関の採用主権を支える共通インフラを目指しています。
             </p>
+            <div className="mt-4">
+              <a
+                href="mailto:contact@necofindjob.com"
+                className="text-sm text-accent hover:underline"
+              >
+                contact@necofindjob.com
+              </a>
+            </div>
           </div>
 
           <div>
@@ -32,18 +40,18 @@ export function PublicFooter() {
               </li>
               <li>
                 <Link
-                  href="/jobs"
+                  href="/jobs?category=医師"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  職種から探す
+                  医師の求人
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/jobs"
+                  href="/jobs?category=看護師"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  エリアから探す
+                  看護師の求人
                 </Link>
               </li>
             </ul>
@@ -69,12 +77,35 @@ export function PublicFooter() {
                 </a>
               </li>
             </ul>
+
+            <h4 className="text-sm font-semibold mb-4 mt-6">その他</h4>
+            <ul className="space-y-2.5">
+              <li>
+                <Link
+                  href="/privacy"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  プライバシーポリシー
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  利用規約
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t">
-          <p className="text-xs text-muted-foreground text-center">
-            © 2026 NEXOS by neco. All rights reserved. 医療機関の採用主権を支える共通インフラ。
+        <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
+            © 2026 NEXOS by neco. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            医療機関の採用主権を支える共通インフラ
           </p>
         </div>
       </div>

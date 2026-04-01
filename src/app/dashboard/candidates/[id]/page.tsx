@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { clinics, applications, jobPostings } from "@/data/seed";
-import { PIPELINE_STAGES, type PipelineStage } from "@/data/types";
+import { applications, jobPostings } from "@/data/seed";
+import { PIPELINE_STAGES, type PipelineStage, type CandidateNote } from "@/data/types";
 import {
   ArrowLeft,
   Mail,
@@ -21,10 +21,9 @@ import {
   Send,
   CheckCircle2,
   User,
+  Loader2,
 } from "lucide-react";
 import { formatDate, formatRelativeDate } from "@/lib/utils";
-
-const currentClinic = clinics[0];
 
 export default function CandidateDetailPage({
   params,
@@ -36,31 +35,56 @@ export default function CandidateDetailPage({
   const [currentStage, setCurrentStage] = useState<PipelineStage>(
     application?.stage || "applied"
   );
-  const [notes, setNotes] = useState(application?.notes || []);
+  const [notes, setNotes] = useState<CandidateNote[]>(application?.notes || []);
   const [newNote, setNewNote] = useState("");
+  const [stageUpdating, setStageUpdating] = useState(false);
   const [stageUpdated, setStageUpdated] = useState(false);
+  const [noteSubmitting, setNoteSubmitting] = useState(false);
 
   if (!application) return notFound();
 
   const job = jobPostings.find((j) => j.id === application.jobId);
   const activeStage = PIPELINE_STAGES.find((s) => s.id === currentStage)!;
 
-  function handleStageChange(stage: PipelineStage) {
-    setCurrentStage(stage);
-    setStageUpdated(true);
-    setTimeout(() => setStageUpdated(false), 2000);
+  async function handleStageChange(stage: PipelineStage) {
+    setStageUpdating(true);
+    try {
+      const res = await fetch("/api/applications/stage", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicationId: application!.id, stage }),
+      });
+      if (res.ok) {
+        setCurrentStage(stage);
+        setStageUpdated(true);
+        setTimeout(() => setStageUpdated(false), 2000);
+      }
+    } finally {
+      setStageUpdating(false);
+    }
   }
 
-  function handleAddNote() {
+  async function handleAddNote() {
     if (!newNote.trim()) return;
-    const note = {
-      id: `note-${Date.now()}`,
-      content: newNote,
-      authorName: "管理者",
-      createdAt: new Date().toISOString(),
-    };
-    setNotes([...notes, note]);
-    setNewNote("");
+    setNoteSubmitting(true);
+    try {
+      const res = await fetch("/api/applications/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          applicationId: application!.id,
+          content: newNote,
+          authorName: "管理者",
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotes([...notes, data.note]);
+        setNewNote("");
+      }
+    } finally {
+      setNoteSubmitting(false);
+    }
   }
 
   return (
@@ -127,6 +151,9 @@ export default function CandidateDetailPage({
                       更新しました
                     </motion.span>
                   )}
+                  {stageUpdating && (
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -135,7 +162,8 @@ export default function CandidateDetailPage({
                     <button
                       key={stage.id}
                       onClick={() => handleStageChange(stage.id)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border ${
+                      disabled={stageUpdating}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border disabled:opacity-50 ${
                         currentStage === stage.id
                           ? "text-white border-transparent shadow-sm"
                           : "border-border text-muted-foreground hover:bg-muted/50"
@@ -165,7 +193,7 @@ export default function CandidateDetailPage({
                 <CardTitle>志望動機</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                   {application.motivation}
                 </p>
               </CardContent>
@@ -181,7 +209,7 @@ export default function CandidateDetailPage({
             <Card>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-4.5 w-4.5" />
+                  <MessageSquare className="h-4 w-4" />
                   選考メモ
                   <span className="text-sm font-normal text-muted-foreground">
                     ({notes.length})
@@ -222,9 +250,13 @@ export default function CandidateDetailPage({
                       variant="accent"
                       size="sm"
                       onClick={handleAddNote}
-                      disabled={!newNote.trim()}
+                      disabled={!newNote.trim() || noteSubmitting}
                     >
-                      <Send className="h-3.5 w-3.5" />
+                      {noteSubmitting ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Send className="h-3.5 w-3.5" />
+                      )}
                       メモを追加
                     </Button>
                   </div>
@@ -247,20 +279,26 @@ export default function CandidateDetailPage({
               <CardTitle>連絡先</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3">
+              <a
+                href={`mailto:${application.applicantEmail}`}
+                className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors"
+              >
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">メール</p>
-                  <p className="text-sm">{application.applicantEmail}</p>
+                  <p className="text-sm text-accent">{application.applicantEmail}</p>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
+              </a>
+              <a
+                href={`tel:${application.applicantPhone}`}
+                className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors"
+              >
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">電話番号</p>
-                  <p className="text-sm">{application.applicantPhone}</p>
+                  <p className="text-sm text-accent">{application.applicantPhone}</p>
                 </div>
-              </div>
+              </a>
             </CardContent>
           </Card>
 
@@ -283,18 +321,14 @@ export default function CandidateDetailPage({
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">経験年数</p>
-                  <p className="text-sm">
-                    {application.yearsOfExperience}年
-                  </p>
+                  <p className="text-sm">{application.yearsOfExperience}年</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">応募日</p>
-                  <p className="text-sm">
-                    {formatDate(application.appliedAt)}
-                  </p>
+                  <p className="text-sm">{formatDate(application.appliedAt)}</p>
                 </div>
               </div>
             </CardContent>

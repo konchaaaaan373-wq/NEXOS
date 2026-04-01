@@ -8,17 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { clinics, applications, jobPostings } from "@/data/seed";
+import { applications, jobPostings } from "@/data/seed";
+import { useClinic } from "@/lib/clinic-context";
 import { PIPELINE_STAGES, type PipelineStage } from "@/data/types";
 import { Search, Users, Clock, ArrowRight } from "lucide-react";
 import { formatRelativeDate } from "@/lib/utils";
-
-const currentClinic = clinics[0];
 
 export default function CandidatesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStage, setSelectedStage] = useState<string>("");
   const [selectedJob, setSelectedJob] = useState<string>("");
+  const { currentClinic } = useClinic();
 
   const clinicApps = applications.filter(
     (a) => a.clinicId === currentClinic.id

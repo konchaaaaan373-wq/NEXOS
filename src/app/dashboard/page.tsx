@@ -5,12 +5,8 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  clinics,
-  jobPostings,
-  applications,
-  eventMetrics,
-} from "@/data/seed";
+import { useClinic } from "@/lib/clinic-context";
+import { jobPostings, applications, eventMetrics } from "@/data/seed";
 import { PIPELINE_STAGES } from "@/data/types";
 import {
   Briefcase,
@@ -23,9 +19,9 @@ import {
 } from "lucide-react";
 import { formatRelativeDate } from "@/lib/utils";
 
-const currentClinic = clinics[0];
-
 export default function DashboardPage() {
+  const { currentClinic } = useClinic();
+
   const clinicJobs = jobPostings.filter(
     (j) => j.clinicId === currentClinic.id
   );
@@ -157,27 +153,35 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {stageGroups.map((stage) => (
-                  <div key={stage.id} className="flex items-center gap-3">
-                    <div
-                      className="w-3 h-3 rounded-full shrink-0"
-                      style={{ backgroundColor: stage.color }}
-                    />
-                    <span className="text-sm flex-1">{stage.label}</span>
-                    <span className="text-sm font-semibold">{stage.count}</span>
-                    <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
+              {clinicApps.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-6">
+                  まだ候補者がいません
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {stageGroups.map((stage) => (
+                    <div key={stage.id} className="flex items-center gap-3">
                       <div
-                        className="h-full rounded-full transition-all"
-                        style={{
-                          width: `${clinicApps.length ? (stage.count / clinicApps.length) * 100 : 0}%`,
-                          backgroundColor: stage.color,
-                        }}
+                        className="w-3 h-3 rounded-full shrink-0"
+                        style={{ backgroundColor: stage.color }}
                       />
+                      <span className="text-sm flex-1">{stage.label}</span>
+                      <span className="text-sm font-semibold">
+                        {stage.count}
+                      </span>
+                      <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${clinicApps.length ? (stage.count / clinicApps.length) * 100 : 0}%`,
+                            backgroundColor: stage.color,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -203,7 +207,10 @@ export default function DashboardPage() {
             <CardContent>
               <div className="flex items-end gap-1.5 h-32">
                 {recentMetrics.map((metric, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    key={i}
+                    className="flex-1 flex flex-col items-center gap-1"
+                  >
                     <div
                       className="w-full rounded-t-sm bg-accent/80 transition-all hover:bg-accent"
                       style={{
@@ -246,6 +253,9 @@ export default function DashboardPage() {
                 <Users className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground">
                   まだ候補者がいません
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  求人が公開されると、応募がここに表示されます
                 </p>
               </div>
             ) : (
@@ -292,7 +302,7 @@ export default function DashboardPage() {
                           >
                             {stage.label}
                           </Badge>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground">
                             <Clock className="h-3 w-3" />
                             {formatRelativeDate(app.appliedAt)}
                           </div>

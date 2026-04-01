@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Search, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+const navLinks = [
+  { href: "/jobs", label: "求人を探す" },
+];
 
 export function PublicHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <motion.header
@@ -25,20 +32,21 @@ export function PublicHeader() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link
-            href="/jobs"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            求人を探す
-          </Link>
-          <Link
-            href="/jobs"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5"
-          >
-            <Search className="h-4 w-4" />
-            検索
-          </Link>
+        <nav className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "text-sm font-medium transition-colors",
+                pathname.startsWith(link.href)
+                  ? "text-accent"
+                  : "text-muted-foreground hover:text-primary"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
           <Link href="/dashboard">
             <Button variant="outline" size="sm">
               クリニック管理画面
@@ -50,8 +58,13 @@ export function PublicHeader() {
         <button
           className="md:hidden p-2"
           onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? "メニューを閉じる" : "メニューを開く"}
         >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {mobileOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
       </div>
 
@@ -62,13 +75,21 @@ export function PublicHeader() {
           animate={{ opacity: 1, height: "auto" }}
           className="md:hidden border-t bg-white px-4 py-4 space-y-3"
         >
-          <Link
-            href="/jobs"
-            className="block text-sm font-medium py-2"
-            onClick={() => setMobileOpen(false)}
-          >
-            求人を探す
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "block text-sm font-medium py-2",
+                pathname.startsWith(link.href)
+                  ? "text-accent"
+                  : "text-primary"
+              )}
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
           <Link
             href="/dashboard"
             className="block text-sm font-medium py-2"

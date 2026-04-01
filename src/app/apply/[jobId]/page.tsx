@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
-import { ArrowLeft, Building2, Send, Loader2 } from "lucide-react";
+import { applicationSchema } from "@/lib/validations";
+import { ArrowLeft, Building2, Send, Loader2, AlertCircle } from "lucide-react";
 
 export default function ApplyPage({
   params,
@@ -25,6 +26,7 @@ export default function ApplyPage({
   const job = jobPostings.find((j) => j.id === jobId);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [serverError, setServerError] = useState("");
 
   if (!job) return notFound();
 
@@ -35,7 +37,9 @@ export default function ApplyPage({
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data = {
+    const raw = {
+      jobId: jobRef.id,
+      clinicId: clinicRef.id,
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
@@ -44,38 +48,38 @@ export default function ApplyPage({
       motivation: formData.get("motivation") as string,
     };
 
-    // Validation
-    const newErrors: Record<string, string> = {};
-    if (!data.name.trim()) newErrors.name = "お名前を入力してください";
-    if (!data.email.trim()) newErrors.email = "メールアドレスを入力してください";
-    if (!data.phone.trim()) newErrors.phone = "電話番号を入力してください";
-    if (!data.motivation.trim())
-      newErrors.motivation = "志望動機を入力してください";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    // Client-side Zod validation
+    const result = applicationSchema.safeParse(raw);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of result.error.issues) {
+        const field = issue.path[0] as string;
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
+      }
+      setErrors(fieldErrors);
       return;
     }
 
     setIsSubmitting(true);
     setErrors({});
+    setServerError("");
 
     try {
       const res = await fetch("/api/applications", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          jobId: jobRef.id,
-          clinicId: clinicRef.id,
-          ...data,
-          yearsOfExperience: parseInt(data.yearsOfExperience) || 0,
-        }),
+        body: JSON.stringify(result.data),
       });
 
       if (res.ok) {
         router.push(`/apply/${jobId}/success`);
+      } else {
+        const data = await res.json();
+        setServerError(data.error || "送信に失敗しました。もう一度お試しください。");
+        setIsSubmitting(false);
       }
     } catch {
+      setServerError("ネットワークエラーが発生しました。もう一度お試しください。");
       setIsSubmitting(false);
     }
   }
@@ -142,6 +146,12 @@ export default function ApplyPage({
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {serverError && (
+                  <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    {serverError}
+                  </div>
+                )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1.5">

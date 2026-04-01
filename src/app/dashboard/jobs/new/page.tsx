@@ -9,18 +9,58 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
-import { ArrowLeft, Save, Eye } from "lucide-react";
+import { useClinic } from "@/lib/clinic-context";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
 
 export default function NewJobPage() {
   const router = useRouter();
-  const [saved, setSaved] = useState(false);
+  const { currentClinic } = useClinic();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => {
-      router.push("/dashboard/jobs");
-    }, 1500);
+    setIsSubmitting(true);
+    setError("");
+
+    const formData = new FormData(e.currentTarget);
+
+    const parseLines = (val: string) =>
+      val
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean);
+
+    try {
+      const res = await fetch("/api/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clinicId: currentClinic.id,
+          title: formData.get("title"),
+          type: formData.get("type"),
+          category: formData.get("category"),
+          location: formData.get("location") || currentClinic.location,
+          salaryMin: Number(formData.get("salaryMin")) || 0,
+          salaryMax: Number(formData.get("salaryMax")) || 0,
+          description: formData.get("description"),
+          requirements: parseLines((formData.get("requirements") as string) || ""),
+          niceToHave: parseLines((formData.get("niceToHave") as string) || ""),
+          benefits: parseLines((formData.get("benefits") as string) || ""),
+        }),
+      });
+
+      if (res.ok) {
+        router.push("/dashboard/jobs");
+      } else {
+        const data = await res.json();
+        setError(data.error || "保存に失敗しました");
+        setIsSubmitting(false);
+      }
+    } catch {
+      setError("ネットワークエラーが発生しました");
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -40,7 +80,7 @@ export default function NewJobPage() {
 
         <h1 className="text-2xl font-bold tracking-tight">新規求人作成</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          新しい求人を作成して公開できます
+          {currentClinic.name}の新しい求人を作成して公開します
         </p>
       </motion.div>
 
@@ -52,11 +92,17 @@ export default function NewJobPage() {
         <form onSubmit={handleSubmit}>
           <Card>
             <CardContent className="p-6 sm:p-8 space-y-6">
+              {error && (
+                <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                  {error}
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium mb-1.5">
                   求人タイトル <span className="text-destructive">*</span>
                 </label>
-                <Input placeholder="例：内科 常勤医師" required />
+                <Input name="title" placeholder="例：内科 常勤医師" required />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -64,7 +110,7 @@ export default function NewJobPage() {
                   <label className="block text-sm font-medium mb-1.5">
                     職種カテゴリ
                   </label>
-                  <Select>
+                  <Select name="category" defaultValue="医師">
                     <option value="医師">医師</option>
                     <option value="看護師">看護師</option>
                     <option value="臨床検査技師">臨床検査技師</option>
@@ -76,7 +122,7 @@ export default function NewJobPage() {
                   <label className="block text-sm font-medium mb-1.5">
                     雇用形態
                   </label>
-                  <Select>
+                  <Select name="type" defaultValue="full-time">
                     <option value="full-time">常勤</option>
                     <option value="part-time">非常勤</option>
                     <option value="contract">契約</option>
@@ -88,7 +134,11 @@ export default function NewJobPage() {
                 <label className="block text-sm font-medium mb-1.5">
                   勤務地
                 </label>
-                <Input placeholder="例：東京都渋谷区" />
+                <Input
+                  name="location"
+                  placeholder={currentClinic.location}
+                  defaultValue={currentClinic.location}
+                />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -96,13 +146,13 @@ export default function NewJobPage() {
                   <label className="block text-sm font-medium mb-1.5">
                     年収下限（万円）
                   </label>
-                  <Input type="number" placeholder="500" />
+                  <Input name="salaryMin" type="number" placeholder="500" min="0" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1.5">
                     年収上限（万円）
                   </label>
-                  <Input type="number" placeholder="800" />
+                  <Input name="salaryMax" type="number" placeholder="800" min="0" />
                 </div>
               </div>
 
@@ -111,6 +161,7 @@ export default function NewJobPage() {
                   仕事内容 <span className="text-destructive">*</span>
                 </label>
                 <Textarea
+                  name="description"
                   rows={6}
                   placeholder="求人の詳しい仕事内容を入力してください..."
                   required
@@ -122,8 +173,9 @@ export default function NewJobPage() {
                   応募要件（1行に1つ）
                 </label>
                 <Textarea
+                  name="requirements"
                   rows={4}
-                  placeholder="医師免許保有&#10;臨床経験3年以上&#10;..."
+                  placeholder={"医師免許保有\n臨床経験3年以上"}
                 />
               </div>
 
@@ -131,7 +183,7 @@ export default function NewJobPage() {
                 <label className="block text-sm font-medium mb-1.5">
                   歓迎条件（1行に1つ）
                 </label>
-                <Textarea rows={3} placeholder="専門医資格&#10;..." />
+                <Textarea name="niceToHave" rows={3} placeholder="専門医資格" />
               </div>
 
               <div>
@@ -139,19 +191,30 @@ export default function NewJobPage() {
                   待遇・福利厚生（1行に1つ）
                 </label>
                 <Textarea
+                  name="benefits"
                   rows={4}
-                  placeholder="完全週休2日制&#10;学会参加補助あり&#10;..."
+                  placeholder={"完全週休2日制\n学会参加補助あり"}
                 />
               </div>
 
-              <div className="pt-4 border-t flex items-center justify-between">
-                <Button type="button" variant="outline">
-                  <Eye className="h-4 w-4" />
-                  プレビュー
-                </Button>
-                <Button type="submit" variant="accent" disabled={saved}>
-                  <Save className="h-4 w-4" />
-                  {saved ? "保存しました ✓" : "求人を公開する"}
+              <div className="pt-4 border-t flex items-center justify-end gap-3">
+                <Link href="/dashboard/jobs">
+                  <Button type="button" variant="outline">
+                    キャンセル
+                  </Button>
+                </Link>
+                <Button type="submit" variant="accent" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      保存中...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      求人を公開する
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>
