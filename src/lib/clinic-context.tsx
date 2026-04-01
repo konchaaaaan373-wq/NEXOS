@@ -7,36 +7,80 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { clinics } from "@/data/seed";
-import type { Clinic } from "@/data/types";
+import { clinics, adminUsers } from "@/data/seed";
+import type { Clinic, AdminUser, UserRole } from "@/data/types";
+import { isNecoRole, canEditClinic } from "@/data/types";
 
-interface ClinicContextValue {
+interface AuthContextValue {
+  // Current user (mock auth — switchable for demo)
+  currentUser: AdminUser;
+  setCurrentUser: (user: AdminUser) => void;
+  allUsers: AdminUser[];
+
+  // Clinic selection
   currentClinic: Clinic;
   setClinicById: (id: string) => void;
-  allClinics: Clinic[];
+  accessibleClinics: Clinic[];
+
+  // Role helpers
+  isNeco: boolean;
+  canEdit: boolean;
+  userRole: UserRole;
 }
 
-const ClinicContext = createContext<ClinicContextValue | null>(null);
+const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function ClinicProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [currentUser, setCurrentUser] = useState<AdminUser>(adminUsers[0]); // default: Neco admin
   const [currentClinic, setCurrentClinic] = useState<Clinic>(clinics[0]);
 
-  const setClinicById = useCallback((id: string) => {
-    const clinic = clinics.find((c) => c.id === id);
-    if (clinic) setCurrentClinic(clinic);
-  }, []);
+  const accessibleClinics =
+    currentUser.role === "neco_admin"
+      ? clinics
+      : clinics.filter((c) => currentUser.clinicIds.includes(c.id));
+
+  const setClinicById = useCallback(
+    (id: string) => {
+      const clinic = clinics.find((c) => c.id === id);
+      if (clinic) setCurrentClinic(clinic);
+    },
+    []
+  );
+
+  const isNeco = isNecoRole(currentUser.role);
+  const canEdit = canEditClinic(currentUser, currentClinic.id);
 
   return (
-    <ClinicContext.Provider
-      value={{ currentClinic, setClinicById, allClinics: clinics }}
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        setCurrentUser,
+        allUsers: adminUsers.filter((u) => u.isActive),
+        currentClinic,
+        setClinicById,
+        accessibleClinics,
+        isNeco,
+        canEdit,
+        userRole: currentUser.role,
+      }}
     >
       {children}
-    </ClinicContext.Provider>
+    </AuthContext.Provider>
   );
 }
 
-export function useClinic() {
-  const ctx = useContext(ClinicContext);
-  if (!ctx) throw new Error("useClinic must be used within ClinicProvider");
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
+}
+
+// Keep backward-compatible alias
+export function useClinic() {
+  const { currentClinic, setClinicById, accessibleClinics } = useAuth();
+  return {
+    currentClinic,
+    setClinicById,
+    allClinics: accessibleClinics,
+  };
 }

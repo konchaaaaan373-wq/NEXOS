@@ -1,3 +1,7 @@
+// ============================================================
+// Pipeline
+// ============================================================
+
 export type PipelineStage =
   | "applied"
   | "screening"
@@ -19,16 +23,84 @@ export const PIPELINE_STAGES: {
   { id: "rejected", label: "不採用", color: "#ef4444" },
 ];
 
+// ============================================================
+// Roles & Users
+// ============================================================
+
+export type UserRole =
+  | "neco_admin"      // Neco platform operator — full cross-clinic access
+  | "neco_editor"     // Neco co-editor — can edit pages/jobs for assigned clinics
+  | "clinic_admin"    // Clinic owner/admin — full access to own clinic
+  | "clinic_editor";  // Clinic staff — limited edit access
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  clinicIds: string[];   // clinics this user can access (empty = all for neco_admin)
+  avatarEmoji: string;
+  isActive: boolean;
+}
+
+export const ROLE_LABELS: Record<UserRole, string> = {
+  neco_admin: "Neco 管理者",
+  neco_editor: "Neco 編集者",
+  clinic_admin: "クリニック管理者",
+  clinic_editor: "クリニック編集者",
+};
+
+export function isNecoRole(role: UserRole): boolean {
+  return role === "neco_admin" || role === "neco_editor";
+}
+
+export function canEditClinic(user: AdminUser, clinicId: string): boolean {
+  if (user.role === "neco_admin") return true;
+  return user.clinicIds.includes(clinicId);
+}
+
+export function canManageCandidates(user: AdminUser, clinicId: string): boolean {
+  return canEditClinic(user, clinicId);
+}
+
+// ============================================================
+// Clinic
+// ============================================================
+
+export interface ClinicBrandConfig {
+  logoEmoji: string;
+  coverImageGradient: string;
+  brandColor: string;
+  brandColorLight: string;
+  heroTagline?: string;
+}
+
+export type PageSectionType =
+  | "hero"
+  | "about"
+  | "culture"
+  | "benefits"
+  | "jobs"
+  | "custom";
+
+export interface ClinicPageSection {
+  id: string;
+  type: PageSectionType;
+  title: string;
+  content: string;
+  order: number;
+  isVisible: boolean;
+  lastEditedBy?: string;   // AdminUser.id
+  lastEditedAt?: string;
+}
+
 export interface Clinic {
   id: string;
   name: string;
   slug: string;
   description: string;
   mission: string;
-  logoEmoji: string;
-  coverImageGradient: string;
-  brandColor: string;
-  brandColorLight: string;
+  brand: ClinicBrandConfig;
   location: string;
   employeeCount: string;
   foundedYear: number;
@@ -36,7 +108,12 @@ export interface Clinic {
   benefits: string[];
   culture: string[];
   website: string;
+  pageSections: ClinicPageSection[];
 }
+
+// ============================================================
+// Job Posting
+// ============================================================
 
 export interface JobPosting {
   id: string;
@@ -56,7 +133,13 @@ export interface JobPosting {
   viewCount: number;
   applyStartCount: number;
   applyCompleteCount: number;
+  lastEditedBy?: string;
+  lastEditedAt?: string;
 }
+
+// ============================================================
+// Application & Candidates
+// ============================================================
 
 export interface Application {
   id: string;
@@ -78,9 +161,15 @@ export interface Application {
 export interface CandidateNote {
   id: string;
   content: string;
-  authorName: string;
+  authorId: string;       // AdminUser.id
+  authorName: string;     // denormalized for display
+  authorRole: UserRole;   // denormalized for display
   createdAt: string;
 }
+
+// ============================================================
+// Analytics
+// ============================================================
 
 export interface EventMetric {
   date: string;

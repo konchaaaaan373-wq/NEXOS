@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { addNote } from "@/data/seed";
 import { noteSchema } from "@/lib/validations";
+import type { UserRole } from "@/data/types";
 
 export async function POST(request: Request) {
   try {
@@ -17,7 +18,9 @@ export async function POST(request: Request) {
     const note = {
       id: `note-${Date.now()}`,
       content: parsed.data.content,
+      authorId: (body.authorId as string) || "unknown",
       authorName: parsed.data.authorName,
+      authorRole: (body.authorRole as UserRole) || "clinic_admin",
       createdAt: new Date().toISOString(),
     };
 

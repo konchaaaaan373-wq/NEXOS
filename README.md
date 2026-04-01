@@ -66,12 +66,24 @@ http://localhost:3000 でアクセスできます。
 | `/dashboard/candidates` | 候補者管理 |
 | `/dashboard/candidates/[id]` | 候補者詳細・ステージ更新・メモ |
 | `/dashboard/analytics` | 分析ダッシュボード |
+| `/dashboard/page-editor` | 採用ページ編集（共同編集対応） |
+
+### 法務・インフラ
+
+| ルート | 説明 |
+|--------|------|
+| `/privacy` | プライバシーポリシー |
+| `/terms` | 利用規約 |
+| `/sitemap.xml` | 動的サイトマップ |
 
 ### API
 
 | ルート | メソッド | 説明 |
 |--------|---------|------|
-| `/api/applications` | POST | 応募データの受け付け |
+| `/api/applications` | POST | 応募データの受け付け（Zod検証、レート制限） |
+| `/api/applications/stage` | PATCH | 選考ステージ更新 |
+| `/api/applications/notes` | POST | 候補者メモ追加（投稿者ロール記録） |
+| `/api/jobs` | POST | 求人作成 |
 
 ---
 
@@ -85,33 +97,57 @@ http://localhost:3000 でアクセスできます。
 1. ダッシュボード → 候補者確認 → 候補者詳細 → ステータス更新
 2. ダッシュボード → 求人管理 → 新規求人作成
 3. ダッシュボード → 分析 → ファネル確認
+4. ダッシュボード → 採用ページ編集 → セクション編集 → 保存
+
+### Neco共同管理フロー
+1. ユーザー切替（デモ用） → Necoオペレーターを選択
+2. クリニック切替 → 任意のクリニックを選択
+3. 求人・ページ・候補者を共同編集
+4. メモ投稿時にNeco編集者としてロールが記録される
 
 ---
 
 ## データモデル
 
 ```
+AdminUser
+├── id, name, email, role (neco_admin | neco_editor | clinic_admin | clinic_editor)
+├── clinicIds[] (アクセス可能なクリニック)
+└── avatarEmoji
+
 Clinic
 ├── id, name, slug, description, mission
-├── brandColor, coverImageGradient, logoEmoji
+├── brand: { logoEmoji, coverImageGradient, brandColor, brandColorLight, heroTagline }
 ├── location, employeeCount, foundedYear
 ├── specialties[], benefits[], culture[]
+├── pageSections[]: { type, title, content, order, isVisible, lastEditedBy, lastEditedAt }
 │
 ├── JobPosting (1:N)
 │   ├── id, title, type, category, location
 │   ├── salaryMin, salaryMax, description
 │   ├── requirements[], niceToHave[], benefits[]
 │   ├── viewCount, applyStartCount, applyCompleteCount
+│   ├── lastEditedBy, lastEditedAt
 │   │
 │   └── Application (1:N)
 │       ├── applicantName, email, phone
 │       ├── currentPosition, yearsOfExperience, motivation
 │       ├── stage (applied → screening → interview → offer → hired/rejected)
 │       └── CandidateNote[] (1:N)
+│           └── authorId, authorName, authorRole (Neco/クリニック識別)
 │
 └── EventMetric (日次メトリクス)
     └── date, views, applyStarts, applyCompletes
 ```
+
+### 権限ロール
+
+| ロール | 説明 | アクセス範囲 |
+|--------|------|------------|
+| `neco_admin` | Necoプラットフォーム管理者 | 全クリニック横断 |
+| `neco_editor` | Neco共同編集者 | 割り当てられたクリニック |
+| `clinic_admin` | クリニック管理者 | 自院のみ |
+| `clinic_editor` | クリニック編集者 | 自院のみ（限定） |
 
 ---
 
@@ -133,10 +169,12 @@ Clinic
 
 ### 採用したもの
 - **インメモリデータストア**: MVP段階ではDB不要。起動即使用可能な状態を優先
-- **Mock認証**: ダッシュボードはclinic-1（メディカルフロンティア渋谷）固定。認証フロー構築より導線体験を優先
-- **クリニックブランド差分**: グラデーション、ブランドカラー、ロゴ絵文字で視覚的に差別化
+- **Mock認証 + ユーザー切替**: デモ用に全ユーザーをサイドバーから切替可能。ロール別の表示差分を確認できる
+- **共同管理構造**: Necoオペレーターとクリニック管理者の両方がダッシュボードを操作可能。メモ・編集履歴にロールが記録される
+- **クリニックブランド差分**: `ClinicBrandConfig` でグラデーション、ブランドカラー、キャッチコピーを分離管理
+- **ページセクション構造**: `ClinicPageSection` で採用ページの構成をデータ化。将来のページビルダー拡張に対応
 - **選考パイプライン**: Kanbanではなくリスト＋バッジ方式。一覧性を優先
-- **API Route**: 応募データの送信はNext.js API Routeで処理
+- **Zod検証 + レート制限**: 全APIにバリデーション。応募APIにレート制限
 
 ### 将来の拡張ポイント
 - **認証**: NextAuth.js + Supabase Auth でマルチテナント認証

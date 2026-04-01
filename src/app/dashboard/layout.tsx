@@ -1,10 +1,10 @@
-import { ClinicProvider } from "@/lib/clinic-context";
+import { AuthProvider } from "@/lib/clinic-context";
 import { DashboardLayout } from "@/components/dashboard-layout";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <ClinicProvider>
+    <AuthProvider>
       <DashboardLayout>{children}</DashboardLayout>
-    </ClinicProvider>
+    </AuthProvider>
   );
 }

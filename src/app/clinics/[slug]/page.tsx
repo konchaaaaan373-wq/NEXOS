@@ -47,7 +47,7 @@ export default function ClinicPage({
       {/* Hero with clinic brand */}
       <section className="relative overflow-hidden">
         <div
-          className={`bg-gradient-to-r ${clinic.coverImageGradient} py-20 sm:py-28`}
+          className={`bg-gradient-to-r ${clinic.brand.coverImageGradient} py-20 sm:py-28`}
         >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -56,7 +56,7 @@ export default function ClinicPage({
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-              <span className="text-6xl mb-6 block">{clinic.logoEmoji}</span>
+              <span className="text-6xl mb-6 block">{clinic.brand.logoEmoji}</span>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
                 {clinic.name}
               </h1>
@@ -98,7 +98,7 @@ export default function ClinicPage({
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-5 rounded-xl bg-muted/50">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <Sparkles className="h-4 w-4" style={{ color: clinic.brandColor }} />
+                <Sparkles className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
                 診療科目
               </h3>
               <div className="flex flex-wrap gap-1.5">
@@ -111,7 +111,7 @@ export default function ClinicPage({
             </div>
             <div className="p-5 rounded-xl bg-muted/50">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <Heart className="h-4 w-4" style={{ color: clinic.brandColor }} />
+                <Heart className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
                 カルチャー
               </h3>
               <ul className="space-y-1.5">
@@ -125,7 +125,7 @@ export default function ClinicPage({
             </div>
             <div className="p-5 rounded-xl bg-muted/50">
               <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4" style={{ color: clinic.brandColor }} />
+                <CheckCircle2 className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
                 福利厚生
               </h3>
               <ul className="space-y-1.5">
@@ -173,7 +173,7 @@ export default function ClinicPage({
                     <Card className="group hover:shadow-lg transition-all duration-300"
                       style={{
                         borderLeftWidth: 3,
-                        borderLeftColor: clinic.brandColor,
+                        borderLeftColor: clinic.brand.brandColor,
                       }}
                     >
                       <CardContent className="p-6">

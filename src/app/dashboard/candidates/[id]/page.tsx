@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { applications, jobPostings } from "@/data/seed";
-import { PIPELINE_STAGES, type PipelineStage, type CandidateNote } from "@/data/types";
-import {
+import { useAuth } from "@/lib/clinic-context";
+import { PIPELINE_STAGES, ROLE_LABELS, type PipelineStage, type CandidateNote } from "@/data/types";
+  import {
   ArrowLeft,
   Mail,
   Phone,
@@ -22,6 +23,7 @@ import {
   CheckCircle2,
   User,
   Loader2,
+  Shield,
 } from "lucide-react";
 import { formatDate, formatRelativeDate } from "@/lib/utils";
 
@@ -40,6 +42,8 @@ export default function CandidateDetailPage({
   const [stageUpdating, setStageUpdating] = useState(false);
   const [stageUpdated, setStageUpdated] = useState(false);
   const [noteSubmitting, setNoteSubmitting] = useState(false);
+
+  const { currentUser } = useAuth();
 
   if (!application) return notFound();
 
@@ -74,7 +78,9 @@ export default function CandidateDetailPage({
         body: JSON.stringify({
           applicationId: application!.id,
           content: newNote,
-          authorName: "管理者",
+          authorName: currentUser.name,
+          authorId: currentUser.id,
+          authorRole: currentUser.role,
         }),
       });
       if (res.ok) {
@@ -229,8 +235,17 @@ export default function CandidateDetailPage({
                   >
                     <p className="text-sm leading-relaxed">{note.content}</p>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <User className="h-3 w-3" />
+                      {note.authorRole?.startsWith("neco") ? (
+                        <Shield className="h-3 w-3 text-amber-600" />
+                      ) : (
+                        <User className="h-3 w-3" />
+                      )}
                       {note.authorName}
+                      {note.authorRole && (
+                        <Badge variant="secondary" className="text-[10px] py-0 px-1.5">
+                          {ROLE_LABELS[note.authorRole]}
+                        </Badge>
+                      )}
                       <span>·</span>
                       <Clock className="h-3 w-3" />
                       {formatRelativeDate(note.createdAt)}

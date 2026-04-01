@@ -109,9 +109,9 @@ export default function ApplyPage({
               <div className="flex items-center gap-4">
                 <div
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
-                  style={{ backgroundColor: clinic.brandColorLight }}
+                  style={{ backgroundColor: clinic.brand.brandColorLight }}
                 >
-                  {clinic.logoEmoji}
+                  {clinic.brand.logoEmoji}
                 </div>
                 <div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">

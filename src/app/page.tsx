@@ -141,9 +141,9 @@ export default function HomePage() {
                   <Link href={`/clinics/${clinic.slug}`}>
                     <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
                       <div
-                        className={`h-32 bg-gradient-to-r ${clinic.coverImageGradient} flex items-center justify-center`}
+                        className={`h-32 bg-gradient-to-r ${clinic.brand.coverImageGradient} flex items-center justify-center`}
                       >
-                        <span className="text-5xl">{clinic.logoEmoji}</span>
+                        <span className="text-5xl">{clinic.brand.logoEmoji}</span>
                       </div>
                       <CardContent className="p-6">
                         <h3 className="text-lg font-bold group-hover:text-accent transition-colors">
@@ -218,9 +218,9 @@ export default function HomePage() {
                         <div className="flex items-start gap-3">
                           <div
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xl"
-                            style={{ backgroundColor: clinic.brandColorLight }}
+                            style={{ backgroundColor: clinic.brand.brandColorLight }}
                           >
-                            {clinic.logoEmoji}
+                            {clinic.brand.logoEmoji}
                           </div>
                           <div className="min-w-0">
                             <p className="text-xs text-muted-foreground">

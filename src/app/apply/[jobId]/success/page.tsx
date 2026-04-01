@@ -45,11 +45,11 @@ export default function ApplySuccessPage({
               >
                 <div
                   className="mx-auto flex h-20 w-20 items-center justify-center rounded-full mb-6"
-                  style={{ backgroundColor: clinic.brandColorLight }}
+                  style={{ backgroundColor: clinic.brand.brandColorLight }}
                 >
                   <CheckCircle2
                     className="h-10 w-10"
-                    style={{ color: clinic.brandColor }}
+                    style={{ color: clinic.brand.brandColor }}
                   />
                 </div>
               </motion.div>
@@ -66,9 +66,9 @@ export default function ApplySuccessPage({
                 <div className="flex items-center gap-3">
                   <div
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xl"
-                    style={{ backgroundColor: clinic.brandColorLight }}
+                    style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
-                    {clinic.logoEmoji}
+                    {clinic.brand.logoEmoji}
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-medium">{clinic.name}</p>

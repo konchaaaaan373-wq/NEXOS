@@ -168,10 +168,10 @@ export default function JobsPage() {
                               <div
                                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
                                 style={{
-                                  backgroundColor: clinic.brandColorLight,
+                                  backgroundColor: clinic.brand.brandColorLight,
                                 }}
                               >
-                                {clinic.logoEmoji}
+                                {clinic.brand.logoEmoji}
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">

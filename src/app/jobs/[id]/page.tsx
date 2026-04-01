@@ -69,9 +69,9 @@ export default function JobDetailPage({
                 <Link href={`/clinics/${clinic.slug}`}>
                   <div
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-3xl hover:scale-105 transition-transform"
-                    style={{ backgroundColor: clinic.brandColorLight }}
+                    style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
-                    {clinic.logoEmoji}
+                    {clinic.brand.logoEmoji}
                   </div>
                 </Link>
                 <div>
@@ -211,9 +211,9 @@ export default function JobDetailPage({
                   <div className="flex items-center gap-3">
                     <div
                       className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
-                      style={{ backgroundColor: clinic.brandColorLight }}
+                      style={{ backgroundColor: clinic.brand.brandColorLight }}
                     >
-                      {clinic.logoEmoji}
+                      {clinic.brand.logoEmoji}
                     </div>
                     <div>
                       <h3 className="font-semibold group-hover:text-accent transition-colors">
