@@ -33,7 +33,7 @@ export const clinics: Clinic[] = [
       "若手の挑戦を応援",
       "ワークライフバランス推進",
     ],
-    website: "https://example.com/medical-frontier",
+    website: "https://nexos.necofindjob.com/clinics/medical-frontier-shibuya",
   },
   {
     id: "clinic-2",
@@ -63,7 +63,7 @@ export const clinics: Clinic[] = [
       "多職種チーム連携",
       "地域に根差した医療",
     ],
-    website: "https://example.com/sakura-home",
+    website: "https://nexos.necofindjob.com/clinics/sakura-home-care",
   },
   {
     id: "clinic-3",
@@ -98,7 +98,7 @@ export const clinics: Clinic[] = [
       "エビデンスベース",
       "患者さんへの丁寧な説明",
     ],
-    website: "https://example.com/neuroscience-tokyo",
+    website: "https://nexos.necofindjob.com/clinics/neuroscience-tokyo",
   },
 ];
 

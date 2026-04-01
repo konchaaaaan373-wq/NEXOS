@@ -61,14 +61,12 @@ export function PublicFooter() {
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-muted-foreground">
-                  料金プラン（準備中）
-                </span>
-              </li>
-              <li>
-                <span className="text-sm text-muted-foreground">
-                  お問い合わせ（準備中）
-                </span>
+                <a
+                  href="mailto:contact@necofindjob.com"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  お問い合わせ
+                </a>
               </li>
             </ul>
           </div>
@@ -76,7 +74,7 @@ export function PublicFooter() {
 
         <div className="mt-12 pt-8 border-t">
           <p className="text-xs text-muted-foreground text-center">
-            © 2026 NEXOS. All rights reserved. 医療機関の採用主権を支える共通インフラ。
+            © 2026 NEXOS by neco. All rights reserved. 医療機関の採用主権を支える共通インフラ。
           </p>
         </div>
       </div>

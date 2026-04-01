@@ -236,7 +236,9 @@ export default function ApplyPage({
                 <div className="pt-4 border-t">
                   <p className="text-xs text-muted-foreground mb-4">
                     「応募する」ボタンを押すと、入力した情報が{clinic.name}
-                    に送信されます。個人情報は採用選考の目的でのみ使用されます。
+                    に送信されます。個人情報は採用選考の目的でのみ使用されます。ご不明点は{" "}
+                    <a href="mailto:contact@necofindjob.com" className="text-accent hover:underline">contact@necofindjob.com</a>{" "}
+                    までお問い合わせください。
                   </p>
                   <Button
                     type="submit"

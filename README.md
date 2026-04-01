@@ -1,10 +1,13 @@
 # NEXOS — 医療機関のための採用ブランドOS
 
 <p align="center">
-  <strong>表は各院ブランド、裏はNEXOS共通基盤</strong>
+  <strong>表は各院ブランド、裏はNEXOS共通基盤</strong><br/>
+  <a href="https://nexos.necofindjob.com">https://nexos.necofindjob.com</a>
 </p>
 
 NEXOSは、各クリニックが自院ブランドで採用できる状態を実装する、医療機関向け採用プラットフォームです。単なる求人サイトではなく、各医療機関の採用主権を支える共通インフラを目指しています。
+
+**お問い合わせ**: [contact@necofindjob.com](mailto:contact@necofindjob.com)
 
 ---
 
@@ -19,6 +22,8 @@ npm run dev
 ```
 
 http://localhost:3000 でアクセスできます。
+
+本番環境: https://nexos.necofindjob.com
 
 ---
 
