@@ -1,10 +1,13 @@
 [build]
-  command = "npm run build"
+  command = "npx prisma generate && npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
+  # Map Netlify's auto-provisioned Neon variables to what Prisma expects
+  DATABASE_URL = "${NETLIFY_DATABASE_URL}"
+  DIRECT_DATABASE_URL = "${NETLIFY_DATABASE_URL_UNPOOLED}"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
