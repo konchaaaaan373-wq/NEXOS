@@ -25,6 +25,7 @@ import {
   Sparkles,
   LogOut,
   Settings,
+  AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -190,6 +191,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
+    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle },
     { href: "/dashboard/ai-agent", label: "AI Agent", icon: Bot, highlight: true },
     { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
     { href: "/dashboard/candidates", label: "候補者管理", icon: Users },

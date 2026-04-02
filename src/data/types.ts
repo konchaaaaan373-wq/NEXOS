@@ -23,6 +23,16 @@ export const PIPELINE_STAGES: {
   { id: "rejected", label: "不採用", color: "#ef4444" },
 ];
 
+// Stage SLA definitions (max days before alert)
+export const STAGE_SLA: Record<PipelineStage, number> = {
+  applied: 2,      // 応募後2日以内に初回対応
+  screening: 5,    // 書類選考5日以内
+  interview: 7,    // 面接設定7日以内
+  offer: 3,        // 内定後3日以内にフォロー
+  hired: 0,        // 完了
+  rejected: 0,     // 完了
+};
+
 // ============================================================
 // Roles & Users
 // ============================================================
@@ -39,7 +49,7 @@ export interface AdminUser {
   email: string;
   role: UserRole;
   clinicIds: string[];   // clinics this user can access (empty = all for neco_admin)
-  avatarUrl?: string;  // optional uploaded avatar
+  avatarUrl?: string;
   isActive: boolean;
 }
 
@@ -68,13 +78,13 @@ export function canManageCandidates(user: AdminUser, clinicId: string): boolean 
 // ============================================================
 
 export interface ClinicBrandConfig {
-  logoIcon: string;         // clinic ID used to select SVG component
+  logoIcon: string;
   coverImageGradient: string;
   brandColor: string;
   brandColorLight: string;
   heroTagline?: string;
-  logoUrl?: string;          // optional uploaded image
-  coverImageUrl?: string;    // optional uploaded image
+  logoUrl?: string;
+  coverImageUrl?: string;
 }
 
 export type PageSectionType =
@@ -92,7 +102,7 @@ export interface ClinicPageSection {
   content: string;
   order: number;
   isVisible: boolean;
-  lastEditedBy?: string;   // AdminUser.id
+  lastEditedBy?: string;
   lastEditedAt?: string;
 }
 
@@ -140,6 +150,63 @@ export interface JobPosting {
 }
 
 // ============================================================
+// Publication Readiness Checklist
+// ============================================================
+
+export interface ChecklistItem {
+  id: string;
+  label: string;
+  description: string;
+  check: (job: JobPosting) => boolean;
+  severity: "required" | "recommended";
+}
+
+export const JOB_PUBLISH_CHECKLIST: ChecklistItem[] = [
+  {
+    id: "title",
+    label: "求人タイトルが設定されている",
+    description: "具体的で検索されやすいタイトルを設定",
+    check: (j) => j.title.length >= 5,
+    severity: "required",
+  },
+  {
+    id: "description",
+    label: "求人詳細が十分に記載されている",
+    description: "200文字以上の具体的な説明",
+    check: (j) => j.description.length >= 200,
+    severity: "required",
+  },
+  {
+    id: "salary",
+    label: "給与レンジが設定されている",
+    description: "最低・最高給与が正しく設定",
+    check: (j) => j.salaryMin > 0 && j.salaryMax > j.salaryMin,
+    severity: "required",
+  },
+  {
+    id: "requirements",
+    label: "必須要件が記載されている",
+    description: "応募に必要な資格・経験を明記",
+    check: (j) => j.requirements.length >= 1 && j.requirements[0].length > 0,
+    severity: "required",
+  },
+  {
+    id: "benefits",
+    label: "福利厚生・待遇が記載されている",
+    description: "応募意欲を高める待遇情報",
+    check: (j) => j.benefits.length >= 1,
+    severity: "recommended",
+  },
+  {
+    id: "nice-to-have",
+    label: "歓迎条件が記載されている",
+    description: "間口を広げる歓迎条件の記載",
+    check: (j) => j.niceToHave.length >= 1,
+    severity: "recommended",
+  },
+];
+
+// ============================================================
 // Application & Candidates
 // ============================================================
 
@@ -156,6 +223,8 @@ export interface Application {
   resumeFileName?: string;
   stage: PipelineStage;
   notes: CandidateNote[];
+  tasks: Task[];
+  stageHistory: StageChange[];
   appliedAt: string;
   updatedAt: string;
 }
@@ -163,11 +232,83 @@ export interface Application {
 export interface CandidateNote {
   id: string;
   content: string;
-  authorId: string;       // AdminUser.id
-  authorName: string;     // denormalized for display
-  authorRole: UserRole;   // denormalized for display
+  authorId: string;
+  authorName: string;
+  authorRole: UserRole;
   createdAt: string;
 }
+
+export interface StageChange {
+  id: string;
+  from: PipelineStage;
+  to: PipelineStage;
+  changedBy: string;       // AdminUser.id
+  changedByName: string;
+  changedAt: string;
+  note?: string;
+}
+
+// ============================================================
+// Harness: Tasks & Follow-ups
+// ============================================================
+
+export type TaskStatus = "pending" | "in_progress" | "completed" | "overdue";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
+
+export interface Task {
+  id: string;
+  clinicId: string;
+  applicationId?: string;  // optional: linked to specific candidate
+  jobId?: string;          // optional: linked to specific job
+  title: string;
+  description?: string;
+  assignedTo: string;      // AdminUser.id
+  assignedToName: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  dueDate: string;
+  completedAt?: string;
+  createdBy: string;
+  createdAt: string;
+}
+
+// ============================================================
+// Harness: Alerts
+// ============================================================
+
+export type AlertType =
+  | "stagnation"          // candidate stuck in stage too long
+  | "unresponded"         // application not responded to
+  | "interview_unset"     // interview stage but no interview scheduled
+  | "sla_breach"          // SLA exceeded
+  | "kpi_drop"            // KPI fell below threshold
+  | "job_incomplete";     // job missing required fields
+
+export type AlertSeverity = "info" | "warning" | "critical";
+
+export interface Alert {
+  id: string;
+  clinicId: string;
+  type: AlertType;
+  severity: AlertSeverity;
+  title: string;
+  message: string;
+  relatedEntityId?: string;    // application ID, job ID, etc.
+  relatedEntityType?: "application" | "job" | "clinic";
+  isResolved: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  createdAt: string;
+}
+
+export const ALERT_TYPE_LABELS: Record<AlertType, string> = {
+  stagnation: "ステージ滞留",
+  unresponded: "未対応応募",
+  interview_unset: "面接未設定",
+  sla_breach: "SLA超過",
+  kpi_drop: "KPI低下",
+  job_incomplete: "求人不備",
+};
 
 // ============================================================
 // Analytics

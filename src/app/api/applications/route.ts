@@ -56,6 +56,8 @@ export async function POST(request: Request) {
       motivation: data.motivation,
       stage: "applied",
       notes: [],
+      tasks: [],
+      stageHistory: [],
       appliedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
