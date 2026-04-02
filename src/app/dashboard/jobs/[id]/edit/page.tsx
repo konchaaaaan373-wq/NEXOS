@@ -47,20 +47,47 @@ export default function EditJobPage({
     ? adminUsers.find((u) => u.id === job.lastEditedBy)
     : null;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true);
     setError("");
 
-    // Simulate save — in production this would call an API
-    setTimeout(() => {
-      jobRef.isActive = isActive;
-      jobRef.lastEditedBy = currentUser.id;
-      jobRef.lastEditedAt = new Date().toISOString();
+    const formData = new FormData(e.currentTarget);
+    const parseLines = (val: string) =>
+      val.split("\n").map((l) => l.trim()).filter(Boolean);
+
+    try {
+      const res = await fetch(`/api/jobs/${jobRef.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.get("title"),
+          category: formData.get("category"),
+          type: formData.get("type"),
+          location: formData.get("location"),
+          salaryMin: Number(formData.get("salaryMin")) || 0,
+          salaryMax: Number(formData.get("salaryMax")) || 0,
+          description: formData.get("description"),
+          requirements: parseLines((formData.get("requirements") as string) || ""),
+          niceToHave: parseLines((formData.get("niceToHave") as string) || ""),
+          benefits: parseLines((formData.get("benefits") as string) || ""),
+          isActive,
+          editorId: currentUser.id,
+        }),
+      });
+
+      if (res.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2500);
+      } else {
+        const data = await res.json();
+        setError(data.error || "保存に失敗しました");
+      }
+    } catch {
+      setError("ネットワークエラーが発生しました");
+    } finally {
       setSaving(false);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
-    }, 600);
+    }
   }
 
   return (
@@ -83,14 +110,11 @@ export default function EditJobPage({
             <h1 className="text-2xl font-bold tracking-tight">求人を編集</h1>
             <p className="mt-1 text-sm text-muted-foreground">{job.title}</p>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant={isActive ? "success" : "secondary"}>
-              {isActive ? "公開中" : "非公開"}
-            </Badge>
-          </div>
+          <Badge variant={isActive ? "success" : "secondary"}>
+            {isActive ? "公開中" : "非公開"}
+          </Badge>
         </div>
 
-        {/* Neco co-editing indicator */}
         {isNeco && (
           <div className="mt-4 flex items-center gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm">
             <Shield className="h-4 w-4 shrink-0" />
@@ -100,7 +124,6 @@ export default function EditJobPage({
           </div>
         )}
 
-        {/* Last edited info */}
         {lastEditor && (
           <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
             {lastEditor.role.startsWith("neco") ? (
@@ -130,18 +153,14 @@ export default function EditJobPage({
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
-                  求人タイトル
-                </label>
-                <Input defaultValue={job.title} />
+                <label htmlFor="title" className="block text-sm font-medium mb-1.5">求人タイトル</label>
+                <Input id="title" name="title" defaultValue={job.title} />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
-                    職種カテゴリ
-                  </label>
-                  <Select defaultValue={job.category}>
+                  <label htmlFor="category" className="block text-sm font-medium mb-1.5">職種カテゴリ</label>
+                  <Select id="category" name="category" defaultValue={job.category}>
                     <option value="医師">医師</option>
                     <option value="看護師">看護師</option>
                     <option value="臨床検査技師">臨床検査技師</option>
@@ -150,10 +169,8 @@ export default function EditJobPage({
                   </Select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
-                    雇用形態
-                  </label>
-                  <Select defaultValue={job.type}>
+                  <label htmlFor="type" className="block text-sm font-medium mb-1.5">雇用形態</label>
+                  <Select id="type" name="type" defaultValue={job.type}>
                     <option value="full-time">常勤</option>
                     <option value="part-time">非常勤</option>
                     <option value="contract">契約</option>
@@ -162,65 +179,41 @@ export default function EditJobPage({
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
-                  勤務地
-                </label>
-                <Input defaultValue={job.location} />
+                <label htmlFor="location" className="block text-sm font-medium mb-1.5">勤務地</label>
+                <Input id="location" name="location" defaultValue={job.location} />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
-                    年収下限（万円）
-                  </label>
-                  <Input type="number" defaultValue={job.salaryMin / 10000} />
+                  <label htmlFor="salaryMin" className="block text-sm font-medium mb-1.5">年収下限（万円）</label>
+                  <Input id="salaryMin" name="salaryMin" type="number" defaultValue={job.salaryMin / 10000} />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1.5">
-                    年収上限（万円）
-                  </label>
-                  <Input type="number" defaultValue={job.salaryMax / 10000} />
+                  <label htmlFor="salaryMax" className="block text-sm font-medium mb-1.5">年収上限（万円）</label>
+                  <Input id="salaryMax" name="salaryMax" type="number" defaultValue={job.salaryMax / 10000} />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
-                  仕事内容
-                </label>
-                <Textarea rows={6} defaultValue={job.description} />
+                <label htmlFor="description" className="block text-sm font-medium mb-1.5">仕事内容</label>
+                <Textarea id="description" name="description" rows={6} defaultValue={job.description} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
-                  応募要件（1行に1つ）
-                </label>
-                <Textarea
-                  rows={4}
-                  defaultValue={job.requirements.join("\n")}
-                />
+                <label htmlFor="requirements" className="block text-sm font-medium mb-1.5">応募要件（1行に1つ）</label>
+                <Textarea id="requirements" name="requirements" rows={4} defaultValue={job.requirements.join("\n")} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
-                  歓迎条件（1行に1つ）
-                </label>
-                <Textarea
-                  rows={3}
-                  defaultValue={job.niceToHave.join("\n")}
-                />
+                <label htmlFor="niceToHave" className="block text-sm font-medium mb-1.5">歓迎条件（1行に1つ）</label>
+                <Textarea id="niceToHave" name="niceToHave" rows={3} defaultValue={job.niceToHave.join("\n")} />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">
-                  待遇・福利厚生（1行に1つ）
-                </label>
-                <Textarea
-                  rows={4}
-                  defaultValue={job.benefits.join("\n")}
-                />
+                <label htmlFor="benefits" className="block text-sm font-medium mb-1.5">待遇・福利厚生（1行に1つ）</label>
+                <Textarea id="benefits" name="benefits" rows={4} defaultValue={job.benefits.join("\n")} />
               </div>
 
-              {/* Publish toggle */}
               <div className="p-4 rounded-lg bg-muted/50 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium">公開設定</p>
@@ -232,6 +225,7 @@ export default function EditJobPage({
                   type="button"
                   onClick={() => setIsActive(!isActive)}
                   className="flex items-center gap-2 text-sm"
+                  aria-label={isActive ? "非公開にする" : "公開する"}
                 >
                   {isActive ? (
                     <ToggleRight className="h-8 w-8 text-success" />
@@ -250,30 +244,15 @@ export default function EditJobPage({
                 </Link>
                 <div className="flex items-center gap-3">
                   <Link href="/dashboard/jobs">
-                    <Button type="button" variant="outline">
-                      キャンセル
-                    </Button>
+                    <Button type="button" variant="outline">キャンセル</Button>
                   </Link>
-                  <Button
-                    type="submit"
-                    variant="accent"
-                    disabled={saving}
-                  >
+                  <Button type="submit" variant="accent" disabled={saving}>
                     {saving ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        保存中...
-                      </>
+                      <><Loader2 className="h-4 w-4 animate-spin" />保存中...</>
                     ) : saved ? (
-                      <>
-                        <CheckCircle2 className="h-4 w-4" />
-                        保存しました
-                      </>
+                      <><CheckCircle2 className="h-4 w-4" />保存しました</>
                     ) : (
-                      <>
-                        <Save className="h-4 w-4" />
-                        変更を保存
-                      </>
+                      <><Save className="h-4 w-4" />変更を保存</>
                     )}
                   </Button>
                 </div>
