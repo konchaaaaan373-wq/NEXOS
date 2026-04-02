@@ -19,6 +19,10 @@ import {
   Sparkles,
   TrendingUp,
   MapPin,
+  Bot,
+  Zap,
+  MessageSquare,
+  BarChart3,
 } from "lucide-react";
 
 const fadeUp = {
@@ -44,43 +48,47 @@ export default function HomePage() {
       <PublicHeader />
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE4YzEuNjU2IDAgMy0xLjM0NCAzLTNzLTEuMzQ0LTMtMy0zLTMgMS4zNDQtMyAzIDEuMzQ0IDMgMyAzem0tMjQgMjRjMS42NTYgMCAzLTEuMzQ0IDMtM3MtMS4zNDQtMy0zLTMtMyAxLjM0NC0zIDMgMS4zNDQgMyAzIDN6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50" />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 min-h-[90vh] flex items-center">
+        <div className="absolute inset-0 gradient-mesh-dark" />
+        {/* Floating orbs */}
+        <div className="absolute top-20 right-[15%] w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 left-[10%] w-64 h-64 bg-fuchsia-500/15 rounded-full blur-3xl animate-float-delayed" />
+        <div className="absolute top-[40%] left-[50%] w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow" />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40 w-full">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-3xl"
+            className="text-center max-w-4xl mx-auto"
           >
-            <Badge variant="secondary" className="mb-6 text-sm py-1 px-3">
-              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-              医療機関のための採用ブランドOS
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight">
-              自院ブランドで、
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-dark text-sm text-indigo-300 mb-8">
+              <Sparkles className="h-4 w-4" />
+              AI搭載の次世代採用OS
+            </div>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight">
+              採用を、AIで
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                採用を変える。
-              </span>
+              <span className="text-gradient">再定義する。</span>
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl">
-              NEXOSは、各クリニックが自院名義で採用ページを持ち、求人公開から選考管理まで一気通貫で行える採用プラットフォームです。
+            <p className="mt-8 text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
+              NEXOSは、AIエージェントが採用活動を自動化する次世代プラットフォーム。各医療機関が自院ブランドで採用ページを持ち、求人公開から選考管理まで一気通貫で行えます。
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/jobs">
-                <Button size="xl" variant="accent" className="w-full sm:w-auto">
-                  求人を探す
-                  <ArrowRight className="h-5 w-5" />
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/dashboard">
+                <Button size="xl" variant="gradient" className="w-full sm:w-auto gap-2">
+                  <Zap className="h-5 w-5" />
+                  無料で始める
                 </Button>
               </Link>
-              <Link href="/dashboard">
+              <Link href="/jobs">
                 <Button
                   size="xl"
                   variant="outline"
                   className="w-full sm:w-auto border-slate-600 text-white hover:bg-slate-800 hover:text-white"
                 >
-                  クリニック管理画面
+                  求人を探す
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
             </div>
@@ -91,7 +99,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6"
+            className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4"
           >
             {[
               { label: "掲載クリニック数", value: `${clinics.length}院`, icon: Building2 },
@@ -99,8 +107,8 @@ export default function HomePage() {
               { label: "職種カテゴリ", value: `${categories.length}種`, icon: Users },
               { label: "応募完了率", value: "68%", icon: TrendingUp },
             ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <stat.icon className="h-5 w-5 text-blue-400 mx-auto mb-2" />
+              <div key={i} className="glass-dark rounded-2xl p-5 text-center">
+                <stat.icon className="h-5 w-5 text-indigo-400 mx-auto mb-2" />
                 <div className="text-2xl sm:text-3xl font-bold text-white">
                   {stat.value}
                 </div>
@@ -111,16 +119,133 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Clinics */}
-      <section className="py-20 sm:py-28">
+      {/* AI Agent Showcase */}
+      <section className="py-24 sm:py-32 gradient-mesh">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeUp}
             viewport={{ once: true }}
-            className="text-center mb-14"
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              掲載クリニック
+            <Badge variant="accent" className="mb-4 text-sm py-1 px-3">
+              <Bot className="h-3.5 w-3.5 mr-1.5" />
+              AI Agent
+            </Badge>
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
+              AIエージェントが、
+              <br />
+              <span className="text-gradient">採用を自動化</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              求人票の作成から候補者分析まで、AIが採用業務をインテリジェントにサポート
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Chat Demo */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <Card className="overflow-hidden border-0 shadow-xl">
+                <div className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-indigo-500 to-violet-500 text-white">
+                  <div className="relative">
+                    <Bot className="h-5 w-5" />
+                    <div className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400 border border-white" />
+                  </div>
+                  <span className="text-sm font-medium">NEXOS AI Agent</span>
+                  <Badge className="ml-auto bg-white/20 text-white text-[10px] border-0">Claude搭載</Badge>
+                </div>
+                <CardContent className="p-5 space-y-4 bg-gradient-to-b from-slate-50/50 to-white">
+                  {/* AI message */}
+                  <div className="flex gap-2">
+                    <div className="shrink-0 mt-1 p-1 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500">
+                      <Bot className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="bg-white border shadow-sm rounded-2xl rounded-bl-lg px-4 py-3 text-sm max-w-[85%]">
+                      こんにちは！看護師の求人票を分析しました。応募率を<strong>35%向上</strong>させる改善案があります。
+                    </div>
+                  </div>
+                  {/* User message */}
+                  <div className="flex justify-end">
+                    <div className="bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-2xl rounded-br-lg px-4 py-3 text-sm max-w-[85%]">
+                      改善案を見せて
+                    </div>
+                  </div>
+                  {/* AI message */}
+                  <div className="flex gap-2">
+                    <div className="shrink-0 mt-1 p-1 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500">
+                      <Bot className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="bg-white border shadow-sm rounded-2xl rounded-bl-lg px-4 py-3 text-sm max-w-[85%]">
+                      <p className="font-semibold text-indigo-600 mb-1">3つの改善提案:</p>
+                      <p>1. 給与レンジを明確化 → +15%<br/>2. 福利厚生を具体的に → +12%<br/>3. キャリアパスを追記 → +8%</p>
+                    </div>
+                  </div>
+                  {/* Typing indicator */}
+                  <div className="flex gap-2 items-center text-muted-foreground">
+                    <div className="shrink-0 p-1 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500">
+                      <Bot className="h-3 w-3 text-white" />
+                    </div>
+                    <div className="flex gap-1 px-4 py-3 bg-white border rounded-2xl rounded-bl-lg shadow-sm">
+                      <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+                      <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" style={{ animationDelay: "0.2s" }} />
+                      <div className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" style={{ animationDelay: "0.4s" }} />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* AI Capabilities */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
+              {[
+                { icon: Sparkles, title: "求人票の最適化", desc: "AIが応募率を最大化する求人票を自動生成・改善", gradient: "from-indigo-500 to-violet-500", bg: "bg-indigo-50" },
+                { icon: Users, title: "候補者マッチング", desc: "AIスコアリングで最適な候補者を瞬時に特定", gradient: "from-violet-500 to-fuchsia-500", bg: "bg-violet-50" },
+                { icon: BarChart3, title: "採用分析レポート", desc: "データドリブンな採用改善提案を自動生成", gradient: "from-fuchsia-500 to-pink-500", bg: "bg-fuchsia-50" },
+                { icon: MessageSquare, title: "選考プロセス管理", desc: "面接質問・評価テンプレートをAIが作成", gradient: "from-blue-500 to-indigo-500", bg: "bg-blue-50" },
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <Card className="card-hover h-full border-0 shadow-sm">
+                    <CardContent className="p-6">
+                      <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-r ${item.gradient} mb-4`}>
+                        <item.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-base">{item.title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Clinics */}
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            {...fadeUp}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
+              導入クリニック
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               それぞれのクリニックが、自院ブランドの採用ページを運営しています
@@ -141,10 +266,11 @@ export default function HomePage() {
               return (
                 <motion.div key={clinic.id} variants={fadeUp}>
                   <Link href={`/clinics/${clinic.slug}`}>
-                    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 h-full">
+                    <Card className="group overflow-hidden card-hover h-full border-0 shadow-sm">
                       <div
-                        className={`h-32 bg-gradient-to-r ${clinic.brand.coverImageGradient} flex items-center justify-center`}
+                        className={`h-36 bg-gradient-to-r ${clinic.brand.coverImageGradient} flex items-center justify-center relative`}
                       >
+                        <div className="absolute inset-0 bg-black/10" />
                         <ClinicLogo clinicId={clinic.id} size={56} color="white" />
                       </div>
                       <CardContent className="p-6">
@@ -182,12 +308,12 @@ export default function HomePage() {
       </section>
 
       {/* Latest Jobs */}
-      <section className="py-20 sm:py-28 bg-muted/30">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-slate-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} viewport={{ once: true }} className="mb-14">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
                   最新の求人
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground">
@@ -215,11 +341,11 @@ export default function HomePage() {
               return (
                 <motion.div key={job.id} variants={fadeUp}>
                   <Link href={`/jobs/${job.id}`}>
-                    <Card className="group hover:shadow-lg transition-all duration-300 h-full">
+                    <Card className="group card-hover h-full border-0 shadow-sm">
                       <CardContent className="p-6">
                         <div className="flex items-start gap-3">
                           <div
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
+                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl"
                             style={{ backgroundColor: clinic.brand.brandColorLight }}
                           >
                             <ClinicLogo clinicId={clinic.id} size={24} color={clinic.brand.brandColor} />
@@ -265,18 +391,18 @@ export default function HomePage() {
       </section>
 
       {/* Value Props */}
-      <section className="py-20 sm:py-28">
+      <section className="py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeUp}
             viewport={{ once: true }}
-            className="text-center mb-14"
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
               NEXOSが実現すること
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              表は各院ブランド、裏はNEXOS共通基盤
+              表は各院ブランド、裏はNEXOS共通基盤、AIが採用を加速
             </p>
           </motion.div>
 
@@ -290,28 +416,31 @@ export default function HomePage() {
             {[
               {
                 icon: Building2,
-                title: "自院ブランドの採用ページ",
+                title: "AI搭載の採用ページ",
                 description:
-                  "各クリニックが自院の世界観で採用ページを持てます。ブランドカラー、理念、文化を求職者に伝えます。",
+                  "各クリニックが自院の世界観で採用ページを持てます。AIが最適なコンテンツを提案し、応募率を最大化します。",
+                gradient: "from-indigo-500 to-violet-500",
               },
               {
                 icon: Users,
-                title: "一気通貫の選考管理",
+                title: "インテリジェント選考管理",
                 description:
-                  "応募から内定まで、候補者の選考プロセスをダッシュボードで管理。チームでの共有もスムーズです。",
+                  "応募から内定まで、AIが候補者をスコアリング。選考プロセスをダッシュボードで一元管理します。",
+                gradient: "from-violet-500 to-fuchsia-500",
               },
               {
                 icon: Shield,
-                title: "共通基盤で効率化",
+                title: "共同運用プラットフォーム",
                 description:
-                  "求人公開、応募管理、分析機能をNEXOSが共通提供。各院は採用活動に集中できます。",
+                  "求人公開、応募管理、分析機能をNEXOSが共通提供。必要に応じてNecoが共同運用に入ります。",
+                gradient: "from-fuchsia-500 to-pink-500",
               },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp}>
-                <Card className="h-full border-0 shadow-none bg-muted/50">
+                <Card className="h-full border-0 shadow-sm card-hover">
                   <CardContent className="p-8">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 mb-5">
-                      <item.icon className="h-6 w-6 text-accent" />
+                    <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-r ${item.gradient} mb-5`}>
+                      <item.icon className="h-6 w-6 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold">{item.title}</h3>
                     <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
@@ -326,18 +455,18 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 sm:py-28 bg-muted/30">
+      <section className="py-24 sm:py-32 bg-gradient-to-b from-slate-50 to-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeUp}
             viewport={{ once: true }}
-            className="text-center mb-14"
+            className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
               利用の流れ
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              3ステップで自院ブランドの採用活動を開始できます
+              3ステップでAI搭載の採用活動を開始できます
             </p>
           </motion.div>
 
@@ -351,29 +480,29 @@ export default function HomePage() {
             {[
               {
                 step: "01",
-                title: "採用ページを作成",
+                title: "AIで採用ページを生成",
                 description:
-                  "自院のブランドカラー、理念、文化を反映した採用ページをかんたんに作成。テンプレートではなく、自院だけの採用ページが完成します。",
+                  "自院のブランドカラー、理念、文化を入力するだけ。AIが最適な採用ページを自動生成します。",
               },
               {
                 step: "02",
-                title: "求人を公開",
+                title: "求人を公開・最適化",
                 description:
-                  "医師、看護師、医療事務など、募集したいポジションの求人を作成・公開。NEXOSの共通求人ボードにも同時掲載されます。",
+                  "AIが求人票を分析し、応募率を最大化する表現を提案。共通求人ボードにも同時掲載されます。",
               },
               {
                 step: "03",
-                title: "応募者を管理",
+                title: "AIが選考をサポート",
                 description:
-                  "応募から選考、内定まで一気通貫で管理。必要に応じてNecoが共同運用し、採用活動を支援します。",
+                  "候補者のマッチングスコア算出、面接質問の生成、採用レポートの自動作成をAIが担います。",
               },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp}>
                 <div className="relative">
-                  <div className="text-6xl font-bold text-accent/10 mb-4">
+                  <div className="text-7xl font-extrabold text-gradient mb-4 leading-none">
                     {item.step}
                   </div>
-                  <h3 className="text-lg font-semibold -mt-2">{item.title}</h3>
+                  <h3 className="text-lg font-semibold">{item.title}</h3>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
                     {item.description}
                   </p>
@@ -385,17 +514,17 @@ export default function HomePage() {
       </section>
 
       {/* Co-management highlight */}
-      <section className="py-20 sm:py-28">
+      <section className="py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div {...fadeUp} viewport={{ once: true }}>
-              <Badge variant="warning" className="mb-4 text-sm py-1 px-3">
+              <Badge variant="warning" className="mb-5 text-sm py-1 px-3">
                 NEXOSの特徴
               </Badge>
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
                 一人で抱えない。
                 <br />
-                共同運用という選択肢。
+                <span className="text-gradient">共同運用</span>という選択肢。
               </h2>
               <p className="mt-6 text-muted-foreground leading-relaxed">
                 NEXOSは単なるセルフサーブのSaaSではありません。
@@ -404,13 +533,13 @@ export default function HomePage() {
               </p>
               <p className="mt-4 text-muted-foreground leading-relaxed">
                 各医療機関が「自院の採用子会社を持ったような」体験を、
-                ソフトウェアとチームの力で実現します。
+                AIとチームの力で実現します。
               </p>
               <div className="mt-8">
                 <Link href="/dashboard">
-                  <Button variant="accent" size="lg">
+                  <Button variant="gradient" size="lg" className="gap-2">
+                    <Sparkles className="h-4 w-4" />
                     管理画面を体験する
-                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
               </div>
@@ -422,16 +551,16 @@ export default function HomePage() {
               className="grid grid-cols-2 gap-4"
             >
               {[
-                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", Icon: IconPageEdit },
-                { label: "求人票の改善", desc: "応募率向上をNecoが支援", Icon: IconSparkle },
-                { label: "選考管理", desc: "候補者管理を共同で推進", Icon: IconClipboard },
-                { label: "採用分析", desc: "データに基づく改善提案", Icon: IconChart },
+                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", Icon: IconPageEdit, color: "#6366f1" },
+                { label: "求人票の改善", desc: "AIが応募率向上を支援", Icon: IconSparkle, color: "#8b5cf6" },
+                { label: "選考管理", desc: "候補者管理を共同で推進", Icon: IconClipboard, color: "#d946ef" },
+                { label: "採用分析", desc: "データに基づく改善提案", Icon: IconChart, color: "#06b6d4" },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="p-5 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors"
+                  className="p-5 rounded-2xl bg-white border shadow-sm card-hover"
                 >
-                  <item.Icon size={28} color="#2563eb" className="mb-3" />
+                  <item.Icon size={28} color={item.color} className="mb-3" />
                   <h4 className="text-sm font-semibold">{item.label}</h4>
                   <p className="text-xs text-muted-foreground mt-1">
                     {item.desc}
@@ -444,21 +573,26 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 sm:py-28 bg-gradient-to-br from-slate-900 to-slate-800">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative py-24 sm:py-32 overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900">
+        <div className="absolute inset-0 gradient-mesh-dark" />
+        <div className="absolute top-10 left-[20%] w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-10 right-[20%] w-48 h-48 bg-fuchsia-500/15 rounded-full blur-3xl animate-float-delayed" />
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...fadeUp} viewport={{ once: true }}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-              採用を、自院ブランドで始めよう
+            <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
+              採用の未来を、
+              <br />
+              <span className="text-gradient">今すぐ始めよう</span>
             </h2>
-            <p className="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">
-              NEXOSなら、最短で自院の採用ページを立ち上げられます。
-              まずは管理画面から始めてみてください。
+            <p className="mt-6 text-lg text-slate-300 max-w-2xl mx-auto">
+              AIが採用活動を自動化する次世代プラットフォーム。
+              まずは無料で始めてみてください。
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/dashboard">
-                <Button size="xl" variant="accent">
-                  管理画面を見る
-                  <ArrowRight className="h-5 w-5" />
+                <Button size="xl" variant="gradient" className="gap-2">
+                  <Zap className="h-5 w-5" />
+                  無料で始める
                 </Button>
               </Link>
               <Link href="/jobs">
@@ -468,6 +602,7 @@ export default function HomePage() {
                   className="border-slate-600 text-white hover:bg-slate-800 hover:text-white"
                 >
                   求人を探す
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
             </div>

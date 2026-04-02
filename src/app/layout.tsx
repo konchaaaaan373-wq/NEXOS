@@ -4,21 +4,21 @@ import "./globals.css";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0f172a",
+  themeColor: "#6366f1",
 };
 
 export const metadata: Metadata = {
   title: {
-    default: "NEXOS — 医療機関のための採用ブランドOS",
+    default: "NEXOS - AI搭載の医療機関向け採用OS",
     template: "%s | NEXOS",
   },
   description:
-    "各クリニックが自院ブランドで採用できる状態を実装する、医療機関向け採用プラットフォーム",
+    "AIエージェントが採用を自動化。各医療機関が自院ブランドで採用ページを持ち、求人公開から選考管理まで一気通貫で行える次世代採用プラットフォーム。",
   metadataBase: new URL("https://nexos.necofindjob.com"),
   openGraph: {
-    title: "NEXOS — 医療機関のための採用ブランドOS",
+    title: "NEXOS - AI搭載の医療機関向け採用OS",
     description:
-      "各クリニックが自院ブランドで採用できる状態を実装する、医療機関向け採用プラットフォーム。自院ブランドで、採用を変える。",
+      "AIエージェントが採用を自動化。各医療機関が自院ブランドで採用ページを持ち、求人公開から選考管理まで一気通貫で行える次世代採用プラットフォーム。",
     url: "https://nexos.necofindjob.com",
     siteName: "NEXOS",
     locale: "ja_JP",
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NEXOS — 医療機関のための採用ブランドOS",
+    title: "NEXOS - AI搭載の医療機関向け採用OS",
     description:
-      "各クリニックが自院ブランドで採用できる状態を実装する、医療機関向け採用プラットフォーム",
+      "AIエージェントが採用を自動化。医療機関向け次世代採用プラットフォーム。",
   },
   robots: {
     index: true,
@@ -51,7 +51,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
       </head>
