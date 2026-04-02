@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/clinic-context";
 import { ROLE_LABELS } from "@/data/types";
+import { ClinicLogo, NexosLogo } from "@/components/icons/clinic-logos";
+import { UserAvatar } from "@/components/icons/feature-icons";
 import {
   LayoutDashboard,
   Briefcase,
@@ -34,10 +36,10 @@ function ClinicSwitcher() {
         className="w-full flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors text-left"
       >
         <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
           style={{ backgroundColor: currentClinic.brand.brandColorLight }}
         >
-          {currentClinic.brand.logoEmoji}
+          <ClinicLogo clinicId={currentClinic.id} size={22} color={currentClinic.brand.brandColor} />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium truncate">{currentClinic.name}</p>
@@ -79,10 +81,10 @@ function ClinicSwitcher() {
                   )}
                 >
                   <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
                     style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
-                    {clinic.brand.logoEmoji}
+                    <ClinicLogo clinicId={clinic.id} size={20} color={clinic.brand.brandColor} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">
@@ -115,7 +117,7 @@ function UserSwitcher() {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors text-left"
       >
-        <span className="text-lg">{currentUser.avatarEmoji}</span>
+        <UserAvatar name={currentUser.name} role={currentUser.role} size={28} />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium truncate">{currentUser.name}</p>
           <p className="text-xs text-muted-foreground">
@@ -157,7 +159,7 @@ function UserSwitcher() {
                       : "hover:bg-muted/50"
                   )}
                 >
-                  <span className="text-base">{user.avatarEmoji}</span>
+                  <UserAvatar name={user.name} role={user.role} size={24} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{user.name}</p>
                     <p className="text-xs text-muted-foreground">
@@ -265,9 +267,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <aside className="hidden lg:flex lg:w-64 lg:flex-col border-r bg-white">
         <div className="flex h-16 items-center gap-2 px-6 border-b">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white font-bold text-sm">
-              N
-            </div>
+            <NexosLogo size={32} />
             <span className="font-bold text-lg">NEXOS</span>
           </Link>
         </div>
@@ -324,9 +324,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-white font-bold text-xs">
-                N
-              </div>
+              <NexosLogo size={28} />
               <span className="font-semibold">NEXOS</span>
             </div>
           </div>

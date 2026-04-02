@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { applicationSchema } from "@/lib/validations";
 import { ArrowLeft, Building2, Send, Loader2, AlertCircle } from "lucide-react";
 
@@ -108,10 +109,10 @@ export default function ApplyPage({
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
                   style={{ backgroundColor: clinic.brand.brandColorLight }}
                 >
-                  {clinic.brand.logoEmoji}
+                  <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">

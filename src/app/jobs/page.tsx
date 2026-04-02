@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { PublicHeader } from "@/components/public-header";
@@ -11,13 +12,23 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { MapPin, Search, Briefcase, Building2, DollarSign } from "lucide-react";
 
 export default function JobsPage() {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedClinic, setSelectedClinic] = useState("");
   const [selectedType, setSelectedType] = useState("");
+
+  // Parse URL params (e.g. /jobs?category=医師)
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) setSelectedCategory(cat);
+    const q = searchParams.get("q");
+    if (q) setSearchQuery(q);
+  }, [searchParams]);
 
   const activeJobs = jobPostings.filter((j) => j.isActive);
   const categories = [...new Set(activeJobs.map((j) => j.category))];
@@ -166,12 +177,12 @@ export default function JobsPage() {
                           <CardContent className="p-6">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <div
-                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
+                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
                                 style={{
                                   backgroundColor: clinic.brand.brandColorLight,
                                 }}
                               >
-                                {clinic.brand.logoEmoji}
+                                <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">

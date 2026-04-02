@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import {
   MapPin,
   Users,
@@ -66,14 +67,14 @@ export default function ClinicPage({
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-              <motion.span
+              <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", delay: 0.2 }}
-                className="text-6xl sm:text-7xl mb-6 block"
+                className="mb-6 flex justify-center"
               >
-                {clinic.brand.logoEmoji}
-              </motion.span>
+                <ClinicLogo clinicId={clinic.id} size={72} color="white" />
+              </motion.div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
                 {clinic.name}
               </h1>

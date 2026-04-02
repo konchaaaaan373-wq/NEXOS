@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Loader2, LogIn, ArrowLeft } from "lucide-react";
+import { NexosLogo } from "@/components/icons/clinic-logos";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,17 +26,17 @@ export default function LoginPage() {
     const password = formData.get("password") as string;
 
     try {
-      const res = await fetch("/api/auth/callback/credentials", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (res.ok) {
+      if (result?.error) {
+        setError("メールアドレスまたはパスワードが正しくありません");
+      } else {
         router.push("/dashboard");
         router.refresh();
-      } else {
-        setError("メールアドレスまたはパスワードが正しくありません");
       }
     } catch {
       setError("ログインに失敗しました。もう一度お試しください。");
@@ -53,9 +55,7 @@ export default function LoginPage() {
       >
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-bold text-lg">
-              N
-            </div>
+            <NexosLogo size={40} />
             <span className="text-2xl font-bold">NEXOS</span>
           </Link>
           <h1 className="text-2xl font-bold tracking-tight">ログイン</h1>
@@ -74,10 +74,11 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label htmlFor="email" className="block text-sm font-medium mb-1.5">
                   メールアドレス
                 </label>
                 <Input
+                  id="email"
                   name="email"
                   type="email"
                   placeholder="your@email.com"
@@ -86,10 +87,11 @@ export default function LoginPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1.5">
+                <label htmlFor="password" className="block text-sm font-medium mb-1.5">
                   パスワード
                 </label>
                 <Input
+                  id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"

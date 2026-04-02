@@ -39,7 +39,7 @@ export interface AdminUser {
   email: string;
   role: UserRole;
   clinicIds: string[];   // clinics this user can access (empty = all for neco_admin)
-  avatarEmoji: string;
+  avatarUrl?: string;  // optional uploaded avatar
   isActive: boolean;
 }
 
@@ -68,11 +68,13 @@ export function canManageCandidates(user: AdminUser, clinicId: string): boolean 
 // ============================================================
 
 export interface ClinicBrandConfig {
-  logoEmoji: string;
+  logoIcon: string;         // clinic ID used to select SVG component
   coverImageGradient: string;
   brandColor: string;
   brandColorLight: string;
   heroTagline?: string;
+  logoUrl?: string;          // optional uploaded image
+  coverImageUrl?: string;    // optional uploaded image
 }
 
 export type PageSectionType =

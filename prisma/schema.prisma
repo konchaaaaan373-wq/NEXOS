@@ -107,7 +107,7 @@ model Clinic {
   mission     String  @db.Text
 
   // Brand config (stored as JSON for flexibility)
-  logoEmoji          String  @default("🏥")
+  logoIcon           String  @default("default")
   coverImageGradient String  @default("from-blue-600 via-blue-500 to-cyan-400")
   brandColor         String  @default("#2563eb")
   brandColorLight    String  @default("#dbeafe")
@@ -194,8 +194,8 @@ model JobPosting {
 }
 
 enum JobType {
-  full_time
-  part_time
+  full_time  @map("full-time")
+  part_time  @map("part-time")
   contract
 }
 
@@ -235,10 +235,11 @@ enum PipelineStage {
 }
 
 model CandidateNote {
-  id            String @id @default(cuid())
+  id            String    @id @default(cuid())
   applicationId String
-  content       String @db.Text
+  content       String    @db.Text
   authorId      String
+  authorRole    UserRole?
 
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   author      User        @relation(fields: [authorId], references: [id])

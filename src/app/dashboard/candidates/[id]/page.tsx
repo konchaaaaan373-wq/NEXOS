@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { applications, jobPostings } from "@/data/seed";
 import { useAuth } from "@/lib/clinic-context";
 import { PIPELINE_STAGES, ROLE_LABELS, type PipelineStage, type CandidateNote } from "@/data/types";
-  import {
+import {
   ArrowLeft,
   Mail,
   Phone,
@@ -79,8 +79,6 @@ export default function CandidateDetailPage({
           applicationId: application!.id,
           content: newNote,
           authorName: currentUser.name,
-          authorId: currentUser.id,
-          authorRole: currentUser.role,
         }),
       });
       if (res.ok) {

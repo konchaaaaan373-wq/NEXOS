@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { updateApplicationStage } from "@/data/seed";
 import { stageUpdateSchema } from "@/lib/validations";
+import { getApiUser } from "@/lib/api-auth";
 
 export async function PATCH(request: Request) {
   try {
+    const user = await getApiUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "認証が必要です" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const parsed = stageUpdateSchema.safeParse(body);
 

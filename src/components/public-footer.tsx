@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { NexosLogo } from "@/components/icons/clinic-logos";
 
 export function PublicFooter() {
   return (
@@ -7,9 +8,7 @@ export function PublicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white font-bold text-sm">
-                N
-              </div>
+              <NexosLogo size={32} />
               <span className="text-lg font-bold">NEXOS</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
