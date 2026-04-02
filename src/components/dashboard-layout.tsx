@@ -21,6 +21,8 @@ import {
   ExternalLink,
   Shield,
   UserCircle,
+  Bot,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -186,6 +188,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
+    { href: "/dashboard/ai-agent", label: "AI Agent", icon: Bot, highlight: true },
     { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
     { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
     { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
@@ -216,6 +219,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           const isActive = item.exact
             ? pathname === item.href
             : pathname.startsWith(item.href);
+          const highlight = "highlight" in item && item.highlight;
           return (
             <Link
               key={item.href}
@@ -224,12 +228,21 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-accent/10 text-accent"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
+                  ? highlight
+                    ? "bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-fuchsia-500/10 text-indigo-600"
+                    : "bg-accent/10 text-accent"
+                  : highlight
+                    ? "text-indigo-500 hover:bg-indigo-50 hover:text-indigo-600"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
               )}
             >
               <item.icon className="h-4 w-4" />
               {item.label}
+              {highlight && !isActive && (
+                <span className="ml-auto flex h-5 items-center rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-1.5 text-[10px] font-bold text-white">
+                  NEW
+                </span>
+              )}
             </Link>
           );
         })}

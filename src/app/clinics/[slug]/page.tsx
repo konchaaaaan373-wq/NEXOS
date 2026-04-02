@@ -50,7 +50,7 @@ export default function ClinicPage({
     .sort((a, b) => a.order - b.order);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <PublicHeader />
 
       {/* Hero with clinic brand */}
@@ -58,8 +58,7 @@ export default function ClinicPage({
         <div
           className={`bg-gradient-to-r ${clinic.brand.coverImageGradient} py-20 sm:py-32`}
         >
-          {/* Pattern overlay */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE4YzEuNjU2IDAgMy0xLjM0NCAzLTNzLTEuMzQ0LTMtMy0zLTMgMS4zNDQtMyAzIDEuMzQ0IDMgMyAzem0tMjQgMjRjMS42NTYgMCAzLTEuMzQ0IDMtM3MtMS4zNDQtMy0zLTMtMyAxLjM0NC0zIDMgMS4zNDQgMyAzIDN6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50" />
+          <div className="absolute inset-0 gradient-mesh-dark opacity-30" />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}

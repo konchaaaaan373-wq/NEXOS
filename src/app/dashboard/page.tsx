@@ -19,6 +19,9 @@ import {
   Clock,
   Building2,
   Shield,
+  Bot,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { formatRelativeDate } from "@/lib/utils";
 
@@ -60,12 +63,12 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <Card className="border-amber-200 bg-amber-50/50">
+          <Card className="border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50/50">
             <CardContent className="p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Shield className="h-4 w-4 text-amber-700" />
                 <h2 className="text-sm font-semibold text-amber-900">
-                  Neco 横断ビュー — 全クリニック概要
+                  Neco 横断ビュー - 全クリニック概要
                 </h2>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -95,7 +98,7 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={c.id}
-                      className="flex items-center gap-3 p-3 rounded-lg bg-white/80 border border-amber-100"
+                      className="flex items-center gap-3 p-3 rounded-xl bg-white/80 border border-amber-100"
                     >
                       <div
                         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
@@ -106,7 +109,7 @@ export default function DashboardPage() {
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium truncate">{c.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          求人 {cJobs.length}件 · 候補者 {cApps.length}名
+                          求人 {cJobs.length}件 / 候補者 {cApps.length}名
                         </p>
                       </div>
                     </div>
@@ -118,6 +121,7 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -130,13 +134,55 @@ export default function DashboardPage() {
               {currentClinic.name}の採用状況
             </p>
           </div>
-          <Link href="/dashboard/jobs/new">
-            <Button variant="accent">
-              <Plus className="h-4 w-4" />
-              新規求人作成
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/ai-agent">
+              <Button variant="gradient" size="sm" className="gap-1.5">
+                <Bot className="h-4 w-4" />
+                AI Agent
+              </Button>
+            </Link>
+            <Link href="/dashboard/jobs/new">
+              <Button variant="accent">
+                <Plus className="h-4 w-4" />
+                新規求人作成
+              </Button>
+            </Link>
+          </div>
         </div>
+      </motion.div>
+
+      {/* AI Agent Quick Access */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.05 }}
+      >
+        <Card className="overflow-hidden border-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-fuchsia-600 text-white">
+          <CardContent className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+                  <Sparkles className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">AI採用エージェントが稼働中</h3>
+                  <p className="text-sm text-white/80 mt-0.5">
+                    求人票の最適化、候補者マッチング、採用ページ改善をAIがサポート
+                  </p>
+                </div>
+              </div>
+              <Link href="/dashboard/ai-agent">
+                <Button
+                  size="sm"
+                  className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border-0"
+                >
+                  <Zap className="h-4 w-4" />
+                  使ってみる
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Metrics */}
@@ -152,24 +198,24 @@ export default function DashboardPage() {
             value: activeJobs.length,
             suffix: "件",
             icon: Briefcase,
-            color: "text-blue-600",
-            bg: "bg-blue-50",
+            gradient: "from-blue-500 to-indigo-500",
+            bg: "bg-gradient-to-br from-blue-50 to-indigo-50",
           },
           {
             label: "候補者数",
             value: clinicApps.length,
             suffix: "名",
             icon: Users,
-            color: "text-violet-600",
-            bg: "bg-violet-50",
+            gradient: "from-violet-500 to-purple-500",
+            bg: "bg-gradient-to-br from-violet-50 to-purple-50",
           },
           {
             label: "合計閲覧数",
             value: totalViews.toLocaleString(),
             suffix: "",
             icon: Eye,
-            color: "text-amber-600",
-            bg: "bg-amber-50",
+            gradient: "from-amber-500 to-orange-500",
+            bg: "bg-gradient-to-br from-amber-50 to-orange-50",
           },
           {
             label: "応募完了率",
@@ -178,19 +224,19 @@ export default function DashboardPage() {
               : 0,
             suffix: "%",
             icon: TrendingUp,
-            color: "text-emerald-600",
-            bg: "bg-emerald-50",
+            gradient: "from-emerald-500 to-teal-500",
+            bg: "bg-gradient-to-br from-emerald-50 to-teal-50",
           },
         ].map((metric, i) => (
-          <Card key={i}>
+          <Card key={i} className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">{metric.label}</p>
-                <div className={`${metric.bg} p-2 rounded-lg`}>
-                  <metric.icon className={`h-4 w-4 ${metric.color}`} />
+                <div className={`${metric.bg} p-2.5 rounded-xl`}>
+                  <metric.icon className={`h-4 w-4 bg-gradient-to-r ${metric.gradient} bg-clip-text`} style={{ color: metric.gradient.includes("blue") ? "#3b82f6" : metric.gradient.includes("violet") ? "#8b5cf6" : metric.gradient.includes("amber") ? "#f59e0b" : "#10b981" }} />
                 </div>
               </div>
-              <p className="text-2xl font-bold mt-2">
+              <p className="text-3xl font-bold mt-3 tracking-tight">
                 {metric.value}
                 <span className="text-base font-normal text-muted-foreground ml-0.5">
                   {metric.suffix}
@@ -208,7 +254,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle>選考パイプライン</CardTitle>
@@ -237,7 +283,7 @@ export default function DashboardPage() {
                       <span className="text-sm font-semibold">
                         {stage.count}
                       </span>
-                      <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="w-24 h-2.5 rounded-full bg-muted overflow-hidden">
                         <div
                           className="h-full rounded-full transition-all"
                           style={{
@@ -260,7 +306,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Card>
+          <Card className="border-0 shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle>閲覧数推移（7日間）</CardTitle>
@@ -273,17 +319,17 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex items-end gap-1.5 h-32">
+              <div className="flex items-end gap-2 h-32">
                 {recentMetrics.map((metric, i) => (
                   <div
                     key={i}
                     className="flex-1 flex flex-col items-center gap-1"
                   >
                     <div
-                      className="w-full rounded-t-sm bg-accent/80 transition-all hover:bg-accent"
+                      className="w-full rounded-lg bg-gradient-to-t from-indigo-500 to-purple-400 transition-all hover:from-indigo-400 hover:to-purple-300"
                       style={{
                         height: `${(metric.views / maxViews) * 100}%`,
-                        minHeight: "4px",
+                        minHeight: "8px",
                       }}
                     />
                     <span className="text-[10px] text-muted-foreground">
@@ -303,7 +349,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.4 }}
       >
-        <Card>
+        <Card className="border-0 shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <CardTitle>最新の候補者</CardTitle>
@@ -327,7 +373,7 @@ export default function DashboardPage() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {clinicApps
                   .sort(
                     (a, b) =>
@@ -344,10 +390,10 @@ export default function DashboardPage() {
                       <Link
                         key={app.id}
                         href={`/dashboard/candidates/${app.id}`}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors group"
+                        className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/50 transition-colors group"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-sm font-medium">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 text-sm font-semibold text-indigo-700">
                             {app.applicantName.charAt(0)}
                           </div>
                           <div>
@@ -362,7 +408,7 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-3">
                           <Badge
                             variant="secondary"
-                            className="text-xs"
+                            className="text-xs rounded-lg"
                             style={{
                               backgroundColor: stage.color + "15",
                               color: stage.color,
