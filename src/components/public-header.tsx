@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { NexosLogo } from "@/components/icons/clinic-logos";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
@@ -63,6 +63,12 @@ export function PublicHeader() {
               {link.label}
             </Link>
           ))}
+          <Link href="/login">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <LogIn className="h-3.5 w-3.5" />
+              ログイン
+            </Button>
+          </Link>
           <Link href="/dashboard">
             <Button variant="gradient" size="sm" className="gap-1.5">
               <Sparkles className="h-3.5 w-3.5" />
@@ -107,6 +113,16 @@ export function PublicHeader() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/login"
+            className="block"
+            onClick={() => setMobileOpen(false)}
+          >
+            <Button variant="outline" size="sm" className="w-full gap-1.5">
+              <LogIn className="h-3.5 w-3.5" />
+              ログイン
+            </Button>
+          </Link>
           <Link
             href="/dashboard"
             className="block"

@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import { clinics, adminUsers } from "@/data/seed";
@@ -12,27 +13,84 @@ import type { Clinic, AdminUser, UserRole } from "@/data/types";
 import { isNecoRole, canEditClinic } from "@/data/types";
 
 interface AuthContextValue {
-  // Current user (mock auth — switchable for demo)
   currentUser: AdminUser;
   setCurrentUser: (user: AdminUser) => void;
   allUsers: AdminUser[];
 
-  // Clinic selection
   currentClinic: Clinic;
   setClinicById: (id: string) => void;
   accessibleClinics: Clinic[];
 
-  // Role helpers
   isNeco: boolean;
   canEdit: boolean;
   userRole: UserRole;
+
+  isLoggedIn: boolean;
+  login: (user: AdminUser) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function getStoredUser(): AdminUser | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = sessionStorage.getItem("nexos_demo_user");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const found = adminUsers.find((u) => u.id === parsed.id);
+      return found || null;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<AdminUser>(adminUsers[0]); // default: Neco admin
+  const [currentUser, setCurrentUserState] = useState<AdminUser>(adminUsers[0]);
   const [currentClinic, setCurrentClinic] = useState<Clinic>(clinics[0]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+
+  // Restore session on mount
+  useEffect(() => {
+    const stored = getStoredUser();
+    if (stored) {
+      setCurrentUserState(stored);
+      setIsLoggedIn(true);
+      // Set appropriate default clinic
+      if (stored.role === "neco_admin") {
+        setCurrentClinic(clinics[0]);
+      } else {
+        const userClinic = clinics.find((c) => stored.clinicIds.includes(c.id));
+        if (userClinic) setCurrentClinic(userClinic);
+      }
+    }
+    setInitialized(true);
+  }, []);
+
+  const setCurrentUser = useCallback((user: AdminUser) => {
+    setCurrentUserState(user);
+    sessionStorage.setItem("nexos_demo_user", JSON.stringify(user));
+    // Auto-select first accessible clinic for non-neco users
+    if (user.role !== "neco_admin" && user.clinicIds.length > 0) {
+      const userClinic = clinics.find((c) => user.clinicIds.includes(c.id));
+      if (userClinic) setCurrentClinic(userClinic);
+    }
+  }, []);
+
+  const login = useCallback((user: AdminUser) => {
+    setCurrentUser(user);
+    setIsLoggedIn(true);
+  }, [setCurrentUser]);
+
+  const logout = useCallback(() => {
+    sessionStorage.removeItem("nexos_demo_user");
+    setIsLoggedIn(false);
+    setCurrentUserState(adminUsers[0]);
+    setCurrentClinic(clinics[0]);
+  }, []);
 
   const accessibleClinics =
     currentUser.role === "neco_admin"
@@ -50,6 +108,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isNeco = isNecoRole(currentUser.role);
   const canEdit = canEditClinic(currentUser, currentClinic.id);
 
+  // Show nothing until hydrated to avoid mismatch
+  if (!initialized) {
+    return null;
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -62,6 +125,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isNeco,
         canEdit,
         userRole: currentUser.role,
+        isLoggedIn,
+        login,
+        logout,
       }}
     >
       {children}
@@ -75,7 +141,6 @@ export function useAuth() {
   return ctx;
 }
 
-// Keep backward-compatible alias
 export function useClinic() {
   const { currentClinic, setClinicById, accessibleClinics } = useAuth();
   return {

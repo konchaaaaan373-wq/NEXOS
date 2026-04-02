@@ -23,6 +23,8 @@ import {
   UserCircle,
   Bot,
   Sparkles,
+  LogOut,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -183,7 +185,7 @@ function UserSwitcher() {
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { currentClinic, isNeco, currentUser } = useAuth();
+  const { currentClinic, isNeco, currentUser, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
@@ -193,6 +195,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
     { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
     { href: "/dashboard/page-editor", label: "採用ページ編集", icon: FileEdit },
+    ...(isNeco ? [{ href: "/dashboard/admin", label: "Neco管理", icon: Shield }] : []),
   ];
 
   const sidebarContent = (
@@ -269,6 +272,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <ChevronLeft className="h-4 w-4" />
             公開サイトへ戻る
           </Link>
+          <button
+            onClick={() => {
+              logout();
+              window.location.href = "/login";
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer"
+          >
+            <LogOut className="h-4 w-4" />
+            ログアウト
+          </button>
         </div>
       </div>
     </>
