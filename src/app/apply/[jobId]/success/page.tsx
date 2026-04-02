@@ -9,6 +9,7 @@ import { PublicFooter } from "@/components/public-footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { CheckCircle2, ArrowRight, Home } from "lucide-react";
 
 export default function ApplySuccessPage({
@@ -65,10 +66,10 @@ export default function ApplySuccessPage({
               <div className="mt-8 p-4 rounded-xl bg-muted/50 max-w-sm mx-auto">
                 <div className="flex items-center gap-3">
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xl"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
                     style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
-                    {clinic.brand.logoEmoji}
+                    <ClinicLogo clinicId={clinic.id} size={24} color={clinic.brand.brandColor} />
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-medium">{clinic.name}</p>

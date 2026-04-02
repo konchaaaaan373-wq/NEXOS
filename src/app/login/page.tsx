@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Loader2, LogIn, ArrowLeft } from "lucide-react";
+import { NexosLogo } from "@/components/icons/clinic-logos";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -54,9 +55,7 @@ export default function LoginPage() {
       >
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-bold text-lg">
-              N
-            </div>
+            <NexosLogo size={40} />
             <span className="text-2xl font-bold">NEXOS</span>
           </Link>
           <h1 className="text-2xl font-bold tracking-tight">ログイン</h1>

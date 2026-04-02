@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { MapPin, Search, Briefcase, Building2, DollarSign } from "lucide-react";
 
 export default function JobsPage() {
@@ -176,12 +177,12 @@ export default function JobsPage() {
                           <CardContent className="p-6">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <div
-                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
+                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
                                 style={{
                                   backgroundColor: clinic.brand.brandColorLight,
                                 }}
                               >
-                                {clinic.brand.logoEmoji}
+                                <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">

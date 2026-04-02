@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/clinic-context";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { clinics, jobPostings, applications, eventMetrics } from "@/data/seed";
 import { PIPELINE_STAGES } from "@/data/types";
 import {
@@ -97,10 +98,10 @@ export default function DashboardPage() {
                       className="flex items-center gap-3 p-3 rounded-lg bg-white/80 border border-amber-100"
                     >
                       <div
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
                         style={{ backgroundColor: c.brand.brandColorLight }}
                       >
-                        {c.brand.logoEmoji}
+                        <ClinicLogo clinicId={c.id} size={20} color={c.brand.brandColor} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium truncate">{c.name}</p>

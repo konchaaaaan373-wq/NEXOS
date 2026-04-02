@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
+import { IconPageEdit, IconSparkle, IconClipboard, IconChart } from "@/components/icons/feature-icons";
 import {
   ArrowRight,
   Building2,
@@ -143,7 +145,7 @@ export default function HomePage() {
                       <div
                         className={`h-32 bg-gradient-to-r ${clinic.brand.coverImageGradient} flex items-center justify-center`}
                       >
-                        <span className="text-5xl">{clinic.brand.logoEmoji}</span>
+                        <ClinicLogo clinicId={clinic.id} size={56} color="white" />
                       </div>
                       <CardContent className="p-6">
                         <h3 className="text-lg font-bold group-hover:text-accent transition-colors">
@@ -217,10 +219,10 @@ export default function HomePage() {
                       <CardContent className="p-6">
                         <div className="flex items-start gap-3">
                           <div
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xl"
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
                             style={{ backgroundColor: clinic.brand.brandColorLight }}
                           >
-                            {clinic.brand.logoEmoji}
+                            <ClinicLogo clinicId={clinic.id} size={24} color={clinic.brand.brandColor} />
                           </div>
                           <div className="min-w-0">
                             <p className="text-xs text-muted-foreground">
@@ -420,16 +422,16 @@ export default function HomePage() {
               className="grid grid-cols-2 gap-4"
             >
               {[
-                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", emoji: "📝" },
-                { label: "求人票の改善", desc: "応募率向上をNecoが支援", emoji: "✨" },
-                { label: "選考管理", desc: "候補者管理を共同で推進", emoji: "📋" },
-                { label: "採用分析", desc: "データに基づく改善提案", emoji: "📊" },
+                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", Icon: IconPageEdit },
+                { label: "求人票の改善", desc: "応募率向上をNecoが支援", Icon: IconSparkle },
+                { label: "選考管理", desc: "候補者管理を共同で推進", Icon: IconClipboard },
+                { label: "採用分析", desc: "データに基づく改善提案", Icon: IconChart },
               ].map((item, i) => (
                 <div
                   key={i}
                   className="p-5 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors"
                 >
-                  <span className="text-2xl block mb-3">{item.emoji}</span>
+                  <item.Icon size={28} color="#2563eb" className="mb-3" />
                   <h4 className="text-sm font-semibold">{item.label}</h4>
                   <p className="text-xs text-muted-foreground mt-1">
                     {item.desc}

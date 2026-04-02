@@ -18,7 +18,7 @@ export const adminUsers: AdminUser[] = [
     email: "admin@necofindjob.com",
     role: "neco_admin",
     clinicIds: [],
-    avatarEmoji: "🐱",
+    avatarUrl: undefined,
     isActive: true,
   },
   {
@@ -27,7 +27,7 @@ export const adminUsers: AdminUser[] = [
     email: "tamura@necofindjob.com",
     role: "neco_editor",
     clinicIds: ["clinic-1", "clinic-2", "clinic-3"],
-    avatarEmoji: "✏️",
+    avatarUrl: undefined,
     isActive: true,
   },
   // Clinic-1 staff
@@ -37,7 +37,7 @@ export const adminUsers: AdminUser[] = [
     email: "sato@medical-frontier.example.com",
     role: "clinic_admin",
     clinicIds: ["clinic-1"],
-    avatarEmoji: "👨‍⚕️",
+    avatarUrl: undefined,
     isActive: true,
   },
   {
@@ -46,7 +46,7 @@ export const adminUsers: AdminUser[] = [
     email: "suzuki@medical-frontier.example.com",
     role: "clinic_editor",
     clinicIds: ["clinic-1"],
-    avatarEmoji: "🩺",
+    avatarUrl: undefined,
     isActive: true,
   },
   // Clinic-2 staff
@@ -56,7 +56,7 @@ export const adminUsers: AdminUser[] = [
     email: "kimura@sakura-home.example.com",
     role: "clinic_admin",
     clinicIds: ["clinic-2"],
-    avatarEmoji: "🌸",
+    avatarUrl: undefined,
     isActive: true,
   },
   // Clinic-3 staff
@@ -66,7 +66,7 @@ export const adminUsers: AdminUser[] = [
     email: "watanabe@neuroscience-tokyo.example.com",
     role: "clinic_admin",
     clinicIds: ["clinic-3"],
-    avatarEmoji: "🧠",
+    avatarUrl: undefined,
     isActive: true,
   },
 ];
@@ -85,7 +85,7 @@ export const clinics: Clinic[] = [
     mission:
       "都市で働く人々の健康と美を、もっと身近に。テクノロジーと医療の力で、一人ひとりに最適なケアを届けます。",
     brand: {
-      logoEmoji: "🏥",
+      logoIcon: "clinic-1",
       coverImageGradient: "from-blue-600 via-blue-500 to-cyan-400",
       brandColor: "#2563eb",
       brandColorLight: "#dbeafe",
@@ -125,7 +125,7 @@ export const clinics: Clinic[] = [
     mission:
       "すべての人に、住み慣れた場所で安心して暮らし続ける権利を。在宅医療の力で、地域の「生きる」を支えます。",
     brand: {
-      logoEmoji: "🌸",
+      logoIcon: "clinic-2",
       coverImageGradient: "from-pink-500 via-rose-400 to-orange-300",
       brandColor: "#e11d48",
       brandColorLight: "#ffe4e6",
@@ -164,7 +164,7 @@ export const clinics: Clinic[] = [
     mission:
       "脳と神経の専門医療を、大学病院よりもアクセスしやすく。最新の知見と温かいケアで、患者さんの不安を安心に変えます。",
     brand: {
-      logoEmoji: "🧠",
+      logoIcon: "clinic-3",
       coverImageGradient: "from-violet-600 via-purple-500 to-indigo-400",
       brandColor: "#7c3aed",
       brandColorLight: "#ede9fe",

@@ -107,7 +107,7 @@ model Clinic {
   mission     String  @db.Text
 
   // Brand config (stored as JSON for flexibility)
-  logoEmoji          String  @default("🏥")
+  logoIcon           String  @default("default")
   coverImageGradient String  @default("from-blue-600 via-blue-500 to-cyan-400")
   brandColor         String  @default("#2563eb")
   brandColorLight    String  @default("#dbeafe")

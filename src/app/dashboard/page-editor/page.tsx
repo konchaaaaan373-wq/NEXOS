@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/clinic-context";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { adminUsers } from "@/data/seed";
 import { ROLE_LABELS } from "@/data/types";
 import type { ClinicPageSection } from "@/data/types";
@@ -130,10 +131,10 @@ export default function PageEditorPage() {
           <CardContent>
             <div className="flex items-center gap-6">
               <div
-                className="flex h-16 w-16 items-center justify-center rounded-xl text-3xl"
+                className="flex h-16 w-16 items-center justify-center rounded-xl"
                 style={{ backgroundColor: currentClinic.brand.brandColorLight }}
               >
-                {currentClinic.brand.logoEmoji}
+                <ClinicLogo clinicId={currentClinic.id} size={40} color={currentClinic.brand.brandColor} />
               </div>
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-3">
