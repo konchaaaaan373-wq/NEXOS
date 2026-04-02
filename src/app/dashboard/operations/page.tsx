@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -7,475 +6,654 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/clinic-context";
-import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { clinics, jobPostings, applications, alerts as allAlerts, standaloneTasks } from "@/data/seed";
 import { PIPELINE_STAGES, STAGE_SLA, ALERT_TYPE_LABELS } from "@/data/types";
 import type { Alert, Task, AlertSeverity } from "@/data/types";
 import {
-  AlertTriangle,
-  Bell,
-  CheckCircle2,
-  Clock,
-  Shield,
-  ArrowRight,
-  ListTodo,
-  Users,
-  Briefcase,
-  TrendingUp,
-  XCircle,
-  AlertCircle,
-  Timer,
-  ChevronRight,
-  Circle,
-  Eye,
+  AlertTriangle, Bell, CheckCircle2, Clock, Shield, ArrowRight,
+  ListTodo, Users, Briefcase, TrendingUp, XCircle, AlertCircle,
+  Timer, ChevronRight, Circle,
 } from "lucide-react";
 
-function getDaysAgo(dateStr: string): string {
-  const now = new Date("2026-04-02T12:00:00Z");
+// ============================================================
+// Helper functions
+// ============================================================
+
+const NOW = new Date("2026-04-02T12:00:00Z");
+
+function getDaysInStage(app: (typeof applications)[number]): number {
+  const updated = new Date(app.updatedAt);
+  const diffMs = NOW.getTime() - updated.getTime();
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+function getSLAStatus(app: (typeof applications)[number]): "ok" | "warning" | "breach" {
+  const days = getDaysInStage(app);
+  const limit = STAGE_SLA[app.stage];
+  if (limit === 0) return "ok";
+  if (days > limit) return "breach";
+  if (days >= limit * 0.7) return "warning";
+  return "ok";
+}
+
+function getRelativeTime(dateStr: string): string {
   const date = new Date(dateStr);
-  const diffMs = now.getTime() - date.getTime();
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  if (days > 0) return `${days}日前`;
-  if (hours > 0) return `${hours}時間前`;
-  return "直近";
+  const diffMs = NOW.getTime() - date.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMinutes < 60) return `${diffMinutes}分前`;
+  if (diffHours < 24) return `${diffHours}時間前`;
+  return `${diffDays}日前`;
 }
 
-function getDaysInStage(updatedAt: string): number {
-  const now = new Date("2026-04-02");
-  return Math.floor((now.getTime() - new Date(updatedAt).getTime()) / (1000 * 60 * 60 * 24));
+function getSeverityIcon(severity: AlertSeverity) {
+  switch (severity) {
+    case "critical":
+      return <AlertTriangle className="h-4.5 w-4.5 text-red-500" />;
+    case "warning":
+      return <AlertCircle className="h-4.5 w-4.5 text-amber-500" />;
+    case "info":
+      return <Bell className="h-4.5 w-4.5 text-blue-500" />;
+  }
 }
 
-const severityConfig: Record<AlertSeverity, { icon: typeof AlertTriangle; color: string; bg: string; border: string }> = {
-  critical: { icon: AlertTriangle, color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
-  warning: { icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
-  info: { icon: Bell, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
-};
+function getSeverityBg(severity: AlertSeverity) {
+  switch (severity) {
+    case "critical":
+      return "bg-red-50";
+    case "warning":
+      return "bg-amber-50";
+    case "info":
+      return "bg-blue-50";
+  }
+}
 
-const priorityLabels = { urgent: "緊急", high: "高", medium: "中", low: "低" };
-const priorityColors = {
-  urgent: "bg-red-100 text-red-700 border-red-200",
-  high: "bg-amber-100 text-amber-700 border-amber-200",
-  medium: "bg-blue-100 text-blue-700 border-blue-200",
-  low: "bg-slate-100 text-slate-600 border-slate-200",
-};
-const statusLabels = { pending: "未着手", in_progress: "進行中", completed: "完了", overdue: "期限超過" };
+function getSeverityBorder(severity: AlertSeverity) {
+  switch (severity) {
+    case "critical":
+      return "border-l-red-400";
+    case "warning":
+      return "border-l-amber-400";
+    case "info":
+      return "border-l-blue-400";
+  }
+}
+
+function getPriorityBadge(priority: Task["priority"]) {
+  switch (priority) {
+    case "urgent":
+      return <Badge className="bg-red-100 text-red-700 border-0">緊急</Badge>;
+    case "high":
+      return <Badge className="bg-amber-100 text-amber-700 border-0">高</Badge>;
+    case "medium":
+      return <Badge className="bg-blue-100 text-blue-700 border-0">中</Badge>;
+    case "low":
+      return <Badge className="bg-slate-100 text-slate-600 border-0">低</Badge>;
+  }
+}
+
+function getStatusColor(status: Task["status"]) {
+  switch (status) {
+    case "overdue":
+      return "text-red-600";
+    case "pending":
+      return "text-amber-600";
+    case "in_progress":
+      return "text-blue-600";
+    case "completed":
+      return "text-emerald-600";
+  }
+}
+
+function getStatusLabel(status: Task["status"]) {
+  switch (status) {
+    case "overdue":
+      return "期限超過";
+    case "pending":
+      return "未着手";
+    case "in_progress":
+      return "進行中";
+    case "completed":
+      return "完了";
+  }
+}
+
+// ============================================================
+// Page component
+// ============================================================
 
 export default function OperationsPage() {
-  const { currentClinic, isNeco, accessibleClinics } = useAuth();
+  const { currentClinic, isNeco } = useAuth();
   const [showResolved, setShowResolved] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(false);
 
-  // Filter by clinic (or show all for Neco)
-  const filterClinicIds = isNeco
-    ? accessibleClinics.map((c) => c.id)
-    : [currentClinic.id];
+  // --- Filter data based on role ---
+  const clinicAlerts = isNeco
+    ? allAlerts
+    : allAlerts.filter((a) => a.clinicId === currentClinic.id);
 
-  const filteredAlerts = allAlerts.filter(
-    (a) => filterClinicIds.includes(a.clinicId) && (showResolved || !a.isResolved)
-  );
-  const unresolvedAlerts = allAlerts.filter(
-    (a) => filterClinicIds.includes(a.clinicId) && !a.isResolved
-  );
+  const unresolvedAlerts = clinicAlerts.filter((a) => !a.isResolved);
+  const resolvedAlerts = clinicAlerts.filter((a) => a.isResolved);
 
-  // Collect all tasks: from applications + standalone
-  const allTasks: (Task & { source?: string })[] = [];
-  applications.forEach((app) => {
-    if (!filterClinicIds.includes(app.clinicId)) return;
-    app.tasks.forEach((t) => allTasks.push({ ...t, source: app.applicantName }));
-  });
-  standaloneTasks.forEach((t) => {
-    if (filterClinicIds.includes(t.clinicId)) allTasks.push(t);
-  });
+  // Gather all tasks: from applications + standalone
+  const allApplicationTasks = applications
+    .filter((app) => isNeco || app.clinicId === currentClinic.id)
+    .flatMap((app) => app.tasks);
+  const filteredStandalone = isNeco
+    ? standaloneTasks
+    : standaloneTasks.filter((t) => t.clinicId === currentClinic.id);
+  const allTasks = [...allApplicationTasks, ...filteredStandalone];
 
-  const pendingTasks = allTasks.filter((t) => t.status === "pending" || t.status === "overdue");
+  const overdueTasks = allTasks.filter((t) => t.status === "overdue");
+  const pendingTasks = allTasks.filter((t) => t.status === "pending");
   const inProgressTasks = allTasks.filter((t) => t.status === "in_progress");
   const completedTasks = allTasks.filter((t) => t.status === "completed");
 
-  // SLA calculation
-  const activeApps = applications.filter(
-    (a) => filterClinicIds.includes(a.clinicId) && a.stage !== "hired" && a.stage !== "rejected"
-  );
-  const appsWithSLA = activeApps.filter((a) => STAGE_SLA[a.stage] > 0);
-  const appsWithinSLA = appsWithSLA.filter(
-    (a) => getDaysInStage(a.updatedAt) <= STAGE_SLA[a.stage]
-  );
-  const slaRate = appsWithSLA.length
-    ? Math.round((appsWithinSLA.length / appsWithSLA.length) * 100)
+  // Active applications (non-terminal stages)
+  const activeApplications = applications
+    .filter((app) => isNeco || app.clinicId === currentClinic.id)
+    .filter((app) => app.stage !== "hired" && app.stage !== "rejected");
+
+  // SLA compliance calculation
+  const slaCompliant = activeApplications.filter(
+    (app) => getSLAStatus(app) !== "breach"
+  ).length;
+  const slaRate = activeApplications.length > 0
+    ? Math.round((slaCompliant / activeApplications.length) * 100)
     : 100;
+
+  // Stage info lookup
+  const getStageInfo = (stageId: string) =>
+    PIPELINE_STAGES.find((s) => s.id === stageId) || PIPELINE_STAGES[0];
+
+  // Get clinic name by id
+  const getClinicName = (clinicId: string) =>
+    clinics.find((c) => c.id === clinicId)?.name || clinicId;
+
+  // Alert link builder
+  const getAlertLink = (alert: Alert) => {
+    if (alert.relatedEntityType === "application") {
+      return `/dashboard/candidates?id=${alert.relatedEntityId}`;
+    }
+    if (alert.relatedEntityType === "job") {
+      return `/dashboard/jobs?id=${alert.relatedEntityId}`;
+    }
+    return "/dashboard/operations";
+  };
 
   return (
     <div className="p-6 sm:p-8 space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
-            <Shield className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">採用オペレーション</h1>
-            <p className="text-sm text-muted-foreground">
-              {isNeco ? "全クリニック横断" : currentClinic.name} — アラート・タスク・SLA管理
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Summary Bar */}
+      {/* ====== Header ====== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.05 }}
+        transition={{ duration: 0.4 }}
+        className="flex items-center gap-4"
+      >
+        <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/20">
+          <Shield className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">採用オペレーション</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {isNeco ? "全クリニックの採用ハーネス状況" : `${currentClinic.name} の採用ハーネス状況`}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ====== Alert Summary Bar ====== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
         className="grid grid-cols-2 lg:grid-cols-4 gap-4"
       >
         {[
           {
             label: "未解決アラート",
             value: unresolvedAlerts.length,
-            suffix: "件",
             icon: AlertTriangle,
-            bg: unresolvedAlerts.length > 0 ? "bg-gradient-to-br from-red-50 to-rose-50" : "bg-gradient-to-br from-emerald-50 to-teal-50",
-            iconColor: unresolvedAlerts.length > 0 ? "#ef4444" : "#10b981",
+            color: unresolvedAlerts.length > 0 ? "text-red-600" : "text-slate-600",
+            bg: unresolvedAlerts.length > 0 ? "bg-red-50" : "bg-slate-50",
           },
           {
             label: "進行中タスク",
             value: pendingTasks.length + inProgressTasks.length,
-            suffix: "件",
             icon: ListTodo,
-            bg: "bg-gradient-to-br from-blue-50 to-indigo-50",
-            iconColor: "#3b82f6",
+            color: "text-amber-600",
+            bg: "bg-amber-50",
           },
           {
             label: "SLA遵守率",
-            value: `${slaRate}`,
-            suffix: "%",
+            value: `${slaRate}%`,
             icon: Timer,
-            bg: slaRate >= 80 ? "bg-gradient-to-br from-emerald-50 to-teal-50" : "bg-gradient-to-br from-amber-50 to-orange-50",
-            iconColor: slaRate >= 80 ? "#10b981" : "#f59e0b",
+            color: slaRate >= 80 ? "text-emerald-600" : slaRate >= 50 ? "text-amber-600" : "text-red-600",
+            bg: slaRate >= 80 ? "bg-emerald-50" : slaRate >= 50 ? "bg-amber-50" : "bg-red-50",
           },
           {
             label: "完了タスク",
             value: completedTasks.length,
-            suffix: "件",
             icon: CheckCircle2,
-            bg: "bg-gradient-to-br from-emerald-50 to-teal-50",
-            iconColor: "#10b981",
+            color: "text-emerald-600",
+            bg: "bg-emerald-50",
           },
-        ].map((m, i) => (
+        ].map((metric, i) => (
           <Card key={i} className="border-0 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-muted-foreground">{m.label}</p>
-                <div className={`${m.bg} p-2 rounded-xl`}>
-                  <m.icon className="h-4 w-4" style={{ color: m.iconColor }} />
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">{metric.label}</p>
+                <div className={`${metric.bg} p-2 rounded-xl`}>
+                  <metric.icon className={`h-4 w-4 ${metric.color}`} />
                 </div>
               </div>
-              <p className="text-2xl font-bold">
-                {m.value}<span className="text-sm font-normal text-muted-foreground ml-0.5">{m.suffix}</span>
-              </p>
+              <p className="text-2xl font-bold mt-2">{metric.value}</p>
             </CardContent>
           </Card>
         ))}
       </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Active Alerts */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-amber-500" />
-                  アクティブアラート
-                  {unresolvedAlerts.length > 0 && (
-                    <Badge className="bg-red-100 text-red-700 text-[10px]">{unresolvedAlerts.length}</Badge>
-                  )}
-                </CardTitle>
-                <button
-                  onClick={() => setShowResolved(!showResolved)}
-                  className="text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-                >
-                  {showResolved ? "未解決のみ" : "解決済みも表示"}
-                </button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {filteredAlerts.length === 0 ? (
-                <div className="text-center py-8">
-                  <CheckCircle2 className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">未解決のアラートはありません</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {filteredAlerts.map((alert) => {
-                    const cfg = severityConfig[alert.severity];
-                    const IconComp = cfg.icon;
-                    const clinic = clinics.find((c) => c.id === alert.clinicId);
-                    return (
-                      <div
-                        key={alert.id}
-                        className={`p-4 rounded-xl border ${cfg.bg} ${cfg.border} ${alert.isResolved ? "opacity-60" : ""}`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <IconComp className={`h-4 w-4 mt-0.5 shrink-0 ${cfg.color}`} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <p className={`text-sm font-medium ${cfg.color}`}>{alert.title}</p>
-                              <Badge className={`text-[10px] border ${cfg.bg} ${cfg.color}`}>
-                                {ALERT_TYPE_LABELS[alert.type]}
-                              </Badge>
-                              {isNeco && clinic && (
-                                <Badge variant="secondary" className="text-[10px]">{clinic.name}</Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">{alert.message}</p>
-                            <div className="flex items-center gap-3 mt-2">
-                              <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                <Clock className="h-2.5 w-2.5" />
-                                {getDaysAgo(alert.createdAt)}
-                              </span>
-                              {alert.relatedEntityId && alert.relatedEntityType === "application" && (
-                                <Link
-                                  href={`/dashboard/candidates/${alert.relatedEntityId}`}
-                                  className="text-[10px] text-accent hover:underline flex items-center gap-0.5"
-                                >
-                                  対応する <ArrowRight className="h-2.5 w-2.5" />
-                                </Link>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Task Queue */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-        >
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2">
-                <ListTodo className="h-4 w-4 text-blue-500" />
-                タスクキュー
-                {pendingTasks.length > 0 && (
-                  <Badge className="bg-blue-100 text-blue-700 text-[10px]">{pendingTasks.length + inProgressTasks.length}</Badge>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {[...pendingTasks.filter((t) => t.status === "overdue"), ...pendingTasks.filter((t) => t.status !== "overdue"), ...inProgressTasks].map((task) => {
-                  const clinic = clinics.find((c) => c.id === task.clinicId);
-                  return (
-                    <div
-                      key={task.id}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
-                    >
-                      <div className={`p-1.5 rounded-lg ${
-                        task.status === "overdue" ? "bg-red-100" : task.status === "in_progress" ? "bg-blue-100" : "bg-amber-100"
-                      }`}>
-                        {task.status === "overdue" ? (
-                          <AlertTriangle className="h-3.5 w-3.5 text-red-600" />
-                        ) : task.status === "in_progress" ? (
-                          <Timer className="h-3.5 w-3.5 text-blue-600" />
-                        ) : (
-                          <Circle className="h-3.5 w-3.5 text-amber-600" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{task.title}</p>
-                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <span className="text-[10px] text-muted-foreground">{task.assignedToName}</span>
-                          <span className="text-[10px] text-muted-foreground">期限: {task.dueDate}</span>
-                          {isNeco && clinic && (
-                            <Badge variant="secondary" className="text-[9px] py-0">{clinic.name}</Badge>
-                          )}
-                          {"source" in task && task.source && (
-                            <span className="text-[10px] text-accent">{task.source as string}</span>
-                          )}
-                        </div>
-                      </div>
-                      <Badge className={`text-[10px] border shrink-0 ${priorityColors[task.priority]}`}>
-                        {priorityLabels[task.priority]}
-                      </Badge>
-                    </div>
-                  );
-                })}
-                {pendingTasks.length === 0 && inProgressTasks.length === 0 && (
-                  <div className="text-center py-6">
-                    <CheckCircle2 className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">すべてのタスクが完了しています</p>
-                  </div>
-                )}
-
-                {completedTasks.length > 0 && (
-                  <div className="mt-3 pt-3 border-t">
-                    <p className="text-xs text-muted-foreground mb-2">完了済み ({completedTasks.length}件)</p>
-                    {completedTasks.map((task) => (
-                      <div key={task.id} className="flex items-center gap-3 p-2 rounded-lg opacity-60">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                        <p className="text-xs line-through text-muted-foreground truncate">{task.title}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-
-      {/* SLA Monitor */}
+      {/* ====== Active Alerts Section ====== */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
+        transition={{ duration: 0.4, delay: 0.15 }}
       >
         <Card className="border-0 shadow-sm">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2">
-              <Timer className="h-4 w-4 text-indigo-500" />
-              SLA モニター
-              <Badge className={`text-[10px] ${slaRate >= 80 ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
-                遵守率 {slaRate}%
-              </Badge>
-            </CardTitle>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-red-50">
+                  <AlertTriangle className="h-4.5 w-4.5 text-red-500" />
+                </div>
+                アクティブアラート
+                {unresolvedAlerts.length > 0 && (
+                  <Badge className="bg-red-100 text-red-700 border-0 ml-1">
+                    {unresolvedAlerts.length}
+                  </Badge>
+                )}
+              </CardTitle>
+              {resolvedAlerts.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowResolved(!showResolved)}
+                  className="text-muted-foreground"
+                >
+                  {showResolved ? "解決済みを非表示" : `解決済み (${resolvedAlerts.length}) を表示`}
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
-            {activeApps.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-6">アクティブな候補者がいません</p>
+            {unresolvedAlerts.length === 0 && !showResolved ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="p-3 rounded-2xl bg-emerald-50 mb-4">
+                  <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                </div>
+                <p className="text-sm font-medium text-slate-700">すべてのアラートが解決済みです</p>
+                <p className="text-xs text-muted-foreground mt-1">現在対応が必要なアラートはありません</p>
+              </div>
             ) : (
-              <div className="space-y-2">
-                {activeApps
-                  .map((app) => {
-                    const days = getDaysInStage(app.updatedAt);
-                    const sla = STAGE_SLA[app.stage];
-                    const stage = PIPELINE_STAGES.find((s) => s.id === app.stage)!;
-                    const job = jobPostings.find((j) => j.id === app.jobId);
-                    const clinic = clinics.find((c) => c.id === app.clinicId);
-                    const ratio = sla > 0 ? days / sla : 0;
-                    const status = sla === 0 ? "ok" : ratio > 1 ? "breach" : ratio > 0.7 ? "warning" : "ok";
-                    return { app, days, sla, stage, job, clinic, ratio, status };
-                  })
-                  .sort((a, b) => b.ratio - a.ratio)
-                  .map(({ app, days, sla, stage, job, clinic, ratio, status }) => (
-                    <Link
-                      key={app.id}
-                      href={`/dashboard/candidates/${app.id}`}
-                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors group"
-                    >
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 text-sm font-semibold text-indigo-700 shrink-0">
-                        {app.applicantName.charAt(0)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium group-hover:text-accent transition-colors truncate">
-                            {app.applicantName}
-                          </p>
-                          {isNeco && clinic && (
-                            <Badge variant="secondary" className="text-[9px] py-0">{clinic.name}</Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate">{job?.title}</p>
-                      </div>
-                      <Badge
-                        className="text-[10px] py-0.5 shrink-0"
-                        style={{ backgroundColor: stage.color + "15", color: stage.color }}
-                      >
-                        {stage.label}
-                      </Badge>
-                      <div className="w-20 shrink-0">
-                        {sla > 0 ? (
-                          <>
-                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                              <div
-                                className={`h-full rounded-full ${
-                                  status === "breach" ? "bg-red-500" : status === "warning" ? "bg-amber-500" : "bg-emerald-500"
-                                }`}
-                                style={{ width: `${Math.min(ratio * 100, 100)}%` }}
-                              />
-                            </div>
-                            <p className={`text-[10px] mt-0.5 text-right ${
-                              status === "breach" ? "text-red-600 font-medium" : "text-muted-foreground"
-                            }`}>
-                              {days}/{sla}日
-                            </p>
-                          </>
-                        ) : (
-                          <p className="text-[10px] text-muted-foreground text-right">—</p>
+              <div className="space-y-3">
+                {unresolvedAlerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    className={`flex items-start gap-4 p-4 rounded-xl border-l-4 ${getSeverityBorder(alert.severity)} ${getSeverityBg(alert.severity)}`}
+                  >
+                    <div className="mt-0.5 shrink-0">
+                      {getSeverityIcon(alert.severity)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-semibold text-slate-800">
+                          {alert.title}
+                        </span>
+                        <Badge className="bg-white/80 text-slate-600 border border-slate-200 text-[10px]">
+                          {ALERT_TYPE_LABELS[alert.type]}
+                        </Badge>
+                        {isNeco && (
+                          <Badge className="bg-indigo-100 text-indigo-700 border-0 text-[10px]">
+                            {getClinicName(alert.clinicId)}
+                          </Badge>
                         )}
                       </div>
-                    </Link>
-                  ))}
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                        {alert.message}
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-1.5">
+                        <Clock className="inline h-3 w-3 mr-0.5 -mt-px" />
+                        {getRelativeTime(alert.createdAt)}
+                      </p>
+                    </div>
+                    {alert.relatedEntityId && (
+                      <Link href={getAlertLink(alert)} className="shrink-0">
+                        <Button variant="outline" size="sm" className="gap-1 text-xs">
+                          対応する
+                          <ChevronRight className="h-3 w-3" />
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
+                ))}
+
+                {showResolved && resolvedAlerts.length > 0 && (
+                  <>
+                    <div className="border-t border-slate-200 my-4" />
+                    <p className="text-xs text-muted-foreground font-medium mb-2">解決済み</p>
+                    {resolvedAlerts.map((alert) => (
+                      <div
+                        key={alert.id}
+                        className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 opacity-60"
+                      >
+                        <div className="mt-0.5 shrink-0">
+                          <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-medium text-slate-600 line-through">
+                              {alert.title}
+                            </span>
+                            <Badge className="bg-slate-100 text-slate-500 border-0 text-[10px]">
+                              {ALERT_TYPE_LABELS[alert.type]}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-slate-400 mt-1">{alert.message}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
             )}
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* Co-management status (Neco only) */}
+      {/* ====== Task Queue Section ====== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <Card className="border-0 shadow-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-violet-50">
+                  <ListTodo className="h-4.5 w-4.5 text-violet-500" />
+                </div>
+                タスクキュー
+                <Badge className="bg-violet-100 text-violet-700 border-0 ml-1">
+                  {allTasks.length}
+                </Badge>
+              </CardTitle>
+              {completedTasks.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowCompleted(!showCompleted)}
+                  className="text-muted-foreground"
+                >
+                  {showCompleted ? "完了を非表示" : `完了 (${completedTasks.length}) を表示`}
+                </Button>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent>
+            {allTasks.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="p-3 rounded-2xl bg-slate-50 mb-4">
+                  <ListTodo className="h-8 w-8 text-slate-400" />
+                </div>
+                <p className="text-sm font-medium text-slate-700">タスクはありません</p>
+                <p className="text-xs text-muted-foreground mt-1">現在割り当てられているタスクはありません</p>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                {/* Overdue tasks */}
+                {overdueTasks.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <XCircle className="h-3.5 w-3.5 text-red-500" />
+                      <p className="text-xs font-semibold text-red-600 uppercase tracking-wider">期限超過 ({overdueTasks.length})</p>
+                    </div>
+                    {overdueTasks.map((task) => (
+                      <TaskRow key={task.id} task={task} isNeco={isNeco} getClinicName={getClinicName} />
+                    ))}
+                  </div>
+                )}
+
+                {/* Pending tasks */}
+                {pendingTasks.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Circle className="h-3.5 w-3.5 text-amber-500" />
+                      <p className="text-xs font-semibold text-amber-600 uppercase tracking-wider">未着手 ({pendingTasks.length})</p>
+                    </div>
+                    {pendingTasks.map((task) => (
+                      <TaskRow key={task.id} task={task} isNeco={isNeco} getClinicName={getClinicName} />
+                    ))}
+                  </div>
+                )}
+
+                {/* In progress tasks */}
+                {inProgressTasks.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Timer className="h-3.5 w-3.5 text-blue-500" />
+                      <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider">進行中 ({inProgressTasks.length})</p>
+                    </div>
+                    {inProgressTasks.map((task) => (
+                      <TaskRow key={task.id} task={task} isNeco={isNeco} getClinicName={getClinicName} />
+                    ))}
+                  </div>
+                )}
+
+                {/* Completed tasks (collapsed by default) */}
+                {showCompleted && completedTasks.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                      <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">完了 ({completedTasks.length})</p>
+                    </div>
+                    {completedTasks.map((task) => (
+                      <TaskRow key={task.id} task={task} isNeco={isNeco} getClinicName={getClinicName} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* ====== SLA Monitor Section ====== */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.25 }}
+      >
+        <Card className="border-0 shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-indigo-50">
+                <TrendingUp className="h-4.5 w-4.5 text-indigo-500" />
+              </div>
+              SLA モニター
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {activeApplications.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="p-3 rounded-2xl bg-slate-50 mb-4">
+                  <Users className="h-8 w-8 text-slate-400" />
+                </div>
+                <p className="text-sm font-medium text-slate-700">アクティブな候補者はいません</p>
+                <p className="text-xs text-muted-foreground mt-1">選考中の候補者が表示されます</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {activeApplications.map((app) => {
+                  const days = getDaysInStage(app);
+                  const limit = STAGE_SLA[app.stage];
+                  const status = getSLAStatus(app);
+                  const stageInfo = getStageInfo(app.stage);
+                  const progress = limit > 0 ? Math.min((days / limit) * 100, 100) : 0;
+                  const progressBarColor =
+                    status === "breach"
+                      ? "bg-red-500"
+                      : status === "warning"
+                        ? "bg-amber-400"
+                        : "bg-emerald-500";
+
+                  return (
+                    <div
+                      key={app.id}
+                      className="p-4 rounded-xl bg-slate-50/80 hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center shrink-0">
+                            <span className="text-xs font-bold text-indigo-600">
+                              {app.applicantName.charAt(0)}
+                            </span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-slate-800 truncate">
+                              {app.applicantName}
+                            </p>
+                            {isNeco && (
+                              <p className="text-[10px] text-muted-foreground">
+                                {getClinicName(app.clinicId)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Badge
+                            className="border-0 text-[10px]"
+                            style={{
+                              backgroundColor: `${stageInfo.color}15`,
+                              color: stageInfo.color,
+                            }}
+                          >
+                            {stageInfo.label}
+                          </Badge>
+                          <Link href={`/dashboard/candidates?id=${app.id}`}>
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                              <ChevronRight className="h-4 w-4 text-slate-400" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+
+                      {limit > 0 && (
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-slate-500">
+                              {days}日経過 / SLA {limit}日
+                            </span>
+                            {status === "breach" && (
+                              <span className="text-red-500 font-semibold flex items-center gap-0.5">
+                                <AlertTriangle className="h-3 w-3" />
+                                超過
+                              </span>
+                            )}
+                            {status === "warning" && (
+                              <span className="text-amber-500 font-medium">注意</span>
+                            )}
+                            {status === "ok" && (
+                              <span className="text-emerald-500 font-medium">正常</span>
+                            )}
+                          </div>
+                          <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${progress}%` }}
+                              transition={{ duration: 0.6, ease: "easeOut" }}
+                              className={`h-full rounded-full ${progressBarColor}`}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* ====== Co-Management Section (Neco only) ====== */}
       {isNeco && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.25 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Card className="border-0 shadow-sm border-amber-200 bg-gradient-to-r from-amber-50/50 to-orange-50/30">
-            <CardHeader className="pb-3">
+          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-indigo-50/30">
+            <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-amber-600" />
+                <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-100 to-yellow-100">
+                  <Briefcase className="h-4.5 w-4.5 text-amber-600" />
+                </div>
                 共同運用ステータス
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {accessibleClinics.map((clinic) => {
-                  const clinicAlerts = allAlerts.filter((a) => a.clinicId === clinic.id && !a.isResolved);
-                  const clinicTasks = allTasks.filter((t) => t.clinicId === clinic.id && t.status !== "completed");
-                  const clinicApps = applications.filter((a) => a.clinicId === clinic.id && a.stage !== "hired" && a.stage !== "rejected");
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {clinics.map((clinic) => {
+                  const clinicAlertCount = allAlerts.filter(
+                    (a) => a.clinicId === clinic.id && !a.isResolved
+                  ).length;
+                  const clinicTaskCount = [
+                    ...applications
+                      .filter((app) => app.clinicId === clinic.id)
+                      .flatMap((app) => app.tasks),
+                    ...standaloneTasks.filter((t) => t.clinicId === clinic.id),
+                  ].filter((t) => t.status === "pending" || t.status === "in_progress").length;
+                  const clinicAppCount = applications.filter(
+                    (app) =>
+                      app.clinicId === clinic.id &&
+                      app.stage !== "hired" &&
+                      app.stage !== "rejected"
+                  ).length;
+
                   return (
                     <div
                       key={clinic.id}
-                      className="p-4 rounded-xl bg-white border"
+                      className="p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow"
                     >
-                      <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-3 mb-4">
                         <div
-                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                          style={{ backgroundColor: clinic.brand.brandColorLight }}
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-sm"
+                          style={{ backgroundColor: clinic.brand.brandColor }}
                         >
-                          <ClinicLogo clinicId={clinic.id} size={20} color={clinic.brand.brandColor} />
+                          {clinic.name.charAt(0)}
                         </div>
-                        <p className="text-sm font-semibold truncate">{clinic.name}</p>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2 text-center">
-                        <div>
-                          <p className={`text-lg font-bold ${clinicAlerts.length > 0 ? "text-red-600" : ""}`}>
-                            {clinicAlerts.length}
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-800 truncate">
+                            {clinic.name}
                           </p>
-                          <p className="text-[10px] text-muted-foreground">アラート</p>
+                          <p className="text-[10px] text-muted-foreground">{clinic.location}</p>
                         </div>
-                        <div>
-                          <p className="text-lg font-bold">{clinicTasks.length}</p>
-                          <p className="text-[10px] text-muted-foreground">タスク</p>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="p-2 rounded-xl bg-red-50">
+                          <p className="text-lg font-bold text-red-600">{clinicAlertCount}</p>
+                          <p className="text-[10px] text-red-500">アラート</p>
                         </div>
-                        <div>
-                          <p className="text-lg font-bold">{clinicApps.length}</p>
-                          <p className="text-[10px] text-muted-foreground">選考中</p>
+                        <div className="p-2 rounded-xl bg-amber-50">
+                          <p className="text-lg font-bold text-amber-600">{clinicTaskCount}</p>
+                          <p className="text-[10px] text-amber-500">タスク</p>
+                        </div>
+                        <div className="p-2 rounded-xl bg-indigo-50">
+                          <p className="text-lg font-bold text-indigo-600">{clinicAppCount}</p>
+                          <p className="text-[10px] text-indigo-500">候補者</p>
                         </div>
                       </div>
                     </div>
@@ -485,6 +663,68 @@ export default function OperationsPage() {
             </CardContent>
           </Card>
         </motion.div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// Task Row Component
+// ============================================================
+
+function TaskRow({
+  task,
+  isNeco,
+  getClinicName,
+}: {
+  task: Task;
+  isNeco: boolean;
+  getClinicName: (id: string) => string;
+}) {
+  const isOverdue = task.status === "overdue";
+  const isCompleted = task.status === "completed";
+
+  return (
+    <div
+      className={`flex items-center gap-4 p-3.5 rounded-xl transition-colors ${
+        isOverdue
+          ? "bg-red-50/80"
+          : isCompleted
+            ? "bg-emerald-50/50 opacity-70"
+            : "bg-slate-50/80 hover:bg-slate-50"
+      }`}
+    >
+      <div className="shrink-0">{getPriorityBadge(task.priority)}</div>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm font-medium ${isCompleted ? "line-through text-slate-400" : "text-slate-800"}`}>
+          {task.title}
+        </p>
+        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+          <span className="text-[11px] text-muted-foreground">
+            {task.assignedToName}
+          </span>
+          {isNeco && (
+            <Badge className="bg-indigo-50 text-indigo-600 border-0 text-[10px] py-0">
+              {getClinicName(task.clinicId)}
+            </Badge>
+          )}
+          <span className={`text-[11px] ${getStatusColor(task.status)} font-medium`}>
+            {getStatusLabel(task.status)}
+          </span>
+        </div>
+      </div>
+      <div className="shrink-0 text-right">
+        <p className={`text-[11px] ${isOverdue ? "text-red-500 font-semibold" : "text-muted-foreground"}`}>
+          <Clock className="inline h-3 w-3 mr-0.5 -mt-px" />
+          {task.dueDate}
+        </p>
+      </div>
+      {task.applicationId && (
+        <Link href={`/dashboard/candidates?id=${task.applicationId}`} className="shrink-0">
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+          </Button>
+        </Link>
       )}
     </div>
   );
