@@ -320,3 +320,113 @@ export interface EventMetric {
   applyStarts: number;
   applyCompletes: number;
 }
+
+// ============================================================
+// Workforce / Compliance Layer
+// ============================================================
+
+export interface Qualification {
+  id: string;
+  name: string;           // e.g. "正看護師", "准看護師", "介護福祉士"
+  category: string;       // e.g. "看護", "介護", "リハビリ", "事務"
+  isRequired?: boolean;   // for staffing requirements
+}
+
+export const QUALIFICATION_MASTER: Qualification[] = [
+  { id: "q-1", name: "正看護師", category: "看護" },
+  { id: "q-2", name: "准看護師", category: "看護" },
+  { id: "q-3", name: "保健師", category: "看護" },
+  { id: "q-4", name: "介護福祉士", category: "介護" },
+  { id: "q-5", name: "理学療法士", category: "リハビリ" },
+  { id: "q-6", name: "作業療法士", category: "リハビリ" },
+  { id: "q-7", name: "言語聴覚士", category: "リハビリ" },
+  { id: "q-8", name: "医師", category: "医療" },
+  { id: "q-9", name: "薬剤師", category: "医療" },
+  { id: "q-10", name: "臨床検査技師", category: "医療" },
+  { id: "q-11", name: "医療事務", category: "事務" },
+  { id: "q-12", name: "管理者", category: "管理" },
+];
+
+export interface Facility {
+  id: string;
+  clinicId: string;       // parent organization
+  name: string;
+  type: "visiting_nursing" | "clinic" | "hospital" | "care_facility" | "other";
+  location: string;
+  staffingRequirements: StaffingRequirement[];
+  complianceRules: ComplianceRule[];
+}
+
+export const FACILITY_TYPES: Record<Facility["type"], string> = {
+  visiting_nursing: "訪問看護ステーション",
+  clinic: "クリニック",
+  hospital: "病院",
+  care_facility: "介護施設",
+  other: "その他",
+};
+
+export interface StaffingRequirement {
+  id: string;
+  facilityId: string;
+  qualificationId: string;  // required qualification
+  qualificationName: string;
+  requiredCount: number;    // required headcount (常勤換算)
+  currentCount: number;     // current headcount
+  employmentType: "full-time" | "part-time" | "either";
+  isComplianceCritical: boolean;  // true if under = losing certification/加算
+  linkedComplianceRuleId?: string;
+}
+
+export interface ComplianceRule {
+  id: string;
+  facilityId: string;
+  name: string;              // e.g. "機能強化型訪問看護管理療養費1"
+  description: string;
+  type: "facility_standard" | "additional_fee";  // 施設基準 or 加算
+  requiredStaffing: string;  // human-readable requirement
+  monthlyRevenueImpact: number;  // 月額売上影響額 (円)
+  isMet: boolean;            // currently meeting the requirement?
+  riskLevel: "safe" | "at_risk" | "critical";
+}
+
+export interface VacancyImpact {
+  facilityId: string;
+  facilityName: string;
+  qualificationName: string;
+  shortage: number;          // how many people short
+  affectedRules: {
+    ruleName: string;
+    monthlyImpact: number;
+    riskLevel: "at_risk" | "critical";
+  }[];
+  totalMonthlyImpact: number;  // sum of all affected rules
+  recommendedAction: string;
+}
+
+// Candidate source tracking
+export type CandidateSource =
+  | "自社応募"
+  | "人材紹介"
+  | "ハローワーク"
+  | "リファラル"
+  | "求人媒体"
+  | "その他";
+
+export interface CandidateQualification {
+  qualificationId: string;
+  qualificationName: string;
+  verified: boolean;
+  verifiedAt?: string;
+  expiresAt?: string;
+}
+
+export interface OnboardingTask {
+  id: string;
+  applicationId: string;
+  title: string;
+  description?: string;
+  isCompleted: boolean;
+  completedAt?: string;
+  dueDate?: string;
+  category: "document" | "qualification" | "orientation" | "other";
+}

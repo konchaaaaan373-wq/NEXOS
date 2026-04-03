@@ -3,7 +3,7 @@ import { NexosLogo } from "@/components/icons/clinic-logos";
 
 export function PublicFooter() {
   return (
-    <footer className="border-t bg-slate-900 text-white">
+    <footer className="border-t bg-gray-950 text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
@@ -11,9 +11,9 @@ export function PublicFooter() {
               <NexosLogo size={32} />
               <span className="text-lg font-bold">NEXOS</span>
             </div>
-            <p className="text-sm text-slate-400 max-w-md leading-relaxed">
-              AIが採用を再定義する。各医療機関が自院ブランドで採用できる状態を実装する、
-              次世代の医療機関向け採用プラットフォーム。
+            <p className="text-sm text-gray-400 max-w-md leading-relaxed">
+              各医療機関が自院ブランドで採用できる状態を実装する、
+              共同管理型の医療機関向け採用プラットフォーム。
             </p>
             <div className="mt-5 flex items-center gap-4">
               <a
