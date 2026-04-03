@@ -3,22 +3,23 @@ import { NexosLogo } from "@/components/icons/clinic-logos";
 
 export function PublicFooter() {
   return (
-    <footer className="border-t bg-gray-950 text-white">
+    <footer className="border-t border-slate-800 bg-slate-950 text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-5">
               <NexosLogo size={32} />
-              <span className="text-lg font-bold">NEXOS</span>
+              <span className="text-lg font-bold tracking-tight">NEXOS</span>
             </div>
-            <p className="text-sm text-gray-400 max-w-md leading-relaxed">
-              各医療機関が自院ブランドで採用できる状態を実装する、
-              共同管理型の医療機関向け採用プラットフォーム。
+            <p className="text-sm text-slate-400 max-w-md leading-relaxed">
+              すべての医療機関に、専属の採用チームを。
+              自院ブランドで採用ページ・求人・選考を運営できる、
+              次世代の採用プラットフォーム。
             </p>
             <div className="mt-5 flex items-center gap-4">
               <a
                 href="mailto:contact@necofindjob.com"
-                className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
+                className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
               >
                 contact@necofindjob.com
               </a>
@@ -106,12 +107,12 @@ export function PublicFooter() {
           </div>
         </div>
 
-        <div className="mt-14 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-14 pt-8 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">
-            &copy; 2026 NEXOS by neco. All rights reserved.
+            &copy; 2026 NEXOS by Neco. All rights reserved.
           </p>
           <p className="text-xs text-slate-500">
-            AI-Powered Recruitment OS for Healthcare
+            Next-Generation Recruitment OS for Healthcare
           </p>
         </div>
       </div>
