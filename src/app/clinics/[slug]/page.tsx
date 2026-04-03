@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import {
   MapPin,
   Users,
@@ -49,7 +50,7 @@ export default function ClinicPage({
     .sort((a, b) => a.order - b.order);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <PublicHeader />
 
       {/* Hero with clinic brand */}
@@ -57,8 +58,7 @@ export default function ClinicPage({
         <div
           className={`bg-gradient-to-r ${clinic.brand.coverImageGradient} py-20 sm:py-32`}
         >
-          {/* Pattern overlay */}
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE4YzEuNjU2IDAgMy0xLjM0NCAzLTNzLTEuMzQ0LTMtMy0zLTMgMS4zNDQtMyAzIDEuMzQ0IDMgMyAzem0tMjQgMjRjMS42NTYgMCAzLTEuMzQ0IDMtM3MtMS4zNDQtMy0zLTMtMyAxLjM0NC0zIDMgMS4zNDQgMyAzIDN6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-50" />
+          <div className="absolute inset-0 gradient-mesh-dark opacity-30" />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -66,14 +66,14 @@ export default function ClinicPage({
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-              <motion.span
+              <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", delay: 0.2 }}
-                className="text-6xl sm:text-7xl mb-6 block"
+                className="mb-6 flex justify-center"
               >
-                {clinic.brand.logoEmoji}
-              </motion.span>
+                <ClinicLogo clinicId={clinic.id} size={72} color="white" />
+              </motion.div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
                 {clinic.name}
               </h1>

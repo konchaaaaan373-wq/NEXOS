@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
 import {
   MapPin,
   Building2,
@@ -68,10 +69,10 @@ export default function JobDetailPage({
               <div className="flex items-start gap-4">
                 <Link href={`/clinics/${clinic.slug}`}>
                   <div
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-3xl hover:scale-105 transition-transform"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl hover:scale-105 transition-transform"
                     style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
-                    {clinic.brand.logoEmoji}
+                    <ClinicLogo clinicId={clinic.id} size={32} color={clinic.brand.brandColor} />
                   </div>
                 </Link>
                 <div>
@@ -210,10 +211,10 @@ export default function JobDetailPage({
                 <Link href={`/clinics/${clinic.slug}`} className="group">
                   <div className="flex items-center gap-3">
                     <div
-                      className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
+                      className="flex h-12 w-12 items-center justify-center rounded-xl"
                       style={{ backgroundColor: clinic.brand.brandColorLight }}
                     >
-                      {clinic.brand.logoEmoji}
+                      <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />
                     </div>
                     <div>
                       <h3 className="font-semibold group-hover:text-accent transition-colors">

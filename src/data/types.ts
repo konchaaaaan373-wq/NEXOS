@@ -23,6 +23,16 @@ export const PIPELINE_STAGES: {
   { id: "rejected", label: "不採用", color: "#ef4444" },
 ];
 
+// Stage SLA definitions (max days before alert)
+export const STAGE_SLA: Record<PipelineStage, number> = {
+  applied: 2,      // 応募後2日以内に初回対応
+  screening: 5,    // 書類選考5日以内
+  interview: 7,    // 面接設定7日以内
+  offer: 3,        // 内定後3日以内にフォロー
+  hired: 0,        // 完了
+  rejected: 0,     // 完了
+};
+
 // ============================================================
 // Roles & Users
 // ============================================================
@@ -39,7 +49,7 @@ export interface AdminUser {
   email: string;
   role: UserRole;
   clinicIds: string[];   // clinics this user can access (empty = all for neco_admin)
-  avatarEmoji: string;
+  avatarUrl?: string;
   isActive: boolean;
 }
 
@@ -68,11 +78,13 @@ export function canManageCandidates(user: AdminUser, clinicId: string): boolean 
 // ============================================================
 
 export interface ClinicBrandConfig {
-  logoEmoji: string;
+  logoIcon: string;
   coverImageGradient: string;
   brandColor: string;
   brandColorLight: string;
   heroTagline?: string;
+  logoUrl?: string;
+  coverImageUrl?: string;
 }
 
 export type PageSectionType =
@@ -90,7 +102,7 @@ export interface ClinicPageSection {
   content: string;
   order: number;
   isVisible: boolean;
-  lastEditedBy?: string;   // AdminUser.id
+  lastEditedBy?: string;
   lastEditedAt?: string;
 }
 
@@ -138,6 +150,63 @@ export interface JobPosting {
 }
 
 // ============================================================
+// Publication Readiness Checklist
+// ============================================================
+
+export interface ChecklistItem {
+  id: string;
+  label: string;
+  description: string;
+  check: (job: JobPosting) => boolean;
+  severity: "required" | "recommended";
+}
+
+export const JOB_PUBLISH_CHECKLIST: ChecklistItem[] = [
+  {
+    id: "title",
+    label: "求人タイトルが設定されている",
+    description: "具体的で検索されやすいタイトルを設定",
+    check: (j) => j.title.length >= 5,
+    severity: "required",
+  },
+  {
+    id: "description",
+    label: "求人詳細が十分に記載されている",
+    description: "200文字以上の具体的な説明",
+    check: (j) => j.description.length >= 200,
+    severity: "required",
+  },
+  {
+    id: "salary",
+    label: "給与レンジが設定されている",
+    description: "最低・最高給与が正しく設定",
+    check: (j) => j.salaryMin > 0 && j.salaryMax > j.salaryMin,
+    severity: "required",
+  },
+  {
+    id: "requirements",
+    label: "必須要件が記載されている",
+    description: "応募に必要な資格・経験を明記",
+    check: (j) => j.requirements.length >= 1 && j.requirements[0].length > 0,
+    severity: "required",
+  },
+  {
+    id: "benefits",
+    label: "福利厚生・待遇が記載されている",
+    description: "応募意欲を高める待遇情報",
+    check: (j) => j.benefits.length >= 1,
+    severity: "recommended",
+  },
+  {
+    id: "nice-to-have",
+    label: "歓迎条件が記載されている",
+    description: "間口を広げる歓迎条件の記載",
+    check: (j) => j.niceToHave.length >= 1,
+    severity: "recommended",
+  },
+];
+
+// ============================================================
 // Application & Candidates
 // ============================================================
 
@@ -154,6 +223,8 @@ export interface Application {
   resumeFileName?: string;
   stage: PipelineStage;
   notes: CandidateNote[];
+  tasks: Task[];
+  stageHistory: StageChange[];
   appliedAt: string;
   updatedAt: string;
 }
@@ -161,11 +232,83 @@ export interface Application {
 export interface CandidateNote {
   id: string;
   content: string;
-  authorId: string;       // AdminUser.id
-  authorName: string;     // denormalized for display
-  authorRole: UserRole;   // denormalized for display
+  authorId: string;
+  authorName: string;
+  authorRole: UserRole;
   createdAt: string;
 }
+
+export interface StageChange {
+  id: string;
+  from: PipelineStage;
+  to: PipelineStage;
+  changedBy: string;       // AdminUser.id
+  changedByName: string;
+  changedAt: string;
+  note?: string;
+}
+
+// ============================================================
+// Harness: Tasks & Follow-ups
+// ============================================================
+
+export type TaskStatus = "pending" | "in_progress" | "completed" | "overdue";
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
+
+export interface Task {
+  id: string;
+  clinicId: string;
+  applicationId?: string;  // optional: linked to specific candidate
+  jobId?: string;          // optional: linked to specific job
+  title: string;
+  description?: string;
+  assignedTo: string;      // AdminUser.id
+  assignedToName: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  dueDate: string;
+  completedAt?: string;
+  createdBy: string;
+  createdAt: string;
+}
+
+// ============================================================
+// Harness: Alerts
+// ============================================================
+
+export type AlertType =
+  | "stagnation"          // candidate stuck in stage too long
+  | "unresponded"         // application not responded to
+  | "interview_unset"     // interview stage but no interview scheduled
+  | "sla_breach"          // SLA exceeded
+  | "kpi_drop"            // KPI fell below threshold
+  | "job_incomplete";     // job missing required fields
+
+export type AlertSeverity = "info" | "warning" | "critical";
+
+export interface Alert {
+  id: string;
+  clinicId: string;
+  type: AlertType;
+  severity: AlertSeverity;
+  title: string;
+  message: string;
+  relatedEntityId?: string;    // application ID, job ID, etc.
+  relatedEntityType?: "application" | "job" | "clinic";
+  isResolved: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  createdAt: string;
+}
+
+export const ALERT_TYPE_LABELS: Record<AlertType, string> = {
+  stagnation: "ステージ滞留",
+  unresponded: "未対応応募",
+  interview_unset: "面接未設定",
+  sla_breach: "SLA超過",
+  kpi_drop: "KPI低下",
+  job_incomplete: "求人不備",
+};
 
 // ============================================================
 // Analytics
@@ -176,4 +319,114 @@ export interface EventMetric {
   views: number;
   applyStarts: number;
   applyCompletes: number;
+}
+
+// ============================================================
+// Workforce / Compliance Layer
+// ============================================================
+
+export interface Qualification {
+  id: string;
+  name: string;           // e.g. "正看護師", "准看護師", "介護福祉士"
+  category: string;       // e.g. "看護", "介護", "リハビリ", "事務"
+  isRequired?: boolean;   // for staffing requirements
+}
+
+export const QUALIFICATION_MASTER: Qualification[] = [
+  { id: "q-1", name: "正看護師", category: "看護" },
+  { id: "q-2", name: "准看護師", category: "看護" },
+  { id: "q-3", name: "保健師", category: "看護" },
+  { id: "q-4", name: "介護福祉士", category: "介護" },
+  { id: "q-5", name: "理学療法士", category: "リハビリ" },
+  { id: "q-6", name: "作業療法士", category: "リハビリ" },
+  { id: "q-7", name: "言語聴覚士", category: "リハビリ" },
+  { id: "q-8", name: "医師", category: "医療" },
+  { id: "q-9", name: "薬剤師", category: "医療" },
+  { id: "q-10", name: "臨床検査技師", category: "医療" },
+  { id: "q-11", name: "医療事務", category: "事務" },
+  { id: "q-12", name: "管理者", category: "管理" },
+];
+
+export interface Facility {
+  id: string;
+  clinicId: string;       // parent organization
+  name: string;
+  type: "visiting_nursing" | "clinic" | "hospital" | "care_facility" | "other";
+  location: string;
+  staffingRequirements: StaffingRequirement[];
+  complianceRules: ComplianceRule[];
+}
+
+export const FACILITY_TYPES: Record<Facility["type"], string> = {
+  visiting_nursing: "訪問看護ステーション",
+  clinic: "クリニック",
+  hospital: "病院",
+  care_facility: "介護施設",
+  other: "その他",
+};
+
+export interface StaffingRequirement {
+  id: string;
+  facilityId: string;
+  qualificationId: string;  // required qualification
+  qualificationName: string;
+  requiredCount: number;    // required headcount (常勤換算)
+  currentCount: number;     // current headcount
+  employmentType: "full-time" | "part-time" | "either";
+  isComplianceCritical: boolean;  // true if under = losing certification/加算
+  linkedComplianceRuleId?: string;
+}
+
+export interface ComplianceRule {
+  id: string;
+  facilityId: string;
+  name: string;              // e.g. "機能強化型訪問看護管理療養費1"
+  description: string;
+  type: "facility_standard" | "additional_fee";  // 施設基準 or 加算
+  requiredStaffing: string;  // human-readable requirement
+  monthlyRevenueImpact: number;  // 月額売上影響額 (円)
+  isMet: boolean;            // currently meeting the requirement?
+  riskLevel: "safe" | "at_risk" | "critical";
+}
+
+export interface VacancyImpact {
+  facilityId: string;
+  facilityName: string;
+  qualificationName: string;
+  shortage: number;          // how many people short
+  affectedRules: {
+    ruleName: string;
+    monthlyImpact: number;
+    riskLevel: "at_risk" | "critical";
+  }[];
+  totalMonthlyImpact: number;  // sum of all affected rules
+  recommendedAction: string;
+}
+
+// Candidate source tracking
+export type CandidateSource =
+  | "自社応募"
+  | "人材紹介"
+  | "ハローワーク"
+  | "リファラル"
+  | "求人媒体"
+  | "その他";
+
+export interface CandidateQualification {
+  qualificationId: string;
+  qualificationName: string;
+  verified: boolean;
+  verifiedAt?: string;
+  expiresAt?: string;
+}
+
+export interface OnboardingTask {
+  id: string;
+  applicationId: string;
+  title: string;
+  description?: string;
+  isCompleted: boolean;
+  completedAt?: string;
+  dueDate?: string;
+  category: "document" | "qualification" | "orientation" | "other";
 }

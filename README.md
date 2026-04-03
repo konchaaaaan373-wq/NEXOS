@@ -113,11 +113,11 @@ http://localhost:3000 でアクセスできます。
 AdminUser
 ├── id, name, email, role (neco_admin | neco_editor | clinic_admin | clinic_editor)
 ├── clinicIds[] (アクセス可能なクリニック)
-└── avatarEmoji
+└── avatarUrl (optional)
 
 Clinic
 ├── id, name, slug, description, mission
-├── brand: { logoEmoji, coverImageGradient, brandColor, brandColorLight, heroTagline }
+├── brand: { logoIcon, coverImageGradient, brandColor, brandColorLight, heroTagline }
 ├── location, employeeCount, foundedYear
 ├── specialties[], benefits[], culture[]
 ├── pageSections[]: { type, title, content, order, isVisible, lastEditedBy, lastEditedAt }

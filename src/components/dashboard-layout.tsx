@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/clinic-context";
 import { ROLE_LABELS } from "@/data/types";
+import { ClinicLogo, NexosLogo } from "@/components/icons/clinic-logos";
+import { UserAvatar } from "@/components/icons/feature-icons";
 import {
   LayoutDashboard,
   Briefcase,
@@ -16,9 +18,15 @@ import {
   X,
   ChevronDown,
   Check,
+  Building2,
   ExternalLink,
   Shield,
   UserCircle,
+  Bot,
+  Sparkles,
+  LogOut,
+  Settings,
+  AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -34,10 +42,10 @@ function ClinicSwitcher() {
         className="w-full flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors text-left"
       >
         <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-lg"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
           style={{ backgroundColor: currentClinic.brand.brandColorLight }}
         >
-          {currentClinic.brand.logoEmoji}
+          <ClinicLogo clinicId={currentClinic.id} size={22} color={currentClinic.brand.brandColor} />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium truncate">{currentClinic.name}</p>
@@ -79,10 +87,10 @@ function ClinicSwitcher() {
                   )}
                 >
                   <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
                     style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
-                    {clinic.brand.logoEmoji}
+                    <ClinicLogo clinicId={clinic.id} size={20} color={clinic.brand.brandColor} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">
@@ -115,7 +123,7 @@ function UserSwitcher() {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted/50 transition-colors text-left"
       >
-        <span className="text-lg">{currentUser.avatarEmoji}</span>
+        <UserAvatar name={currentUser.name} role={currentUser.role} size={28} />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium truncate">{currentUser.name}</p>
           <p className="text-xs text-muted-foreground">
@@ -157,7 +165,7 @@ function UserSwitcher() {
                       : "hover:bg-muted/50"
                   )}
                 >
-                  <span className="text-base">{user.avatarEmoji}</span>
+                  <UserAvatar name={user.name} role={user.role} size={24} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{user.name}</p>
                     <p className="text-xs text-muted-foreground">
@@ -179,15 +187,19 @@ function UserSwitcher() {
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { currentClinic, isNeco, currentUser } = useAuth();
+  const { currentClinic, isNeco, currentUser, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
     { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
+    { href: "/dashboard/facilities", label: "拠点・人員配置", icon: Building2 },
+    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle },
     { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
     { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
     { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
-    { href: "/dashboard/page-editor", label: "採用ページ編集", icon: FileEdit },
+    { href: "/dashboard/ai-agent", label: "AI補助", icon: Bot },
+    { href: "/dashboard/page-editor", label: "採用ページ", icon: FileEdit },
+    ...(isNeco ? [{ href: "/dashboard/admin", label: "Neco管理", icon: Shield }] : []),
   ];
 
   const sidebarContent = (
@@ -209,7 +221,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <ClinicSwitcher />
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {navItems.map((item) => {
           const isActive = item.exact
             ? pathname === item.href
@@ -223,7 +235,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
                 isActive
                   ? "bg-accent/10 text-accent"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
+                  : "text-muted-foreground hover:bg-gray-100 hover:text-primary"
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -254,6 +266,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <ChevronLeft className="h-4 w-4" />
             公開サイトへ戻る
           </Link>
+          <button
+            onClick={() => {
+              logout();
+              window.location.href = "/login";
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50 cursor-pointer"
+          >
+            <LogOut className="h-4 w-4" />
+            ログアウト
+          </button>
         </div>
       </div>
     </>
@@ -265,9 +287,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <aside className="hidden lg:flex lg:w-64 lg:flex-col border-r bg-white">
         <div className="flex h-16 items-center gap-2 px-6 border-b">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white font-bold text-sm">
-              N
-            </div>
+            <NexosLogo size={32} />
             <span className="font-bold text-lg">NEXOS</span>
           </Link>
         </div>
@@ -324,9 +344,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-white font-bold text-xs">
-                N
-              </div>
+              <NexosLogo size={28} />
               <span className="font-semibold">NEXOS</span>
             </div>
           </div>

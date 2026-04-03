@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { clinics, jobPostings } from "@/data/seed";
-import { MapPin, Search, Briefcase, Building2, DollarSign } from "lucide-react";
+import { ClinicLogo } from "@/components/icons/clinic-logos";
+import { MapPin, Search, Briefcase, Building2, DollarSign, Sparkles } from "lucide-react";
 
 export default function JobsPage() {
   const searchParams = useSearchParams();
@@ -21,7 +22,6 @@ export default function JobsPage() {
   const [selectedClinic, setSelectedClinic] = useState("");
   const [selectedType, setSelectedType] = useState("");
 
-  // Parse URL params (e.g. /jobs?category=医師)
   useEffect(() => {
     const cat = searchParams.get("category");
     if (cat) setSelectedCategory(cat);
@@ -51,22 +51,32 @@ export default function JobsPage() {
   }, [searchQuery, selectedCategory, selectedClinic, selectedType, activeJobs]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <PublicHeader />
 
       {/* Hero */}
-      <section className="bg-gradient-to-b from-muted/50 to-white py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 py-16 sm:py-20">
+        <div className="absolute inset-0 gradient-mesh-dark" />
+        <div className="absolute top-10 right-10 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-10 w-60 h-60 bg-fuchsia-500/10 rounded-full blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            className="text-center"
           >
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              求人を探す
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-sm text-indigo-300 mb-6">
+              <Sparkles className="h-3.5 w-3.5" />
+              AI搭載の医療採用プラットフォーム
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
+              あなたに合った{" "}
+              <span className="text-gradient">医療の仕事</span>
+              を見つける
             </h1>
-            <p className="mt-3 text-lg text-muted-foreground">
-              {activeJobs.length}件の求人から、あなたに合った職場を見つけてください
+            <p className="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">
+              {activeJobs.length}件の求人から、あなたの経験とスキルにマッチする職場を見つけてください
             </p>
           </motion.div>
 
@@ -75,54 +85,59 @@ export default function JobsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"
+            className="mt-10 glass rounded-2xl p-4 sm:p-6"
           >
-            <div className="relative lg:col-span-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="キーワードで検索..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="relative lg:col-span-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="キーワードで検索..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 bg-white"
+                />
+              </div>
+              <Select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-white"
+              >
+                <option value="">すべての職種</option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                value={selectedClinic}
+                onChange={(e) => setSelectedClinic(e.target.value)}
+                className="bg-white"
+              >
+                <option value="">すべてのクリニック</option>
+                {clinics.map((clinic) => (
+                  <option key={clinic.id} value={clinic.id}>
+                    {clinic.name}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="bg-white"
+              >
+                <option value="">すべての雇用形態</option>
+                <option value="full-time">常勤</option>
+                <option value="part-time">非常勤</option>
+                <option value="contract">契約</option>
+              </Select>
             </div>
-            <Select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">すべての職種</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </Select>
-            <Select
-              value={selectedClinic}
-              onChange={(e) => setSelectedClinic(e.target.value)}
-            >
-              <option value="">すべてのクリニック</option>
-              {clinics.map((clinic) => (
-                <option key={clinic.id} value={clinic.id}>
-                  {clinic.name}
-                </option>
-              ))}
-            </Select>
-            <Select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-            >
-              <option value="">すべての雇用形態</option>
-              <option value="full-time">常勤</option>
-              <option value="part-time">非常勤</option>
-              <option value="contract">契約</option>
-            </Select>
           </motion.div>
         </div>
       </section>
 
       {/* Results */}
-      <section className="py-8 sm:py-12">
+      <section className="py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
@@ -172,16 +187,16 @@ export default function JobsPage() {
                       transition={{ duration: 0.3, delay: i * 0.05 }}
                     >
                       <Link href={`/jobs/${job.id}`}>
-                        <Card className="group hover:shadow-lg hover:border-accent/30 transition-all duration-300">
+                        <Card className="group hover:shadow-lg hover:border-accent/30 transition-all duration-300 border-0 shadow-sm">
                           <CardContent className="p-6">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <div
-                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl"
+                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
                                 style={{
                                   backgroundColor: clinic.brand.brandColorLight,
                                 }}
                               >
-                                {clinic.brand.logoEmoji}
+                                <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -189,10 +204,10 @@ export default function JobsPage() {
                                     {job.title}
                                   </h3>
                                   <div className="flex gap-2">
-                                    <Badge variant="secondary">
+                                    <Badge variant="secondary" className="rounded-lg">
                                       {job.category}
                                     </Badge>
-                                    <Badge variant="accent">
+                                    <Badge variant="accent" className="rounded-lg">
                                       {job.type === "full-time"
                                         ? "常勤"
                                         : job.type === "part-time"
