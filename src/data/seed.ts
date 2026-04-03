@@ -4,6 +4,8 @@ import {
   Application,
   EventMetric,
   AdminUser,
+  Alert,
+  Task,
 } from "./types";
 
 // ============================================================
@@ -294,6 +296,14 @@ export const applications: Application[] = [
       { id: "note-2", content: "一次面接完了。コミュニケーション力が高く、チームにフィットしそう。二次面接を設定。", authorId: "user-c1-editor", authorName: "鈴木 院長", authorRole: "clinic_editor", createdAt: "2026-03-15T14:00:00Z" },
       { id: "note-3", content: "求人原稿を最適化しました。面接の進捗もフォロー中です。", authorId: "user-neco-2", authorName: "田村 結衣", authorRole: "neco_editor", createdAt: "2026-03-16T09:00:00Z" },
     ],
+    tasks: [
+      { id: "task-1", clinicId: "clinic-1", applicationId: "app-1", title: "二次面接の日程調整", assignedTo: "user-c1-admin", assignedToName: "佐藤 健太", status: "pending", priority: "high", dueDate: "2026-03-25", createdBy: "user-c1-editor", createdAt: "2026-03-16T09:00:00Z" },
+      { id: "task-2", clinicId: "clinic-1", applicationId: "app-1", title: "処遇条件の整理", description: "年収・勤務条件の最終提示資料を準備", assignedTo: "user-c1-admin", assignedToName: "佐藤 健太", status: "pending", priority: "medium", dueDate: "2026-03-28", createdBy: "user-neco-2", createdAt: "2026-03-16T10:00:00Z" },
+    ],
+    stageHistory: [
+      { id: "sh-1", from: "applied", to: "screening", changedBy: "user-c1-admin", changedByName: "佐藤 健太", changedAt: "2026-03-07T10:00:00Z" },
+      { id: "sh-2", from: "screening", to: "interview", changedBy: "user-c1-editor", changedByName: "鈴木 院長", changedAt: "2026-03-10T10:00:00Z", note: "書類選考通過" },
+    ],
     appliedAt: "2026-03-05T09:00:00Z", updatedAt: "2026-03-16T09:00:00Z",
   },
   {
@@ -305,6 +315,12 @@ export const applications: Application[] = [
     notes: [
       { id: "note-4", content: "書類受領。大学病院での経験があり、基礎力は高そう。", authorId: "user-c1-admin", authorName: "佐藤 健太", authorRole: "clinic_admin", createdAt: "2026-03-12T11:00:00Z" },
     ],
+    tasks: [
+      { id: "task-3", clinicId: "clinic-1", applicationId: "app-2", title: "書類選考の判定", assignedTo: "user-c1-editor", assignedToName: "鈴木 院長", status: "in_progress", priority: "high", dueDate: "2026-03-18", createdBy: "user-c1-admin", createdAt: "2026-03-12T11:00:00Z" },
+    ],
+    stageHistory: [
+      { id: "sh-3", from: "applied", to: "screening", changedBy: "user-c1-admin", changedByName: "佐藤 健太", changedAt: "2026-03-12T11:00:00Z" },
+    ],
     appliedAt: "2026-03-11T15:30:00Z", updatedAt: "2026-03-12T11:00:00Z",
   },
   {
@@ -312,7 +328,7 @@ export const applications: Application[] = [
     applicantName: "山田 花子", applicantEmail: "yamada.hanako@example.com", applicantPhone: "070-3456-7890",
     currentPosition: "美容クリニック 看護師", yearsOfExperience: 4,
     motivation: "美容クリニックでの経験を活かしつつ、一般内科の知識も深めたいと考えています。渋谷というアクセスの良さも魅力です。",
-    stage: "applied", notes: [],
+    stage: "applied", notes: [], tasks: [], stageHistory: [],
     appliedAt: "2026-03-20T08:00:00Z", updatedAt: "2026-03-20T08:00:00Z",
   },
   {
@@ -323,6 +339,15 @@ export const applications: Application[] = [
     stage: "offer",
     notes: [
       { id: "note-5", content: "最終面接完了。在宅医療への情熱が非常に高く、即戦力として期待できる。内定を出したい。", authorId: "user-c2-admin", authorName: "木村 直子", authorRole: "clinic_admin", createdAt: "2026-03-18T16:00:00Z" },
+    ],
+    tasks: [
+      { id: "task-4", clinicId: "clinic-2", applicationId: "app-4", title: "内定通知書の作成・送付", assignedTo: "user-c2-admin", assignedToName: "木村 直子", status: "pending", priority: "urgent", dueDate: "2026-03-22", createdBy: "user-c2-admin", createdAt: "2026-03-18T16:00:00Z" },
+      { id: "task-5", clinicId: "clinic-2", applicationId: "app-4", title: "入職条件の最終調整", description: "勤務開始日・オンコール体制の確認", assignedTo: "user-neco-2", assignedToName: "田村 結衣", status: "pending", priority: "high", dueDate: "2026-03-25", createdBy: "user-c2-admin", createdAt: "2026-03-18T16:30:00Z" },
+    ],
+    stageHistory: [
+      { id: "sh-4", from: "applied", to: "screening", changedBy: "user-c2-admin", changedByName: "木村 直子", changedAt: "2026-02-28T10:00:00Z" },
+      { id: "sh-5", from: "screening", to: "interview", changedBy: "user-c2-admin", changedByName: "木村 直子", changedAt: "2026-03-05T14:00:00Z" },
+      { id: "sh-6", from: "interview", to: "offer", changedBy: "user-c2-admin", changedByName: "木村 直子", changedAt: "2026-03-18T16:00:00Z", note: "最終面接通過、内定" },
     ],
     appliedAt: "2026-02-25T10:00:00Z", updatedAt: "2026-03-18T16:00:00Z",
   },
@@ -335,6 +360,13 @@ export const applications: Application[] = [
     notes: [
       { id: "note-6", content: "訪問看護の経験が豊富。在宅ターミナルケアへの関心も高い。面接を進めたい。", authorId: "user-c2-admin", authorName: "木村 直子", authorRole: "clinic_admin", createdAt: "2026-03-10T09:30:00Z" },
     ],
+    tasks: [
+      { id: "task-6", clinicId: "clinic-2", applicationId: "app-5", title: "面接日程の設定", assignedTo: "user-c2-admin", assignedToName: "木村 直子", status: "overdue", priority: "high", dueDate: "2026-03-15", createdBy: "user-c2-admin", createdAt: "2026-03-10T09:30:00Z" },
+    ],
+    stageHistory: [
+      { id: "sh-7", from: "applied", to: "screening", changedBy: "user-c2-admin", changedByName: "木村 直子", changedAt: "2026-03-09T10:00:00Z" },
+      { id: "sh-8", from: "screening", to: "interview", changedBy: "user-c2-admin", changedByName: "木村 直子", changedAt: "2026-03-10T09:30:00Z" },
+    ],
     appliedAt: "2026-03-08T14:00:00Z", updatedAt: "2026-03-10T09:30:00Z",
   },
   {
@@ -346,6 +378,12 @@ export const applications: Application[] = [
     notes: [
       { id: "note-7", content: "脳神経内科専門医。学術実績も豊富で非常に有望。", authorId: "user-c3-admin", authorName: "渡辺 慎一", authorRole: "clinic_admin", createdAt: "2026-03-14T10:00:00Z" },
     ],
+    tasks: [
+      { id: "task-7", clinicId: "clinic-3", applicationId: "app-6", title: "経歴書の詳細確認", assignedTo: "user-c3-admin", assignedToName: "渡辺 慎一", status: "in_progress", priority: "high", dueDate: "2026-03-20", createdBy: "user-c3-admin", createdAt: "2026-03-14T10:00:00Z" },
+    ],
+    stageHistory: [
+      { id: "sh-9", from: "applied", to: "screening", changedBy: "user-c3-admin", changedByName: "渡辺 慎一", changedAt: "2026-03-14T10:00:00Z" },
+    ],
     appliedAt: "2026-03-12T11:00:00Z", updatedAt: "2026-03-14T10:00:00Z",
   },
   {
@@ -353,8 +391,133 @@ export const applications: Application[] = [
     applicantName: "加藤 裕子", applicantEmail: "kato.yuko@example.com", applicantPhone: "070-7890-1234",
     currentPosition: "総合病院 臨床検査技師", yearsOfExperience: 4,
     motivation: "MRI撮影を中心に4年間の経験があります。脳神経領域に特化した環境でスキルを磨き、専門性を高めたいです。",
-    stage: "applied", notes: [],
+    stage: "applied", notes: [], tasks: [], stageHistory: [],
     appliedAt: "2026-03-22T09:00:00Z", updatedAt: "2026-03-22T09:00:00Z",
+  },
+];
+
+// ============================================================
+// Alerts — Harness-generated alerts
+// ============================================================
+
+export const alerts: Alert[] = [
+  {
+    id: "alert-1",
+    clinicId: "clinic-1",
+    type: "unresponded",
+    severity: "critical",
+    title: "未対応応募あり",
+    message: "山田 花子さんの応募が48時間以上未対応です。SLA（2日以内）を超過しています。",
+    relatedEntityId: "app-3",
+    relatedEntityType: "application",
+    isResolved: false,
+    createdAt: "2026-03-22T08:00:00Z",
+  },
+  {
+    id: "alert-2",
+    clinicId: "clinic-2",
+    type: "stagnation",
+    severity: "warning",
+    title: "面接ステージ滞留",
+    message: "中村 さくらさんが面接ステージに22日間滞留しています。面接日程が未設定の可能性があります。",
+    relatedEntityId: "app-5",
+    relatedEntityType: "application",
+    isResolved: false,
+    createdAt: "2026-04-01T09:00:00Z",
+  },
+  {
+    id: "alert-3",
+    clinicId: "clinic-2",
+    type: "interview_unset",
+    severity: "warning",
+    title: "面接未設定",
+    message: "中村 さくらさんの面接が設定されていません。面接ステージに移行してから22日経過しています。",
+    relatedEntityId: "app-5",
+    relatedEntityType: "application",
+    isResolved: false,
+    createdAt: "2026-04-01T09:00:00Z",
+  },
+  {
+    id: "alert-4",
+    clinicId: "clinic-3",
+    type: "unresponded",
+    severity: "warning",
+    title: "新規応募の初回対応",
+    message: "加藤 裕子さんの応募への初回対応が必要です（応募から11日経過）。",
+    relatedEntityId: "app-7",
+    relatedEntityType: "application",
+    isResolved: false,
+    createdAt: "2026-04-02T09:00:00Z",
+  },
+  {
+    id: "alert-5",
+    clinicId: "clinic-1",
+    type: "sla_breach",
+    severity: "critical",
+    title: "書類選考SLA超過",
+    message: "佐々木 愛さんの書類選考が20日間を超えています（SLA: 5日）。速やかな判定が必要です。",
+    relatedEntityId: "app-2",
+    relatedEntityType: "application",
+    isResolved: false,
+    createdAt: "2026-04-01T09:00:00Z",
+  },
+  {
+    id: "alert-6",
+    clinicId: "clinic-1",
+    type: "kpi_drop",
+    severity: "info",
+    title: "応募完了率の低下",
+    message: "メディカルフロンティア渋谷の応募完了率が先週比で15%低下しています。求人ページの改善を検討してください。",
+    isResolved: false,
+    createdAt: "2026-03-30T09:00:00Z",
+  },
+];
+
+// ============================================================
+// Standalone tasks (not linked to specific candidate)
+// ============================================================
+
+export const standaloneTasks: Task[] = [
+  {
+    id: "stask-1",
+    clinicId: "clinic-1",
+    jobId: "job-3",
+    title: "医療事務求人の給与レンジ見直し",
+    description: "市場相場と比較して競争力があるか確認",
+    assignedTo: "user-neco-2",
+    assignedToName: "田村 結衣",
+    status: "pending",
+    priority: "medium",
+    dueDate: "2026-04-05",
+    createdBy: "user-neco-1",
+    createdAt: "2026-03-28T10:00:00Z",
+  },
+  {
+    id: "stask-2",
+    clinicId: "clinic-2",
+    title: "採用ページのSEO改善",
+    description: "訪問看護師の求人ページのメタ情報を最適化",
+    assignedTo: "user-neco-2",
+    assignedToName: "田村 結衣",
+    status: "in_progress",
+    priority: "low",
+    dueDate: "2026-04-10",
+    createdBy: "user-neco-1",
+    createdAt: "2026-03-25T14:00:00Z",
+  },
+  {
+    id: "stask-3",
+    clinicId: "clinic-3",
+    title: "脳神経内科専門医の求人原稿改善",
+    description: "AI最適化の提案を反映して応募率向上を図る",
+    assignedTo: "user-c3-admin",
+    assignedToName: "渡辺 慎一",
+    status: "completed",
+    priority: "high",
+    dueDate: "2026-03-20",
+    completedAt: "2026-03-19T16:00:00Z",
+    createdBy: "user-neco-2",
+    createdAt: "2026-03-15T10:00:00Z",
   },
 ];
 
