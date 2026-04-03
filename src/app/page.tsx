@@ -14,27 +14,24 @@ import {
   ArrowRight,
   Building2,
   Users,
-  Briefcase,
   Shield,
-  Sparkles,
-  TrendingUp,
   MapPin,
-  Bot,
   Zap,
-  MessageSquare,
-  BarChart3,
+  Layers,
+  Target,
+  Network,
 } from "lucide-react";
 
 const fadeUp = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 24 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 },
+  transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
 };
 
 const stagger = {
   animate: {
     transition: {
-      staggerChildren: 0.08,
+      staggerChildren: 0.1,
     },
   },
 };
@@ -47,34 +44,40 @@ export default function HomePage() {
     <div className="min-h-screen">
       <PublicHeader />
 
-      {/* Hero — clean, product-focused */}
-      <section className="relative overflow-hidden bg-gray-950 pt-16 pb-24 sm:pt-24 sm:pb-32">
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-slate-950 pt-20 pb-28 sm:pt-28 sm:pb-36">
         <div className="absolute inset-0 gradient-mesh-dark" />
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-600/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-600/5 rounded-full blur-3xl" />
+        <div className="absolute inset-0 grid-pattern" />
+        <div className="absolute top-[-200px] right-[-100px] w-[700px] h-[700px] bg-cyan-500/8 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-200px] left-[-100px] w-[500px] h-[500px] bg-blue-500/6 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-violet-500/5 rounded-full blur-[100px]" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto"
+            transition={{ duration: 0.7 }}
+            className="text-center max-w-4xl mx-auto"
           >
-            <p className="text-sm font-medium text-indigo-400 tracking-wide mb-4">
-              医療機関のための共同管理型・採用OS
-            </p>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.15] tracking-tight">
-              自院ブランドの採用を、
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6">
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse-soft" />
+              <span className="text-xs font-medium text-cyan-300 tracking-wide">
+                Next-Generation Recruitment OS
+              </span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.12] tracking-tight">
+              すべての医療機関に、
               <br />
-              最後まで壊さず進める。
+              <span className="text-gradient">専属の採用チームを。</span>
             </h1>
-            <p className="mt-6 text-base sm:text-lg text-gray-400 leading-relaxed max-w-2xl mx-auto">
-              NEXOSは、各医療機関が自院名義で採用ページ・求人・選考を管理し、必要に応じてNecoが共同運用に入れる採用プラットフォーム。採用ハーネスが、長い採用活動を壊れず完遂させます。
+            <p className="mt-6 text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
+              NEXOSは、各医療機関が自院名義で採用ページ・求人・選考を運営できる採用OS。
+              まるで自社の人材紹介部門を持ったかのように、採用活動のすべてを自院で完結できます。
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/login">
-                <Button size="lg" variant="accent" className="w-full sm:w-auto">
-                  無料で始める
+                <Button size="lg" variant="accent" className="w-full sm:w-auto shadow-lg shadow-cyan-500/20">
+                  自院の採用を始める
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
@@ -82,7 +85,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
+                  className="w-full sm:w-auto border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white hover:border-slate-600"
                 >
                   求人を探す
                 </Button>
@@ -90,69 +93,73 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Product preview — mock dashboard */}
+          {/* プロダクトプレビュー */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="mt-16 mx-auto max-w-5xl"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mt-20 mx-auto max-w-5xl"
           >
-            <div className="rounded-2xl border border-gray-800 bg-gray-900/80 shadow-2xl shadow-black/20 overflow-hidden">
-              {/* Browser bar */}
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-800">
+            <div className="rounded-2xl border border-slate-800/80 bg-slate-900/70 shadow-2xl shadow-black/30 overflow-hidden glow-cyan">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800/60">
                 <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-gray-700" />
-                  <div className="w-3 h-3 rounded-full bg-gray-700" />
-                  <div className="w-3 h-3 rounded-full bg-gray-700" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-slate-700" />
                 </div>
                 <div className="flex-1 mx-4">
-                  <div className="bg-gray-800 rounded-md py-1 px-3 text-xs text-gray-500 text-center max-w-xs mx-auto">
-                    nexos.necofindjob.com/dashboard
+                  <div className="bg-slate-800/80 rounded-lg py-1 px-3 text-xs text-slate-500 text-center max-w-xs mx-auto">
+                    yourclnic.nexos.jp/dashboard
                   </div>
                 </div>
               </div>
-              {/* Mock dashboard content */}
               <div className="p-6 grid grid-cols-4 gap-4">
                 {[
-                  { label: "公開中求人", value: `${activeJobs.length}件`, color: "text-blue-400" },
-                  { label: "候補者", value: "7名", color: "text-violet-400" },
-                  { label: "SLA遵守率", value: "71%", color: "text-amber-400" },
-                  { label: "未対応アラート", value: "3件", color: "text-red-400" },
+                  { label: "公開中求人", value: `${activeJobs.length}件`, color: "text-cyan-400" },
+                  { label: "応募者数", value: "7名", color: "text-blue-400" },
+                  { label: "面接設定率", value: "71%", color: "text-teal-400" },
+                  { label: "採用進捗", value: "順調", color: "text-emerald-400" },
                 ].map((s, i) => (
-                  <div key={i} className="rounded-xl bg-gray-800/60 p-4 text-center">
+                  <div key={i} className="rounded-xl bg-slate-800/50 border border-slate-700/30 p-4 text-center">
                     <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
-                    <p className="text-xs text-gray-500 mt-1">{s.label}</p>
+                    <p className="text-xs text-slate-500 mt-1">{s.label}</p>
                   </div>
                 ))}
               </div>
               <div className="px-6 pb-6 grid grid-cols-3 gap-4">
-                <div className="col-span-2 rounded-xl bg-gray-800/40 p-4">
-                  <p className="text-xs text-gray-500 mb-3">選考パイプライン</p>
+                <div className="col-span-2 rounded-xl bg-slate-800/30 border border-slate-700/20 p-4">
+                  <p className="text-xs text-slate-500 mb-3">選考パイプライン</p>
                   <div className="space-y-2">
                     {["応募済み", "書類選考", "面接", "内定"].map((s, i) => (
                       <div key={s} className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400 w-16">{s}</span>
-                        <div className="flex-1 h-2 rounded-full bg-gray-700 overflow-hidden">
-                          <div className="h-full rounded-full bg-indigo-500" style={{ width: `${[60, 40, 25, 10][i]}%` }} />
+                        <span className="text-xs text-slate-400 w-16">{s}</span>
+                        <div className="flex-1 h-2 rounded-full bg-slate-700/60 overflow-hidden">
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${[60, 40, 25, 10][i]}%`,
+                              background: `linear-gradient(90deg, #06b6d4, #3b82f6)`,
+                            }}
+                          />
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="rounded-xl bg-gray-800/40 p-4">
-                  <p className="text-xs text-gray-500 mb-3">アラート</p>
+                <div className="rounded-xl bg-slate-800/30 border border-slate-700/20 p-4">
+                  <p className="text-xs text-slate-500 mb-3">次のアクション</p>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-xs">
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                      <span className="text-gray-400">未対応応募 (48h超)</span>
+                      <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                      <span className="text-slate-400">面接日程調整 (2件)</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                      <span className="text-gray-400">面接ステージ滞留</span>
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                      <span className="text-slate-400">書類選考 (3件)</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
-                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                      <span className="text-gray-400">SLA超過 (書類選考)</span>
+                      <div className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+                      <span className="text-slate-400">内定通知準備 (1件)</span>
                     </div>
                   </div>
                 </div>
@@ -160,41 +167,46 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Stats strip */}
+          {/* 数値 */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-12 flex items-center justify-center gap-8 sm:gap-16 text-center"
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="mt-14 flex items-center justify-center gap-8 sm:gap-16 text-center"
           >
             {[
-              { label: "掲載クリニック", value: `${clinics.length}院` },
-              { label: "公開求人", value: `${activeJobs.length}件` },
-              { label: "職種カテゴリ", value: `${categories.length}種` },
+              { label: "導入医療機関", value: `${clinics.length}院` },
+              { label: "公開求人数", value: `${activeJobs.length}件` },
+              { label: "対応職種", value: `${categories.length}カテゴリ` },
             ].map((stat, i) => (
               <div key={i}>
                 <p className="text-2xl font-bold text-white">{stat.value}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{stat.label}</p>
+                <p className="text-xs text-slate-500 mt-0.5">{stat.label}</p>
               </div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* 3-Layer Architecture */}
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* コンセプト: 自院専属の採用チーム */}
+      <section className="py-24 sm:py-32 relative">
+        <div className="absolute inset-0 grid-pattern-light" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeUp}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <p className="text-sm font-medium text-accent tracking-wide mb-3">NEXOSの3層構造</p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200/60 mb-4">
+              <span className="text-xs font-medium text-cyan-700 tracking-wide">Why NEXOS</span>
+            </div>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              採用ブランド + 共同運用 + 採用ハーネス
+              採用ページも、求人管理も、選考も。
+              <br className="hidden sm:block" />
+              <span className="text-gradient">自院の名前で、自院が運営する。</span>
             </h2>
-            <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto">
-              単なる求人媒体でもATSでもない。採用活動を最後まで壊れず進めるOS
+            <p className="mt-5 text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              人材紹介会社に頼り切りにならない。自院が主体となって採用活動を行える基盤を、NEXOSが提供します。
             </p>
           </motion.div>
 
@@ -209,40 +221,43 @@ export default function HomePage() {
               {
                 icon: Building2,
                 num: "01",
-                title: "採用ブランドOS",
-                description: "自院の世界観で採用ページを構築。ブランドカラー、理念、文化を反映した採用体験を、各医療機関が自分で持てます。",
-                features: ["自院名義の採用ページ", "ブランドカスタマイズ", "求人公開・管理"],
+                title: "自院ブランドの採用ページ",
+                description: "病院・クリニックごとに独自の採用ページを構築。自院の理念、文化、魅力を直接求職者に届けられます。",
+                features: ["自院名義の採用サイト", "ブランドカラー反映", "セクション自由編集"],
+                gradient: "from-cyan-500 to-blue-500",
               },
               {
-                icon: Shield,
+                icon: Target,
                 num: "02",
-                title: "共同運用レイヤー",
-                description: "セルフサーブで終わらない。必要に応じてNecoが共同編集・共同運用に入り、採用活動の成果に伴走します。",
-                features: ["Neco共同編集", "クロスクリニック管理", "運用改善支援"],
+                title: "求人から内定まで一気通貫",
+                description: "求人作成・公開・応募管理・選考進行をすべて自院のダッシュボードで管理。採用の全工程を自分たちの手で。",
+                features: ["求人作成・公開管理", "応募者パイプライン", "SLA監視・タスク管理"],
+                gradient: "from-blue-500 to-violet-500",
               },
               {
-                icon: Zap,
+                icon: Network,
                 num: "03",
-                title: "採用ハーネス",
-                description: "応募対応漏れ、ステージ滞留、面接未設定。長い採用活動で起きる問題をルールベースで検知し、壊れず完遂させます。",
-                features: ["SLA監視・アラート", "公開前チェックリスト", "タスク・期限管理"],
+                title: "必要な時だけ、Necoが伴走",
+                description: "すべてを自力でやる必要はありません。求人改善や選考サポートが必要な時、Necoがパートナーとして共同運用に入ります。",
+                features: ["共同編集・共同運用", "運用改善アドバイス", "AI求人最適化"],
+                gradient: "from-violet-500 to-fuchsia-500",
               },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp}>
-                <Card className="h-full border shadow-none hover:shadow-md transition-shadow">
+                <Card className="h-full border border-slate-200/80 shadow-none hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 group">
                   <CardContent className="p-8">
                     <div className="flex items-center gap-3 mb-5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-                        <item.icon className="h-5 w-5 text-accent" />
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} shadow-sm`}>
+                        <item.icon className="h-5 w-5 text-white" />
                       </div>
-                      <span className="text-sm font-bold text-accent/40">{item.num}</span>
+                      <span className="text-sm font-bold text-slate-300">{item.num}</span>
                     </div>
                     <h3 className="text-lg font-semibold">{item.title}</h3>
                     <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.description}</p>
                     <ul className="mt-5 space-y-2">
                       {item.features.map((f) => (
                         <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <div className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
+                          <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${item.gradient} shrink-0`} />
                           {f}
                         </li>
                       ))}
@@ -255,19 +270,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Clinics */}
-      <section className="py-24 sm:py-32">
+      {/* 導入医療機関 */}
+      <section className="py-24 sm:py-32 bg-slate-50/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             {...fadeUp}
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
-              導入クリニック
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 mb-4">
+              <span className="text-xs font-medium text-blue-700 tracking-wide">Partner Clinics</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              自院の採用ページを運営する医療機関たち
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              それぞれのクリニックが、自院ブランドの採用ページを運営しています
+            <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto">
+              NEXOSを導入した各院が、自分たちの名前とブランドで採用活動を行っています
             </p>
           </motion.div>
 
@@ -285,15 +303,15 @@ export default function HomePage() {
               return (
                 <motion.div key={clinic.id} variants={fadeUp}>
                   <Link href={`/clinics/${clinic.slug}`}>
-                    <Card className="group overflow-hidden card-hover h-full border-0 shadow-sm">
+                    <Card className="group overflow-hidden card-hover h-full border border-slate-200/80 shadow-none hover:shadow-lg hover:shadow-slate-200/50">
                       <div
-                        className={`h-36 bg-gradient-to-r ${clinic.brand.coverImageGradient} flex items-center justify-center relative`}
+                        className={`h-36 bg-gradient-to-br ${clinic.brand.coverImageGradient} flex items-center justify-center relative`}
                       >
-                        <div className="absolute inset-0 bg-black/10" />
+                        <div className="absolute inset-0 bg-black/5 grid-pattern" />
                         <ClinicLogo clinicId={clinic.id} size={56} color="white" />
                       </div>
                       <CardContent className="p-6">
-                        <h3 className="text-lg font-bold group-hover:text-accent transition-colors">
+                        <h3 className="text-lg font-bold group-hover:text-cyan-600 transition-colors">
                           {clinic.name}
                         </h3>
                         <div className="flex items-center gap-1.5 mt-2 text-sm text-muted-foreground">
@@ -311,10 +329,10 @@ export default function HomePage() {
                           ))}
                         </div>
                         <div className="mt-4 pt-4 border-t flex items-center justify-between">
-                          <span className="text-sm font-medium text-accent">
+                          <span className="text-sm font-medium text-cyan-600">
                             {clinicJobs.length}件の求人
                           </span>
-                          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
+                          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-cyan-600 group-hover:translate-x-1 transition-all" />
                         </div>
                       </CardContent>
                     </Card>
@@ -326,22 +344,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Latest Jobs */}
-      <section className="py-24 sm:py-32 bg-gradient-to-b from-slate-50 to-white">
+      {/* 最新の求人 */}
+      <section className="py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} viewport={{ once: true }} className="mb-14">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
-                  最新の求人
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200/60 mb-4">
+                  <span className="text-xs font-medium text-teal-700 tracking-wide">Latest Jobs</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                  各院が公開中の求人
                 </h2>
-                <p className="mt-4 text-lg text-muted-foreground">
-                  あなたの経験を活かせる求人が見つかります
+                <p className="mt-3 text-base text-muted-foreground">
+                  医療機関が直接発信する求人情報
                 </p>
               </div>
               <Link href="/jobs" className="hidden sm:block">
-                <Button variant="outline">
-                  すべての求人を見る
+                <Button variant="outline" className="border-slate-300 hover:border-cyan-300 hover:text-cyan-700">
+                  すべて見る
                   <ArrowRight className="h-4 w-4 ml-1" />
                 </Button>
               </Link>
@@ -360,7 +381,7 @@ export default function HomePage() {
               return (
                 <motion.div key={job.id} variants={fadeUp}>
                   <Link href={`/jobs/${job.id}`}>
-                    <Card className="group card-hover h-full border-0 shadow-sm">
+                    <Card className="group card-hover h-full border border-slate-200/80 shadow-none hover:shadow-lg hover:shadow-slate-200/50">
                       <CardContent className="p-6">
                         <div className="flex items-start gap-3">
                           <div
@@ -373,7 +394,7 @@ export default function HomePage() {
                             <p className="text-xs text-muted-foreground">
                               {clinic.name}
                             </p>
-                            <h3 className="text-base font-semibold mt-0.5 group-hover:text-accent transition-colors">
+                            <h3 className="text-base font-semibold mt-0.5 group-hover:text-cyan-600 transition-colors">
                               {job.title}
                             </h3>
                           </div>
@@ -409,66 +430,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Who it's for */}
-      <section className="py-20 sm:py-28 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} viewport={{ once: true }} className="text-center mb-14">
+      {/* 利用の流れ */}
+      <section className="py-24 sm:py-32 relative bg-slate-50/50">
+        <div className="absolute inset-0 grid-pattern-light" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div {...fadeUp} viewport={{ once: true }} className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-50 border border-violet-200/60 mb-4">
+              <span className="text-xs font-medium text-violet-700 tracking-wide">How it works</span>
+            </div>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              医師採用を中心とした、医療機関向け採用基盤
+              3ステップで、自院専属の採用チームが稼働
             </h2>
-            <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto">
-              常勤医師、非常勤医師、専門医採用。採用資産が自院に蓄積する仕組みを
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
-            {[
-              {
-                icon: Building2,
-                title: "自院ブランドの採用ページ",
-                description: "各クリニックが自院の世界観で採用ページを持てます。ブランドカラー、理念、文化を求職者に直接伝えます。",
-              },
-              {
-                icon: Users,
-                title: "一気通貫の選考管理",
-                description: "応募から内定まで、候補者の選考プロセスをダッシュボードで管理。SLA監視でタスク漏れを防ぎます。",
-              },
-              {
-                icon: Shield,
-                title: "Neco共同運用",
-                description: "必要に応じてNecoが共同で運用に入ります。求人改善、応募対応、歩留まり改善をパートナーとして支援。",
-              },
-            ].map((item, i) => (
-              <motion.div key={i} variants={fadeUp}>
-                <Card className="h-full border shadow-none hover:shadow-md transition-shadow">
-                  <CardContent className="p-7">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 mb-4">
-                      <item.icon className="h-5 w-5 text-accent" />
-                    </div>
-                    <h3 className="text-base font-semibold">{item.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeUp} viewport={{ once: true }} className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">利用の流れ</h2>
-            <p className="mt-4 text-base text-muted-foreground max-w-2xl mx-auto">
-              3ステップで自院ブランドの採用活動を開始
-            </p>
           </motion.div>
 
           <motion.div
@@ -479,13 +451,30 @@ export default function HomePage() {
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             {[
-              { step: "01", title: "採用ページを作成", description: "自院のブランドカラー、理念、文化を反映した採用ページを作成。公開前チェックリストで品質を担保します。" },
-              { step: "02", title: "求人を公開・管理", description: "求人を作成・公開し、共通求人ボードにも同時掲載。必須項目チェックで漏れなく公開できます。" },
-              { step: "03", title: "選考を完遂する", description: "応募者管理、ステージ進行、SLA監視まで一気通貫。ハーネスが最後まで壊れず進めます。" },
+              {
+                step: "01",
+                title: "採用ページを立ち上げる",
+                description: "自院のブランドカラー・理念・写真を使った採用ページを作成。求職者に直接メッセージを届けるメディアを持てます。",
+                gradient: "from-cyan-500 to-blue-500",
+              },
+              {
+                step: "02",
+                title: "求人を公開し、応募を受ける",
+                description: "求人作成・公開。NEXOSの共通求人ボードにも同時掲載され、自院への応募を直接受け付けます。",
+                gradient: "from-blue-500 to-violet-500",
+              },
+              {
+                step: "03",
+                title: "選考を進め、採用を完遂する",
+                description: "応募者管理、面接調整、内定までをダッシュボードで管理。タスク漏れを防ぎ、採用活動を最後まで完遂します。",
+                gradient: "from-violet-500 to-fuchsia-500",
+              },
             ].map((item, i) => (
               <motion.div key={i} variants={fadeUp}>
                 <div className="relative">
-                  <div className="text-6xl font-bold text-accent/10 mb-3 leading-none">{item.step}</div>
+                  <div className={`text-6xl font-black mb-4 leading-none bg-gradient-to-r ${item.gradient} bg-clip-text text-transparent opacity-20`}>
+                    {item.step}
+                  </div>
                   <h3 className="text-lg font-semibold">{item.title}</h3>
                   <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.description}</p>
                 </div>
@@ -495,28 +484,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Co-management highlight */}
-      <section className="py-20 sm:py-28 bg-gray-50">
+      {/* 共同運用セクション */}
+      <section className="py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div {...fadeUp} viewport={{ once: true }}>
-              <p className="text-sm font-medium text-accent tracking-wide mb-3">共同運用</p>
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                一人で抱えない。
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-200/60 mb-5">
+                <span className="text-xs font-medium text-cyan-700 tracking-wide">Co-Operation</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+                人材紹介会社に丸投げしない。
                 <br />
-                共同運用という選択肢。
+                <span className="text-gradient">でも、一人で抱えない。</span>
               </h2>
               <p className="mt-5 text-muted-foreground leading-relaxed">
-                NEXOSは単なるセルフサーブのSaaSではありません。
-                採用ページの作成、求人票の改善、応募者対応まで、
-                必要に応じてNecoが共同で運用に入ることができます。
+                自院が採用の主体となりながら、必要に応じてNecoが共同で運用に入る。
+                求人票の改善、応募者対応、歩留まり分析まで、パートナーとして伴走します。
               </p>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                各医療機関が「自院の採用子会社を持ったような」体験を実現します。
+                各医療機関が「自社の人材紹介部門を持ったような」体験を実現するのが、NEXOSの設計思想です。
               </p>
-              <div className="mt-7">
+              <div className="mt-8">
                 <Link href="/login">
-                  <Button variant="accent" size="lg">
+                  <Button variant="accent" size="lg" className="shadow-lg shadow-cyan-500/20">
                     管理画面を体験する
                     <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -526,13 +516,13 @@ export default function HomePage() {
 
             <motion.div {...fadeUp} viewport={{ once: true }} className="grid grid-cols-2 gap-4">
               {[
-                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", Icon: IconPageEdit },
-                { label: "求人票の改善", desc: "応募率向上をAIが支援", Icon: IconSparkle },
-                { label: "選考管理", desc: "候補者管理を共同で推進", Icon: IconClipboard },
-                { label: "採用分析", desc: "データに基づく改善提案", Icon: IconChart },
+                { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", Icon: IconPageEdit, color: "#0891b2" },
+                { label: "AI求人最適化", desc: "応募率向上をAIが支援", Icon: IconSparkle, color: "#3b82f6" },
+                { label: "選考管理", desc: "候補者管理を共同で推進", Icon: IconClipboard, color: "#8b5cf6" },
+                { label: "採用分析", desc: "データに基づく改善提案", Icon: IconChart, color: "#06b6d4" },
               ].map((item, i) => (
-                <div key={i} className="p-5 rounded-xl bg-white border hover:shadow-md transition-shadow">
-                  <item.Icon size={24} color="#4f46e5" className="mb-3" />
+                <div key={i} className="p-5 rounded-xl bg-white border border-slate-200/80 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 group">
+                  <item.Icon size={24} color={item.color} className="mb-3" />
                   <h4 className="text-sm font-semibold">{item.label}</h4>
                   <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
                 </div>
@@ -543,25 +533,31 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 sm:py-28 bg-gray-950">
+      <section className="relative py-24 sm:py-32 bg-slate-950 overflow-hidden">
+        <div className="absolute inset-0 gradient-mesh-dark" />
+        <div className="absolute inset-0 grid-pattern" />
+        <div className="absolute top-[-100px] right-[-50px] w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-100px] left-[-50px] w-[300px] h-[300px] bg-blue-500/8 rounded-full blur-[100px]" />
         <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
           <motion.div {...fadeUp} viewport={{ once: true }}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-              自院ブランドの採用を、今すぐ始めよう
+            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+              自院専属の採用チームを、
+              <br />
+              今日から立ち上げよう。
             </h2>
-            <p className="mt-5 text-base text-gray-400 max-w-2xl mx-auto">
-              NEXOSなら、採用ページの立ち上げから選考完遂まで。
-              共同運用とハーネスが、採用活動を壊れず進めます。
+            <p className="mt-5 text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              採用ページの構築から、求人公開、選考管理、そして採用完遂まで。
+              NEXOSが、あなたの医療機関の採用インフラになります。
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/login">
-                <Button size="lg" variant="accent">
+                <Button size="lg" variant="accent" className="shadow-lg shadow-cyan-500/20">
                   無料で始める
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/jobs">
-                <Button size="lg" variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white">
+                <Button size="lg" variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white hover:border-slate-600">
                   求人を探す
                 </Button>
               </Link>

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { NexosLogo } from "@/components/icons/clinic-logos";
-import { Menu, X, Sparkles, LogIn } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
@@ -37,17 +37,17 @@ export function PublicHeader() {
       className={cn(
         "sticky top-0 z-50 transition-all duration-300",
         scrolled
-          ? "glass shadow-sm"
+          ? "glass shadow-sm shadow-slate-200/50"
           : "bg-transparent"
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5 group">
           <NexosLogo size={36} />
           <span className="text-xl font-bold tracking-tight">NEXOS</span>
         </Link>
 
-        {/* Desktop Nav */}
+        {/* デスクトップナビ */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
@@ -56,7 +56,7 @@ export function PublicHeader() {
               className={cn(
                 "text-sm font-medium transition-colors",
                 pathname.startsWith(link.href)
-                  ? "text-accent"
+                  ? "text-cyan-600"
                   : "text-muted-foreground hover:text-primary"
               )}
             >
@@ -64,18 +64,18 @@ export function PublicHeader() {
             </Link>
           ))}
           <Link href="/login">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
               ログイン
             </Button>
           </Link>
           <Link href="/dashboard">
-            <Button variant="accent" size="sm">
+            <Button variant="accent" size="sm" className="shadow-sm shadow-cyan-500/15">
               管理画面
             </Button>
           </Link>
         </nav>
 
-        {/* Mobile menu button */}
+        {/* モバイルメニュー */}
         <button
           className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -89,7 +89,6 @@ export function PublicHeader() {
         </button>
       </div>
 
-      {/* Mobile Nav */}
       {mobileOpen && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
@@ -103,7 +102,7 @@ export function PublicHeader() {
               className={cn(
                 "block text-sm font-medium py-2",
                 pathname.startsWith(link.href)
-                  ? "text-accent"
+                  ? "text-cyan-600"
                   : "text-primary"
               )}
               onClick={() => setMobileOpen(false)}
