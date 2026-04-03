@@ -6,6 +6,9 @@ import {
   AdminUser,
   Alert,
   Task,
+  Facility,
+  VacancyImpact,
+  CandidateSource,
 } from "./types";
 
 // ============================================================
@@ -518,6 +521,120 @@ export const standaloneTasks: Task[] = [
     completedAt: "2026-03-19T16:00:00Z",
     createdBy: "user-neco-2",
     createdAt: "2026-03-15T10:00:00Z",
+  },
+];
+
+// ============================================================
+// Facilities & Workforce Compliance
+// ============================================================
+
+export const facilities: Facility[] = [
+  {
+    id: "fac-1",
+    clinicId: "clinic-1",
+    name: "メディカルフロンティア渋谷 本院",
+    type: "clinic",
+    location: "東京都渋谷区",
+    staffingRequirements: [
+      { id: "sr-1", facilityId: "fac-1", qualificationId: "q-8", qualificationName: "医師", requiredCount: 3, currentCount: 2, employmentType: "full-time", isComplianceCritical: true, linkedComplianceRuleId: "cr-1" },
+      { id: "sr-2", facilityId: "fac-1", qualificationId: "q-1", qualificationName: "正看護師", requiredCount: 4, currentCount: 3, employmentType: "either", isComplianceCritical: true, linkedComplianceRuleId: "cr-2" },
+      { id: "sr-3", facilityId: "fac-1", qualificationId: "q-11", qualificationName: "医療事務", requiredCount: 3, currentCount: 2, employmentType: "either", isComplianceCritical: false },
+    ],
+    complianceRules: [
+      { id: "cr-1", facilityId: "fac-1", name: "常勤医師配置基準", description: "外来診療体制の維持に常勤医師3名が必要", type: "facility_standard", requiredStaffing: "常勤医師3名以上", monthlyRevenueImpact: 4500000, isMet: false, riskLevel: "critical" },
+      { id: "cr-2", facilityId: "fac-1", name: "看護師配置基準", description: "医療法に基づく看護師配置", type: "facility_standard", requiredStaffing: "看護師4名以上（常勤換算）", monthlyRevenueImpact: 1200000, isMet: false, riskLevel: "at_risk" },
+    ],
+  },
+  {
+    id: "fac-2",
+    clinicId: "clinic-2",
+    name: "さくら在宅クリニック 世田谷ステーション",
+    type: "visiting_nursing",
+    location: "東京都世田谷区",
+    staffingRequirements: [
+      { id: "sr-4", facilityId: "fac-2", qualificationId: "q-8", qualificationName: "医師", requiredCount: 2, currentCount: 1, employmentType: "full-time", isComplianceCritical: true, linkedComplianceRuleId: "cr-3" },
+      { id: "sr-5", facilityId: "fac-2", qualificationId: "q-1", qualificationName: "正看護師", requiredCount: 5, currentCount: 4, employmentType: "either", isComplianceCritical: true, linkedComplianceRuleId: "cr-4" },
+      { id: "sr-6", facilityId: "fac-2", qualificationId: "q-5", qualificationName: "理学療法士", requiredCount: 1, currentCount: 1, employmentType: "full-time", isComplianceCritical: false },
+    ],
+    complianceRules: [
+      { id: "cr-3", facilityId: "fac-2", name: "在宅療養支援診療所", description: "24時間対応体制の維持に常勤医師2名が必要", type: "additional_fee", requiredStaffing: "常勤医師2名以上", monthlyRevenueImpact: 3200000, isMet: false, riskLevel: "critical" },
+      { id: "cr-4", facilityId: "fac-2", name: "機能強化型訪問看護管理療養費1", description: "常勤看護師5名以上（うち1名は管理者）", type: "additional_fee", requiredStaffing: "常勤看護師5名以上", monthlyRevenueImpact: 1800000, isMet: false, riskLevel: "at_risk" },
+    ],
+  },
+  {
+    id: "fac-3",
+    clinicId: "clinic-3",
+    name: "ニューロサイエンス東京 本院",
+    type: "clinic",
+    location: "東京都千代田区",
+    staffingRequirements: [
+      { id: "sr-7", facilityId: "fac-3", qualificationId: "q-8", qualificationName: "医師", requiredCount: 3, currentCount: 2, employmentType: "full-time", isComplianceCritical: true, linkedComplianceRuleId: "cr-5" },
+      { id: "sr-8", facilityId: "fac-3", qualificationId: "q-10", qualificationName: "臨床検査技師", requiredCount: 2, currentCount: 1, employmentType: "full-time", isComplianceCritical: true, linkedComplianceRuleId: "cr-6" },
+      { id: "sr-9", facilityId: "fac-3", qualificationId: "q-11", qualificationName: "医療事務", requiredCount: 2, currentCount: 1, employmentType: "either", isComplianceCritical: false },
+    ],
+    complianceRules: [
+      { id: "cr-5", facilityId: "fac-3", name: "脳神経内科専門外来体制", description: "専門外来の維持に専門医3名が必要", type: "facility_standard", requiredStaffing: "脳神経内科専門医3名以上", monthlyRevenueImpact: 5200000, isMet: false, riskLevel: "critical" },
+      { id: "cr-6", facilityId: "fac-3", name: "MRI検査体制加算", description: "MRI検査の実施体制維持", type: "additional_fee", requiredStaffing: "臨床検査技師2名以上", monthlyRevenueImpact: 800000, isMet: false, riskLevel: "at_risk" },
+    ],
+  },
+];
+
+// Pre-computed vacancy impacts
+export const vacancyImpacts: VacancyImpact[] = [
+  {
+    facilityId: "fac-1",
+    facilityName: "メディカルフロンティア渋谷 本院",
+    qualificationName: "医師",
+    shortage: 1,
+    affectedRules: [
+      { ruleName: "常勤医師配置基準", monthlyImpact: 4500000, riskLevel: "critical" },
+    ],
+    totalMonthlyImpact: 4500000,
+    recommendedAction: "内科・皮膚科 常勤医師の求人（job-1）に3名の候補者が進行中。面接中の田中美咲氏を優先的に進めることを推奨。",
+  },
+  {
+    facilityId: "fac-2",
+    facilityName: "さくら在宅クリニック 世田谷ステーション",
+    qualificationName: "医師",
+    shortage: 1,
+    affectedRules: [
+      { ruleName: "在宅療養支援診療所", monthlyImpact: 3200000, riskLevel: "critical" },
+    ],
+    totalMonthlyImpact: 3200000,
+    recommendedAction: "訪問診療医の求人（job-4）で伊藤健一氏に内定を出している。速やかに内定承諾・入職日確定を進めることを推奨。",
+  },
+  {
+    facilityId: "fac-2",
+    facilityName: "さくら在宅クリニック 世田谷ステーション",
+    qualificationName: "正看護師",
+    shortage: 1,
+    affectedRules: [
+      { ruleName: "機能強化型訪問看護管理療養費1", monthlyImpact: 1800000, riskLevel: "at_risk" },
+    ],
+    totalMonthlyImpact: 1800000,
+    recommendedAction: "訪問看護師の求人（job-5）で中村さくら氏が面接ステージ。面接日程の設定が22日間滞留中。即時の日程調整を推奨。",
+  },
+  {
+    facilityId: "fac-3",
+    facilityName: "ニューロサイエンス東京 本院",
+    qualificationName: "医師",
+    shortage: 1,
+    affectedRules: [
+      { ruleName: "脳神経内科専門外来体制", monthlyImpact: 5200000, riskLevel: "critical" },
+    ],
+    totalMonthlyImpact: 5200000,
+    recommendedAction: "脳神経内科専門医の求人（job-6）で小林太郎氏が書類選考中。経歴確認を急ぎ、面接設定を推奨。",
+  },
+  {
+    facilityId: "fac-3",
+    facilityName: "ニューロサイエンス東京 本院",
+    qualificationName: "臨床検査技師",
+    shortage: 1,
+    affectedRules: [
+      { ruleName: "MRI検査体制加算", monthlyImpact: 800000, riskLevel: "at_risk" },
+    ],
+    totalMonthlyImpact: 800000,
+    recommendedAction: "臨床検査技師の求人（job-7）で加藤裕子氏が応募済み。11日間未対応のため、速やかに書類選考を開始すること。",
   },
 ];
 
