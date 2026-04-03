@@ -64,14 +64,12 @@ export function PublicHeader() {
             </Link>
           ))}
           <Link href="/login">
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <LogIn className="h-3.5 w-3.5" />
+            <Button variant="ghost" size="sm">
               ログイン
             </Button>
           </Link>
           <Link href="/dashboard">
-            <Button variant="gradient" size="sm" className="gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" />
+            <Button variant="accent" size="sm">
               管理画面
             </Button>
           </Link>
@@ -113,25 +111,11 @@ export function PublicHeader() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/login"
-            className="block"
-            onClick={() => setMobileOpen(false)}
-          >
-            <Button variant="outline" size="sm" className="w-full gap-1.5">
-              <LogIn className="h-3.5 w-3.5" />
-              ログイン
-            </Button>
+          <Link href="/login" className="block" onClick={() => setMobileOpen(false)}>
+            <Button variant="outline" size="sm" className="w-full">ログイン</Button>
           </Link>
-          <Link
-            href="/dashboard"
-            className="block"
-            onClick={() => setMobileOpen(false)}
-          >
-            <Button variant="gradient" size="sm" className="w-full gap-1.5">
-              <Sparkles className="h-3.5 w-3.5" />
-              管理画面
-            </Button>
+          <Link href="/dashboard" className="block" onClick={() => setMobileOpen(false)}>
+            <Button variant="accent" size="sm" className="w-full">管理画面</Button>
           </Link>
         </motion.div>
       )}

@@ -14,7 +14,7 @@ const buttonVariants = cva(
         accent:
           "bg-accent text-accent-foreground shadow-md hover:bg-accent/90 hover:shadow-lg hover:shadow-accent/25",
         gradient:
-          "bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 text-white shadow-md hover:shadow-lg hover:shadow-purple-500/25 hover:brightness-110",
+          "bg-accent text-accent-foreground shadow-sm hover:bg-accent/90",
         destructive:
           "bg-destructive text-white shadow-sm hover:bg-destructive/90",
         outline:
