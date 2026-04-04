@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/clinic-context";
-import { ROLE_LABELS } from "@/data/types";
+import { ROLE_LABELS, STAGE_SLA } from "@/data/types";
+import { applications, alerts as allAlerts } from "@/data/seed";
 import { ClinicLogo, NexosLogo } from "@/components/icons/clinic-logos";
 import { UserAvatar } from "@/components/icons/feature-icons";
 import {
@@ -190,12 +191,29 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { currentClinic, isNeco, currentUser, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navItems = [
+  // Calculate badge counts for navigation
+  const filterIds = isNeco ? [] : [currentClinic.id]; // empty = all for neco
+  const unresolvedAlerts = allAlerts.filter(
+    (a) => !a.isResolved && (filterIds.length === 0 || filterIds.includes(a.clinicId))
+  );
+  const slaBreachCount = applications.filter((a) => {
+    if (filterIds.length > 0 && !filterIds.includes(a.clinicId)) return false;
+    if (a.stage === "hired" || a.stage === "rejected") return false;
+    const days = Math.floor(
+      (new Date("2026-04-02").getTime() - new Date(a.updatedAt).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    return STAGE_SLA[a.stage] > 0 && days > STAGE_SLA[a.stage];
+  }).length;
+  const activeAppsCount = applications.filter(
+    (a) => (filterIds.length === 0 || filterIds.includes(a.clinicId)) && a.stage !== "hired" && a.stage !== "rejected"
+  ).length;
+
+  const navItems: { href: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; badge?: number; badgeColor?: string }[] = [
     { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
     { href: "/dashboard/facilities", label: "拠点・人員配置", icon: Building2 },
-    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle },
+    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle, badge: unresolvedAlerts.length, badgeColor: unresolvedAlerts.length > 0 ? "bg-red-500" : undefined },
     { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
-    { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
+    { href: "/dashboard/candidates", label: "候補者管理", icon: Users, badge: slaBreachCount > 0 ? slaBreachCount : undefined, badgeColor: "bg-amber-500" },
     { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
     { href: "/dashboard/ai-agent", label: "AI補助", icon: Bot },
     { href: "/dashboard/page-editor", label: "採用ページ", icon: FileEdit },
@@ -239,7 +257,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               )}
             >
               <item.icon className="h-4 w-4" />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {item.badge != null && item.badge > 0 && (
+                <span className={cn(
+                  "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white",
+                  item.badgeColor || "bg-gray-400"
+                )}>
+                  {item.badge}
+                </span>
+              )}
             </Link>
           );
         })}
