@@ -97,7 +97,7 @@ export function newApplicationNotificationEmail(params: {
         </div>
         <div style="text-align: center; margin: 32px 0;">
           <a href="${dashboardUrl}" style="display: inline-block; background: #2563eb; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-            ダッシュボードで確認する
+            管理画面で確認する
           </a>
         </div>
         <p style="font-size: 13px; color: #94a3b8;">

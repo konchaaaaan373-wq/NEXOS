@@ -110,15 +110,15 @@ export default function AnalyticsPage() {
         className="flex items-center justify-between"
       >
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">採用分析</h1>
+          <h1 className="text-2xl font-bold tracking-tight">採用の数字を見る</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            採用ファネル・SLA遵守率・ステージ速度の分析
+            応募から採用までの流れと、対応のスピードを確認できます
           </p>
         </div>
         <Link href="/dashboard/operations">
           <Button variant="outline" size="sm" className="gap-1.5">
             <AlertTriangle className="h-3.5 w-3.5" />
-            オペレーション
+            対応が必要なこと
           </Button>
         </Link>
       </motion.div>
@@ -131,11 +131,11 @@ export default function AnalyticsPage() {
         className="grid grid-cols-2 lg:grid-cols-5 gap-4"
       >
         {[
-          { label: "総閲覧数", value: totalViews.toLocaleString(), icon: Eye, bg: "bg-gradient-to-br from-blue-50 to-indigo-50", iconColor: "#3b82f6" },
-          { label: "応募開始", value: totalApplyStarts.toLocaleString(), icon: MousePointerClick, bg: "bg-gradient-to-br from-violet-50 to-purple-50", iconColor: "#8b5cf6" },
-          { label: "応募完了", value: totalApplyCompletes.toLocaleString(), icon: CheckCircle2, bg: "bg-gradient-to-br from-emerald-50 to-teal-50", iconColor: "#10b981" },
-          { label: "完了率", value: `${conversionRate}%`, icon: TrendingUp, bg: "bg-gradient-to-br from-amber-50 to-orange-50", iconColor: "#f59e0b" },
-          { label: "SLA遵守率", value: `${slaComplianceRate}%`, icon: Timer, bg: slaComplianceRate >= 80 ? "bg-gradient-to-br from-emerald-50 to-teal-50" : "bg-gradient-to-br from-red-50 to-rose-50", iconColor: slaComplianceRate >= 80 ? "#10b981" : "#ef4444" },
+          { label: "求人ページの閲覧数", value: totalViews.toLocaleString(), icon: Eye, bg: "bg-gradient-to-br from-blue-50 to-indigo-50", iconColor: "#3b82f6" },
+          { label: "応募フォームを開いた人", value: totalApplyStarts.toLocaleString(), icon: MousePointerClick, bg: "bg-gradient-to-br from-violet-50 to-purple-50", iconColor: "#8b5cf6" },
+          { label: "応募を完了した人", value: totalApplyCompletes.toLocaleString(), icon: CheckCircle2, bg: "bg-gradient-to-br from-emerald-50 to-teal-50", iconColor: "#10b981" },
+          { label: "応募完了率", value: `${conversionRate}%`, icon: TrendingUp, bg: "bg-gradient-to-br from-amber-50 to-orange-50", iconColor: "#f59e0b" },
+          { label: "期限内に対応できた割合", value: `${slaComplianceRate}%`, icon: Timer, bg: slaComplianceRate >= 80 ? "bg-gradient-to-br from-emerald-50 to-teal-50" : "bg-gradient-to-br from-red-50 to-rose-50", iconColor: slaComplianceRate >= 80 ? "#10b981" : "#ef4444" },
         ].map((metric, i) => (
           <Card key={i} className="border-0 shadow-sm">
             <CardContent className="p-5">
@@ -203,7 +203,7 @@ export default function AnalyticsPage() {
         >
           <Card className="border-0 shadow-sm">
             <CardHeader>
-              <CardTitle>選考パイプライン</CardTitle>
+              <CardTitle>選考の進み具合</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -236,7 +236,7 @@ export default function AnalyticsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                ステージ平均滞在日数
+                各段階にかかっている日数
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -254,7 +254,7 @@ export default function AnalyticsPage() {
                         {avgDays !== null ? `${avgDays}日` : "—"}
                       </span>
                       {sla > 0 && (
-                        <span className="text-xs text-muted-foreground">/ SLA {sla}日</span>
+                        <span className="text-xs text-muted-foreground">/ 目標 {sla}日以内</span>
                       )}
                     </div>
                   );
@@ -277,14 +277,14 @@ export default function AnalyticsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
-                滞留モニター
+                対応が遅れている人
               </CardTitle>
             </CardHeader>
             <CardContent>
               {stagnantApps.length === 0 ? (
                 <div className="text-center py-6">
                   <CheckCircle2 className="h-8 w-8 text-emerald-400 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">SLA内で全候補者が対応されています</p>
+                  <p className="text-sm text-muted-foreground">全員に期限内で対応できています</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -312,7 +312,7 @@ export default function AnalyticsPage() {
                               {stage.label}
                             </Badge>
                             <span className={`text-xs font-medium ${isBreached ? "text-red-600" : "text-amber-600"}`}>
-                              {days}日 / SLA {sla}日
+                              {days}日経過 / 目標 {sla}日以内
                             </span>
                           </div>
                         </div>
@@ -341,7 +341,7 @@ export default function AnalyticsPage() {
         >
           <Card className="border-0 shadow-sm">
             <CardHeader>
-              <CardTitle>求人別パフォーマンス</CardTitle>
+              <CardTitle>求人ごとの反応</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -364,7 +364,7 @@ export default function AnalyticsPage() {
                         </div>
                         <div>
                           <p className="text-lg font-bold">{cr}%</p>
-                          <p className="text-xs text-muted-foreground">完了率</p>
+                          <p className="text-xs text-muted-foreground">応募完了率</p>
                         </div>
                       </div>
                     </div>

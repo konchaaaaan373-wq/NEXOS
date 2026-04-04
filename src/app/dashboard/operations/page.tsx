@@ -196,9 +196,9 @@ export default function OperationsPage() {
           <Shield className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">採用オペレーション</h1>
+          <h1 className="text-2xl font-bold tracking-tight">対応が必要なこと</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">
-            {isNeco ? "全クリニックの採用ハーネス状況" : `${currentClinic.name} の採用ハーネス状況`}
+            {isNeco ? "全クリニックの採用業務の進み具合" : `${currentClinic.name} の採用業務の進み具合`}
           </p>
         </div>
       </motion.div>
@@ -212,28 +212,28 @@ export default function OperationsPage() {
       >
         {[
           {
-            label: "未解決アラート",
+            label: "対応が必要な通知",
             value: unresolvedAlerts.length,
             icon: AlertTriangle,
             color: unresolvedAlerts.length > 0 ? "text-red-600" : "text-slate-600",
             bg: unresolvedAlerts.length > 0 ? "bg-red-50" : "bg-slate-50",
           },
           {
-            label: "進行中タスク",
+            label: "やること",
             value: pendingTasks.length + inProgressTasks.length,
             icon: ListTodo,
             color: "text-amber-600",
             bg: "bg-amber-50",
           },
           {
-            label: "SLA遵守率",
+            label: "期限内対応率",
             value: `${slaRate}%`,
             icon: Timer,
             color: slaRate >= 80 ? "text-emerald-600" : slaRate >= 50 ? "text-amber-600" : "text-red-600",
             bg: slaRate >= 80 ? "bg-emerald-50" : slaRate >= 50 ? "bg-amber-50" : "bg-red-50",
           },
           {
-            label: "完了タスク",
+            label: "対応済み",
             value: completedTasks.length,
             icon: CheckCircle2,
             color: "text-emerald-600",
@@ -267,7 +267,7 @@ export default function OperationsPage() {
                 <div className="p-1.5 rounded-lg bg-red-50">
                   <AlertTriangle className="h-4.5 w-4.5 text-red-500" />
                 </div>
-                アクティブアラート
+                いま対応が必要なこと
                 {unresolvedAlerts.length > 0 && (
                   <Badge className="bg-red-100 text-red-700 border-0 ml-1">
                     {unresolvedAlerts.length}
@@ -292,8 +292,8 @@ export default function OperationsPage() {
                 <div className="p-3 rounded-2xl bg-emerald-50 mb-4">
                   <CheckCircle2 className="h-8 w-8 text-emerald-500" />
                 </div>
-                <p className="text-sm font-medium text-slate-700">すべてのアラートが解決済みです</p>
-                <p className="text-xs text-muted-foreground mt-1">現在対応が必要なアラートはありません</p>
+                <p className="text-sm font-medium text-slate-700">すべて対応済みです</p>
+                <p className="text-xs text-muted-foreground mt-1">現在対応が必要なものはありません</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -384,7 +384,7 @@ export default function OperationsPage() {
                 <div className="p-1.5 rounded-lg bg-violet-50">
                   <ListTodo className="h-4.5 w-4.5 text-violet-500" />
                 </div>
-                タスクキュー
+                やることリスト
                 <Badge className="bg-violet-100 text-violet-700 border-0 ml-1">
                   {allTasks.length}
                 </Badge>
@@ -407,8 +407,8 @@ export default function OperationsPage() {
                 <div className="p-3 rounded-2xl bg-slate-50 mb-4">
                   <ListTodo className="h-8 w-8 text-slate-400" />
                 </div>
-                <p className="text-sm font-medium text-slate-700">タスクはありません</p>
-                <p className="text-xs text-muted-foreground mt-1">現在割り当てられているタスクはありません</p>
+                <p className="text-sm font-medium text-slate-700">やることはありません</p>
+                <p className="text-xs text-muted-foreground mt-1">現在対応が必要な作業はありません</p>
               </div>
             ) : (
               <div className="space-y-5">
@@ -481,7 +481,7 @@ export default function OperationsPage() {
               <div className="p-1.5 rounded-lg bg-indigo-50">
                 <TrendingUp className="h-4.5 w-4.5 text-indigo-500" />
               </div>
-              SLA モニター
+              対応スピードの確認
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -490,8 +490,8 @@ export default function OperationsPage() {
                 <div className="p-3 rounded-2xl bg-slate-50 mb-4">
                   <Users className="h-8 w-8 text-slate-400" />
                 </div>
-                <p className="text-sm font-medium text-slate-700">アクティブな候補者はいません</p>
-                <p className="text-xs text-muted-foreground mt-1">選考中の候補者が表示されます</p>
+                <p className="text-sm font-medium text-slate-700">選考中の人はいません</p>
+                <p className="text-xs text-muted-foreground mt-1">選考が始まるとここに表示されます</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -553,7 +553,7 @@ export default function OperationsPage() {
                         <div className="space-y-1.5">
                           <div className="flex items-center justify-between text-[11px]">
                             <span className="text-slate-500">
-                              {days}日経過 / SLA {limit}日
+                              {days}日経過 / 目標 {limit}日以内
                             </span>
                             {status === "breach" && (
                               <span className="text-red-500 font-semibold flex items-center gap-0.5">
@@ -600,7 +600,7 @@ export default function OperationsPage() {
                 <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-100 to-yellow-100">
                   <Briefcase className="h-4.5 w-4.5 text-amber-600" />
                 </div>
-                共同運用ステータス
+                各クリニックの状況
               </CardTitle>
             </CardHeader>
             <CardContent>

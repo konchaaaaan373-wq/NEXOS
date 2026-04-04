@@ -191,12 +191,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navItems = [
-    { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
-    { href: "/dashboard/facilities", label: "拠点・人員配置", icon: Building2 },
-    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle },
-    { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
-    { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
-    { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
+    { href: "/dashboard", label: "採用の現状", icon: LayoutDashboard, exact: true },
+    { href: "/dashboard/facilities", label: "人は足りている?", icon: Building2 },
+    { href: "/dashboard/operations", label: "対応が必要なこと", icon: AlertTriangle },
+    { href: "/dashboard/jobs", label: "求人", icon: Briefcase },
+    { href: "/dashboard/candidates", label: "応募してきた人", icon: Users },
+    { href: "/dashboard/analytics", label: "数字で見る", icon: BarChart3 },
     { href: "/dashboard/ai-agent", label: "AI補助", icon: Bot },
     { href: "/dashboard/page-editor", label: "採用ページ", icon: FileEdit },
     ...(isNeco ? [{ href: "/dashboard/admin", label: "Neco管理", icon: Shield }] : []),

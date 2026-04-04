@@ -144,7 +144,7 @@ export default function LoginPage() {
               className="space-y-3"
             >
               <p className="text-sm text-slate-400 mb-4">
-                アカウントを選択してすぐにダッシュボードを体験できます
+                アカウントを選択してすぐに管理画面を体験できます
               </p>
               {quickLoginUsers.map(({ user, description, icon: Icon, gradient }) => (
                 <motion.button

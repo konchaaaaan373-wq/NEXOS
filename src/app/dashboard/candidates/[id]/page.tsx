@@ -170,13 +170,13 @@ export default function CandidateDetailPage({
             {slaBreached && (
               <Badge className="bg-red-100 text-red-700 border border-red-200 text-xs py-1">
                 <AlertTriangle className="h-3 w-3 mr-1" />
-                SLA超過 ({daysInStage}日)
+                対応遅れ ({daysInStage}日経過)
               </Badge>
             )}
             {slaWarning && (
               <Badge className="bg-amber-100 text-amber-700 border border-amber-200 text-xs py-1">
                 <Timer className="h-3 w-3 mr-1" />
-                SLA注意 ({daysInStage}/{slaLimit}日)
+                もうすぐ期限 ({daysInStage}/{slaLimit}日)
               </Badge>
             )}
           </div>
@@ -277,7 +277,7 @@ export default function CandidateDetailPage({
                 {slaLimit > 0 && (
                   <div className="mt-4 pt-4 border-t">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
-                      <span>ステージSLA: {slaLimit}日以内</span>
+                      <span>この段階の対応目標: {slaLimit}日以内</span>
                       <span className={slaBreached ? "text-red-600 font-medium" : slaWarning ? "text-amber-600" : "text-emerald-600"}>
                         {daysInStage}日経過
                       </span>
@@ -576,7 +576,7 @@ export default function CandidateDetailPage({
                   <p className="text-xs text-muted-foreground">現ステージ経過日数</p>
                   <p className={`text-sm font-medium ${slaBreached ? "text-red-600" : ""}`}>
                     {daysInStage}日
-                    {slaLimit > 0 && <span className="text-muted-foreground font-normal"> / SLA {slaLimit}日</span>}
+                    {slaLimit > 0 && <span className="text-muted-foreground font-normal"> / 目標 {slaLimit}日以内</span>}
                   </p>
                 </div>
               </div>
@@ -620,8 +620,8 @@ export default function CandidateDetailPage({
                   <Shield className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium">オペレーション</p>
-                  <p className="text-xs text-muted-foreground">アラート・タスク管理</p>
+                  <p className="text-sm font-medium">対応が必要なこと</p>
+                  <p className="text-xs text-muted-foreground">通知・やることの確認</p>
                 </div>
                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </CardContent>

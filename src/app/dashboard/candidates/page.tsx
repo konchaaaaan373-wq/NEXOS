@@ -49,9 +49,9 @@ export default function CandidatesPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-2xl font-bold tracking-tight">候補者管理</h1>
+        <h1 className="text-2xl font-bold tracking-tight">応募してきた人</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {clinicApps.length}名の候補者
+          全{clinicApps.length}名
         </p>
       </motion.div>
 
@@ -133,7 +133,7 @@ export default function CandidatesPage() {
             className="text-center py-16"
           >
             <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold">候補者が見つかりません</h3>
+            <h3 className="text-lg font-semibold">該当する応募者がいません</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               検索条件を変更してお試しください
             </p>

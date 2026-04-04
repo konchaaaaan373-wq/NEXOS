@@ -82,7 +82,7 @@ export default function DashboardPage() {
       >
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            {isNeco ? "Neco 管理ダッシュボード" : currentClinic.name}
+            {isNeco ? "Neco 採用の全体状況" : currentClinic.name}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {new Date("2026-04-02").toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" })} の採用状況
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 flex-wrap">
                     <h3 className="font-semibold text-red-900">
-                      欠員による月間売上影響: {(totalMonthlyImpact / 10000).toLocaleString()}万円
+                      人手不足による月間売上への影響: {(totalMonthlyImpact / 10000).toLocaleString()}万円
                     </h3>
                     <Badge className="bg-red-100 text-red-700 border-0 text-xs">
                       {totalShortage}名不足
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                     ))}
                   </div>
                   <Link href="/dashboard/facilities" className="inline-flex items-center gap-1 text-sm text-red-700 font-medium hover:text-red-900 mt-3">
-                    欠員インパクト詳細 <ArrowRight className="h-3.5 w-3.5" />
+                    人手不足の影響を詳しく見る <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function DashboardPage() {
                 {slaBreach.slice(0, 2).map((a) => (
                   <Link key={a.id} href={`/dashboard/candidates/${a.id}`} className="flex items-center gap-2 text-sm text-amber-800 hover:text-amber-950 transition-colors">
                     <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                    SLA超過: {a.applicantName}（{PIPELINE_STAGES.find((s) => s.id === a.stage)?.label}ステージ {getDaysInStage(a.updatedAt)}日）
+                    対応が遅れています: {a.applicantName}さん（{PIPELINE_STAGES.find((s) => s.id === a.stage)?.label}で{getDaysInStage(a.updatedAt)}日経過）
                   </Link>
                 ))}
                 {urgentTasks.slice(0, 2).map((t) => (
@@ -185,11 +185,11 @@ export default function DashboardPage() {
         className="grid grid-cols-2 lg:grid-cols-5 gap-4"
       >
         {[
-          { label: "公開求人", value: activeJobs.length, suffix: "件", icon: Briefcase, color: "#4f46e5" },
-          { label: "選考中候補者", value: activeApps.length, suffix: "名", icon: Users, color: "#7c3aed" },
-          { label: "未解決アラート", value: clinicAlerts.length, suffix: "件", icon: AlertTriangle, color: clinicAlerts.length > 0 ? "#dc2626" : "#059669" },
-          { label: "SLA超過", value: slaBreach.length, suffix: "件", icon: Timer, color: slaBreach.length > 0 ? "#d97706" : "#059669" },
-          { label: "合計閲覧数", value: totalViews.toLocaleString(), suffix: "", icon: Eye, color: "#0891b2" },
+          { label: "公開中の求人", value: activeJobs.length, suffix: "件", icon: Briefcase, color: "#4f46e5" },
+          { label: "選考中の人", value: activeApps.length, suffix: "名", icon: Users, color: "#7c3aed" },
+          { label: "対応が必要", value: clinicAlerts.length, suffix: "件", icon: AlertTriangle, color: clinicAlerts.length > 0 ? "#dc2626" : "#059669" },
+          { label: "対応が遅れている", value: slaBreach.length, suffix: "件", icon: Timer, color: slaBreach.length > 0 ? "#d97706" : "#059669" },
+          { label: "求人の閲覧数", value: totalViews.toLocaleString(), suffix: "", icon: Eye, color: "#0891b2" },
         ].map((metric, i) => (
           <Card key={i} className="border shadow-none">
             <CardContent className="p-4">
@@ -215,7 +215,7 @@ export default function DashboardPage() {
           <Card className="border shadow-none">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">選考パイプライン</CardTitle>
+                <CardTitle className="text-base">選考の進み具合</CardTitle>
                 <Link href="/dashboard/candidates">
                   <Button variant="ghost" size="sm">詳細 <ArrowRight className="h-3.5 w-3.5 ml-1" /></Button>
                 </Link>
@@ -253,7 +253,7 @@ export default function DashboardPage() {
           <Card className="border shadow-none">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">閲覧数推移（7日間）</CardTitle>
+                <CardTitle className="text-base">求人ページの閲覧数（7日間）</CardTitle>
                 <Link href="/dashboard/analytics">
                   <Button variant="ghost" size="sm">詳細 <ArrowRight className="h-3.5 w-3.5 ml-1" /></Button>
                 </Link>
@@ -285,7 +285,7 @@ export default function DashboardPage() {
         <Card className="border shadow-none">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">最新の候補者</CardTitle>
+              <CardTitle className="text-base">最近応募してきた人</CardTitle>
               <Link href="/dashboard/candidates">
                 <Button variant="ghost" size="sm">すべて見る <ArrowRight className="h-3.5 w-3.5 ml-1" /></Button>
               </Link>
@@ -295,7 +295,7 @@ export default function DashboardPage() {
             {clinicApps.length === 0 ? (
               <div className="text-center py-8">
                 <Users className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">まだ候補者がいません</p>
+                <p className="text-sm text-muted-foreground">まだ応募はありません</p>
               </div>
             ) : (
               <div className="space-y-1">
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           {breach && (
-                            <Badge className="bg-red-50 text-red-600 border-0 text-[10px]">SLA超過</Badge>
+                            <Badge className="bg-red-50 text-red-600 border-0 text-[10px]">対応遅れ</Badge>
                           )}
                           <Badge
                             className="text-[10px] py-0.5"

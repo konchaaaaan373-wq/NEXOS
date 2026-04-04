@@ -114,7 +114,7 @@ export default function AdminPage() {
             </p>
             <Link href="/dashboard">
               <Button variant="accent" className="mt-6">
-                ダッシュボードに戻る
+                採用の現状に戻る
               </Button>
             </Link>
           </CardContent>
@@ -136,7 +136,7 @@ export default function AdminPage() {
             <Shield className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Neco 管理ダッシュボード</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Neco 管理画面</h1>
             <p className="text-sm text-muted-foreground">
               全クリニック横断管理 — {currentUser.name}
             </p>

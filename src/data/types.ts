@@ -23,12 +23,12 @@ export const PIPELINE_STAGES: {
   { id: "rejected", label: "不採用", color: "#ef4444" },
 ];
 
-// Stage SLA definitions (max days before alert)
+// 各段階の対応期限（この日数を超えると「対応が遅れている」と判定）
 export const STAGE_SLA: Record<PipelineStage, number> = {
-  applied: 2,      // 応募後2日以内に初回対応
-  screening: 5,    // 書類選考5日以内
-  interview: 7,    // 面接設定7日以内
-  offer: 3,        // 内定後3日以内にフォロー
+  applied: 2,      // 応募が来たら2日以内に返事する
+  screening: 5,    // 書類選考は5日以内に結果を出す
+  interview: 7,    // 面接は7日以内に日程を決める
+  offer: 3,        // 内定を出したら3日以内にフォローする
   hired: 0,        // 完了
   rejected: 0,     // 完了
 };
@@ -302,12 +302,12 @@ export interface Alert {
 }
 
 export const ALERT_TYPE_LABELS: Record<AlertType, string> = {
-  stagnation: "ステージ滞留",
-  unresponded: "未対応応募",
-  interview_unset: "面接未設定",
-  sla_breach: "SLA超過",
-  kpi_drop: "KPI低下",
-  job_incomplete: "求人不備",
+  stagnation: "対応が止まっている",
+  unresponded: "まだ返事していない",
+  interview_unset: "面接日程が未定",
+  sla_breach: "対応期限を過ぎている",
+  kpi_drop: "数字が下がっている",
+  job_incomplete: "求人情報が不足",
 };
 
 // ============================================================

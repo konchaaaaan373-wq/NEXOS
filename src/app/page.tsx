@@ -128,7 +128,7 @@ export default function HomePage() {
               </div>
               <div className="px-6 pb-6 grid grid-cols-3 gap-4">
                 <div className="col-span-2 rounded-xl bg-slate-800/30 border border-slate-700/20 p-4">
-                  <p className="text-xs text-slate-500 mb-3">選考パイプライン</p>
+                  <p className="text-xs text-slate-500 mb-3">選考の進み具合</p>
                   <div className="space-y-2">
                     {["応募済み", "書類選考", "面接", "内定"].map((s, i) => (
                       <div key={s} className="flex items-center gap-2">
@@ -230,8 +230,8 @@ export default function HomePage() {
                 icon: Target,
                 num: "02",
                 title: "求人から内定まで一気通貫",
-                description: "求人作成・公開・応募管理・選考進行をすべて自院のダッシュボードで管理。採用の全工程を自分たちの手で。",
-                features: ["求人作成・公開管理", "応募者パイプライン", "SLA監視・タスク管理"],
+                description: "求人作成・公開・応募管理・選考進行をすべて自院の管理画面で管理。採用の全工程を自分たちの手で。",
+                features: ["求人作成・公開管理", "応募者の選考進捗", "対応期限の管理"],
                 gradient: "from-blue-500 to-violet-500",
               },
               {
@@ -466,7 +466,7 @@ export default function HomePage() {
               {
                 step: "03",
                 title: "選考を進め、採用を完遂する",
-                description: "応募者管理、面接調整、内定までをダッシュボードで管理。タスク漏れを防ぎ、採用活動を最後まで完遂します。",
+                description: "応募者の管理、面接調整、内定までを管理画面で確認。対応漏れを防ぎ、採用活動を最後まで完遂します。",
                 gradient: "from-violet-500 to-fuchsia-500",
               },
             ].map((item, i) => (
@@ -518,8 +518,8 @@ export default function HomePage() {
               {[
                 { label: "採用ページ編集", desc: "自院でもNecoでも編集可能", Icon: IconPageEdit, color: "#0891b2" },
                 { label: "AI求人最適化", desc: "応募率向上をAIが支援", Icon: IconSparkle, color: "#3b82f6" },
-                { label: "選考管理", desc: "候補者管理を共同で推進", Icon: IconClipboard, color: "#8b5cf6" },
-                { label: "採用分析", desc: "データに基づく改善提案", Icon: IconChart, color: "#06b6d4" },
+                { label: "選考管理", desc: "応募者の対応を共同で推進", Icon: IconClipboard, color: "#8b5cf6" },
+                { label: "数字で見る採用", desc: "現状把握に基づく改善提案", Icon: IconChart, color: "#06b6d4" },
               ].map((item, i) => (
                 <div key={i} className="p-5 rounded-xl bg-white border border-slate-200/80 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-300 group">
                   <item.Icon size={24} color={item.color} className="mb-3" />
