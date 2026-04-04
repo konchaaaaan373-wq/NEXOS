@@ -121,6 +121,87 @@ export interface Clinic {
   culture: string[];
   website: string;
   pageSections: ClinicPageSection[];
+  // 採用カルテ
+  recruitingProfile?: ClinicRecruitingProfile;
+}
+
+// ============================================================
+// 医療機関カルテ（採用プロファイル）
+// ============================================================
+
+export interface ClinicRecruitingProfile {
+  // 採用担当者
+  contactPerson: string;
+  contactRole: string;
+  contactEmail: string;
+  contactPhone: string;
+  decisionMaker: string;         // 最終意思決定者
+  decisionProcess: string;       // 決裁フロー（例: "院長面談 → 理事長承認"）
+
+  // 院の雰囲気・文化
+  cultureDescription: string;    // 自由記述
+  cultureTags: string[];         // タグ（例: "穏やか", "教育熱心", "若手が多い"）
+  workStyle: string;             // 働き方の特徴
+
+  // 採用成功パターン
+  goodFitDescription: string;    // こういう人が合った
+  goodFitExamples: string[];     // 過去の成功例
+
+  // NG条件
+  ngConditions: string[];        // こういう人は合わなかった
+  ngReasons: string[];           // 過去の失敗理由
+
+  // 条件
+  commuteArea: string;           // 通勤圏の目安
+  salaryRange: string;           // 給与相場感
+  preferredAge: string;          // 希望年齢層
+  preferredExperience: string;   // 希望経験年数
+
+  // 紹介会社との関係
+  agencyNotes: string;           // 紹介会社メモ
+
+  // 自由メモ
+  freeNotes: string;
+
+  lastUpdatedAt: string;
+  lastUpdatedBy: string;
+}
+
+// ============================================================
+// 候補者マッチ理由
+// ============================================================
+
+export interface CandidateMatchReason {
+  score: number;                 // 0-100
+  summary: string;               // 1行サマリ
+  strengths: string[];           // マッチポイント
+  concerns: string[];            // 懸念点
+  recommendation: string;        // 推薦コメント
+}
+
+// ============================================================
+// 「誰待ち」ステータス
+// ============================================================
+
+export type WaitingFor = "neco" | "clinic" | "candidate" | "both" | "none";
+
+export const WAITING_FOR_LABELS: Record<WaitingFor, string> = {
+  neco: "Neco対応中",
+  clinic: "医療機関確認待ち",
+  candidate: "候補者返答待ち",
+  both: "双方調整中",
+  none: "完了",
+};
+
+export function getWaitingFor(stage: PipelineStage): WaitingFor {
+  switch (stage) {
+    case "applied": return "neco";
+    case "screening": return "neco";
+    case "interview": return "both";
+    case "offer": return "candidate";
+    case "hired": return "none";
+    case "rejected": return "none";
+  }
 }
 
 // ============================================================
@@ -221,7 +302,10 @@ export interface Application {
   yearsOfExperience: number;
   motivation: string;
   resumeFileName?: string;
+  source?: CandidateSource;           // チャネル
   stage: PipelineStage;
+  waitingFor?: WaitingFor;            // 誰待ちか
+  matchReason?: CandidateMatchReason; // マッチ理由
   notes: CandidateNote[];
   tasks: Task[];
   stageHistory: StageChange[];

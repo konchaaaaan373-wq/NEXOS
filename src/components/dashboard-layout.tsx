@@ -209,12 +209,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   ).length;
 
   const navItems: { href: string; label: string; icon: typeof LayoutDashboard; exact?: boolean; badge?: number; badgeColor?: string }[] = [
-    { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
-    { href: "/dashboard/facilities", label: "拠点・人員配置", icon: Building2 },
-    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle, badge: unresolvedAlerts.length, badgeColor: unresolvedAlerts.length > 0 ? "bg-red-500" : undefined },
-    { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
-    { href: "/dashboard/candidates", label: "候補者管理", icon: Users, badge: slaBreachCount > 0 ? slaBreachCount : undefined, badgeColor: "bg-amber-500" },
-    { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
+    { href: "/dashboard", label: "ホーム", icon: LayoutDashboard, exact: true },
+    { href: "/dashboard/clinic-profile", label: "採用カルテ", icon: FileEdit },
+    { href: "/dashboard/jobs", label: "募集中の案件", icon: Briefcase },
+    { href: "/dashboard/candidates", label: "候補者", icon: Users, badge: slaBreachCount > 0 ? slaBreachCount : undefined, badgeColor: "bg-amber-500" },
+    { href: "/dashboard/facilities", label: "拠点・人員", icon: Building2 },
+    { href: "/dashboard/operations", label: "対応状況", icon: AlertTriangle, badge: unresolvedAlerts.length, badgeColor: unresolvedAlerts.length > 0 ? "bg-red-500" : undefined },
+    { href: "/dashboard/analytics", label: "採用実績", icon: BarChart3 },
     { href: "/dashboard/ai-agent", label: "AI補助", icon: Bot },
     { href: "/dashboard/page-editor", label: "採用ページ", icon: FileEdit },
     ...(isNeco ? [{ href: "/dashboard/admin", label: "Neco管理", icon: Shield }] : []),
