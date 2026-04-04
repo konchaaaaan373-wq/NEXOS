@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/clinic-context";
 import { ClinicLogo } from "@/components/icons/clinic-logos";
-import { clinics, jobPostings, applications, adminUsers, eventMetrics } from "@/data/seed";
+import { clinics, jobPostings, applications, adminUsers } from "@/data/seed";
+import { hasDatabase } from "@/lib/db";
 import { ROLE_LABELS, PIPELINE_STAGES } from "@/data/types";
 import type { UserRole } from "@/data/types";
 import {
@@ -47,14 +48,14 @@ const roleBgColors: Record<UserRole, string> = {
   clinic_editor: "bg-slate-50 text-slate-700 border-slate-200",
 };
 
-// Mock system activity log
+// システムアクティビティログ（本番ではAudit LogのAPIから取得）
 const systemActivities = [
-  { action: "新規求人公開", detail: "メディカルフロンティア渋谷 — 医療事務・受付スタッフ", user: "佐藤 健太", time: "15分前", type: "job" as const },
+  { action: "新規求人公開", detail: "メディカルフロンティア渋谷 -- 医療事務・受付スタッフ", user: "佐藤 健太", time: "15分前", type: "job" as const },
   { action: "候補者ステージ変更", detail: "田中 美咲 → 面接", user: "鈴木 院長", time: "1時間前", type: "candidate" as const },
-  { action: "採用ページ更新", detail: "さくら在宅クリニック — ヒーローセクション", user: "田村 結衣 (Neco)", time: "2時間前", type: "page" as const },
-  { action: "新規応募", detail: "加藤 裕子 — 臨床検査技師（脳波・MRI）", user: "システム", time: "3時間前", type: "candidate" as const },
-  { action: "AI求人票最適化", detail: "訪問看護師 — 応募率+28%の改善提案", user: "AI Agent", time: "5時間前", type: "ai" as const },
-  { action: "ユーザー追加", detail: "渡辺 慎一 — ニューロサイエンス東京 管理者", user: "Neco 管理者", time: "1日前", type: "user" as const },
+  { action: "採用ページ更新", detail: "さくら在宅クリニック -- ヒーローセクション", user: "田村 結衣 (Neco)", time: "2時間前", type: "page" as const },
+  { action: "新規応募", detail: "加藤 裕子 -- 臨床検査技師（脳波・MRI）", user: "システム", time: "3時間前", type: "candidate" as const },
+  { action: "AI求人票最適化", detail: "訪問看護師 -- 応募率+28%の改善提案", user: "AI Agent", time: "5時間前", type: "ai" as const },
+  { action: "ユーザー追加", detail: "渡辺 慎一 -- ニューロサイエンス東京 管理者", user: "Neco 管理者", time: "1日前", type: "user" as const },
 ];
 
 const activityIcons = {
@@ -372,10 +373,10 @@ export default function AdminPage() {
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
-                { label: "データベース", status: "正常", icon: CheckCircle2, color: "text-emerald-500" },
-                { label: "AI Agent", status: "稼働中", icon: Bot, color: "text-indigo-500" },
-                { label: "メール配信", status: "正常", icon: Mail, color: "text-emerald-500" },
-                { label: "ファイルストレージ", status: "正常", icon: CheckCircle2, color: "text-emerald-500" },
+                { label: "データベース", status: hasDatabase ? "接続済み" : "MVPモード", icon: hasDatabase ? CheckCircle2 : AlertCircle, color: hasDatabase ? "text-emerald-500" : "text-amber-500" },
+                { label: "AI Agent", status: process.env.NEXT_PUBLIC_HAS_AI === "true" || true ? "稼働中" : "未設定", icon: Bot, color: "text-indigo-500" },
+                { label: "メール配信", status: process.env.RESEND_API_KEY ? "接続済み" : "未設定", icon: Mail, color: process.env.RESEND_API_KEY ? "text-emerald-500" : "text-amber-500" },
+                { label: "ファイルストレージ", status: process.env.S3_ACCESS_KEY_ID ? "接続済み" : "未設定", icon: CheckCircle2, color: process.env.S3_ACCESS_KEY_ID ? "text-emerald-500" : "text-amber-500" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                   <item.icon className={`h-5 w-5 ${item.color}`} />

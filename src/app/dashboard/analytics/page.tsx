@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 function getDaysInStage(updatedAt: string): number {
-  const now = new Date("2026-04-02");
+  const now = new Date();
   const updated = new Date(updatedAt);
   return Math.floor((now.getTime() - updated.getTime()) / (1000 * 60 * 60 * 24));
 }

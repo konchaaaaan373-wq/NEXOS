@@ -19,7 +19,7 @@ import {
 // Helper functions
 // ============================================================
 
-const NOW = new Date("2026-04-02T12:00:00Z");
+const NOW = new Date();
 
 function getDaysInStage(app: (typeof applications)[number]): number {
   const updated = new Date(app.updatedAt);
