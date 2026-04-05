@@ -59,7 +59,7 @@ export default function ClinicPage({
           className={`bg-gradient-to-r ${clinic.brand.coverImageGradient} py-20 sm:py-32`}
         >
           <div className="absolute inset-0 opacity-30" />
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -109,7 +109,7 @@ export default function ClinicPage({
                   <a href="#positions">
                     <Button
                       size="lg"
-                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-sm"
+                      className="bg-white/20 hover:bg-white/30 text-white border border-white/30"
                     >
                       <Briefcase className="h-4 w-4" />
                       {clinicJobs.length}件の求人を見る
@@ -122,7 +122,7 @@ export default function ClinicPage({
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         {visibleSections.map((section, idx) => {
           if (section.type === "hero") return null; // already rendered above
 
@@ -141,7 +141,7 @@ export default function ClinicPage({
                 </p>
 
                 {/* Key info cards */}
-                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="p-6 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors">
                     <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                       <Sparkles className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
@@ -210,7 +210,7 @@ export default function ClinicPage({
                   <Heart className="h-5 w-5" style={{ color: clinic.brand.brandColor }} />
                   {section.title}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {clinic.culture.map((c, i) => (
                     <div
                       key={c}

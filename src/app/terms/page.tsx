@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-paper">
       <PublicHeader />
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <h1 className="text-3xl font-bold tracking-tight">利用規約</h1>
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <h1 className="text-3xl font-bold tracking-tight font-serif">利用規約</h1>
         <p className="mt-4 text-sm text-muted-foreground">
           最終更新日: 2026年4月1日
         </p>

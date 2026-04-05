@@ -90,7 +90,7 @@ function getPriorityBadge(priority: Task["priority"]) {
     case "medium":
       return <Badge className="bg-blue-100 text-blue-700 border-0">中</Badge>;
     case "low":
-      return <Badge className="bg-slate-100 text-slate-600 border-0">低</Badge>;
+      return <Badge className="bg-slate-100 text-muted-foreground border-0">低</Badge>;
   }
 }
 
@@ -192,7 +192,7 @@ export default function OperationsPage() {
         transition={{ duration: 0.4 }}
         className="flex items-center gap-4"
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/20">
+        <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-accent shadow-sm">
           <Shield className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -215,8 +215,8 @@ export default function OperationsPage() {
             label: "未解決アラート",
             value: unresolvedAlerts.length,
             icon: AlertTriangle,
-            color: unresolvedAlerts.length > 0 ? "text-red-600" : "text-slate-600",
-            bg: unresolvedAlerts.length > 0 ? "bg-red-50" : "bg-slate-50",
+            color: unresolvedAlerts.length > 0 ? "text-red-600" : "text-muted-foreground",
+            bg: unresolvedAlerts.length > 0 ? "bg-red-50" : "bg-muted",
           },
           {
             label: "進行中タスク",
@@ -307,10 +307,10 @@ export default function OperationsPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-semibold text-slate-800">
+                        <span className="text-sm font-semibold text-foreground">
                           {alert.title}
                         </span>
-                        <Badge className="bg-white/80 text-slate-600 border border-slate-200 text-[10px]">
+                        <Badge className="bg-white/80 text-muted-foreground border border-slate-200 text-[10px]">
                           {ALERT_TYPE_LABELS[alert.type]}
                         </Badge>
                         {isNeco && (
@@ -319,10 +319,10 @@ export default function OperationsPage() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                         {alert.message}
                       </p>
-                      <p className="text-[10px] text-slate-400 mt-1.5">
+                      <p className="text-[10px] text-muted-foreground mt-1.5">
                         <Clock className="inline h-3 w-3 mr-0.5 -mt-px" />
                         {getRelativeTime(alert.createdAt)}
                       </p>
@@ -345,21 +345,21 @@ export default function OperationsPage() {
                     {resolvedAlerts.map((alert) => (
                       <div
                         key={alert.id}
-                        className="flex items-start gap-4 p-4 rounded-lg bg-slate-50 opacity-60"
+                        className="flex items-start gap-4 p-4 rounded-lg bg-muted opacity-60"
                       >
                         <div className="mt-0.5 shrink-0">
                           <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium text-slate-600 line-through">
+                            <span className="text-sm font-medium text-muted-foreground line-through">
                               {alert.title}
                             </span>
-                            <Badge className="bg-slate-100 text-slate-500 border-0 text-[10px]">
+                            <Badge className="bg-slate-100 text-muted-foreground border-0 text-[10px]">
                               {ALERT_TYPE_LABELS[alert.type]}
                             </Badge>
                           </div>
-                          <p className="text-xs text-slate-400 mt-1">{alert.message}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{alert.message}</p>
                         </div>
                       </div>
                     ))}
@@ -404,8 +404,8 @@ export default function OperationsPage() {
           <CardContent>
             {allTasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-3 rounded-lg bg-slate-50 mb-4">
-                  <ListTodo className="h-8 w-8 text-slate-400" />
+                <div className="p-3 rounded-lg bg-muted mb-4">
+                  <ListTodo className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-sm font-medium text-slate-700">タスクはありません</p>
                 <p className="text-xs text-muted-foreground mt-1">現在割り当てられているタスクはありません</p>
@@ -487,8 +487,8 @@ export default function OperationsPage() {
           <CardContent>
             {activeApplications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-3 rounded-lg bg-slate-50 mb-4">
-                  <Users className="h-8 w-8 text-slate-400" />
+                <div className="p-3 rounded-lg bg-muted mb-4">
+                  <Users className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <p className="text-sm font-medium text-slate-700">アクティブな候補者はいません</p>
                 <p className="text-xs text-muted-foreground mt-1">選考中の候補者が表示されます</p>
@@ -511,7 +511,7 @@ export default function OperationsPage() {
                   return (
                     <div
                       key={app.id}
-                      className="p-4 rounded-lg bg-slate-50/80 hover:bg-slate-50 transition-colors"
+                      className="p-4 rounded-lg bg-muted/80 hover:bg-muted transition-colors"
                     >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3 min-w-0">
@@ -521,7 +521,7 @@ export default function OperationsPage() {
                             </span>
                           </div>
                           <div className="min-w-0">
-                            <p className="text-sm font-semibold text-slate-800 truncate">
+                            <p className="text-sm font-semibold text-foreground truncate">
                               {app.applicantName}
                             </p>
                             {isNeco && (
@@ -543,7 +543,7 @@ export default function OperationsPage() {
                           </Badge>
                           <Link href={`/dashboard/candidates?id=${app.id}`}>
                             <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                              <ChevronRight className="h-4 w-4 text-slate-400" />
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
                             </Button>
                           </Link>
                         </div>
@@ -552,7 +552,7 @@ export default function OperationsPage() {
                       {limit > 0 && (
                         <div className="space-y-1.5">
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-slate-500">
+                            <span className="text-muted-foreground">
                               {days}日経過 / SLA {limit}日
                             </span>
                             {status === "breach" && (
@@ -594,10 +594,10 @@ export default function OperationsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Card className="border-0 shadow-sm bg-gradient-to-br from-white to-indigo-50/30">
+          <Card className="border-0 shadow-sm bg-white">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-gradient-to-br from-amber-100 to-yellow-100">
+                <div className="p-1.5 rounded-lg bg-gold-light">
                   <Briefcase className="h-4.5 w-4.5 text-amber-600" />
                 </div>
                 共同運用ステータス
@@ -635,7 +635,7 @@ export default function OperationsPage() {
                           {clinic.name.charAt(0)}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-800 truncate">
+                          <p className="text-sm font-semibold text-foreground truncate">
                             {clinic.name}
                           </p>
                           <p className="text-[10px] text-muted-foreground">{clinic.location}</p>
@@ -691,12 +691,12 @@ function TaskRow({
           ? "bg-red-50/80"
           : isCompleted
             ? "bg-emerald-50/50 opacity-70"
-            : "bg-slate-50/80 hover:bg-slate-50"
+            : "bg-muted/80 hover:bg-muted"
       }`}
     >
       <div className="shrink-0">{getPriorityBadge(task.priority)}</div>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium ${isCompleted ? "line-through text-slate-400" : "text-slate-800"}`}>
+        <p className={`text-sm font-medium ${isCompleted ? "line-through text-muted-foreground" : "text-foreground"}`}>
           {task.title}
         </p>
         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
@@ -722,7 +722,7 @@ function TaskRow({
       {task.applicationId && (
         <Link href={`/dashboard/candidates?id=${task.applicationId}`} className="shrink-0">
           <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-            <ArrowRight className="h-3.5 w-3.5 text-slate-400" />
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
           </Button>
         </Link>
       )}

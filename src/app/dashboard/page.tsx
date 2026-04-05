@@ -89,10 +89,10 @@ export default function DashboardPage() {
         className="grid grid-cols-2 lg:grid-cols-4 gap-4"
       >
         {[
-          { label: "公開求人", value: activeJobs.length, suffix: "件", icon: Briefcase, color: "#4f46e5" },
-          { label: "選考中", value: activeApps.length, suffix: "名", icon: Users, color: "#7c3aed" },
-          { label: "要対応", value: actionCount, suffix: "件", icon: AlertTriangle, color: actionCount > 0 ? "#dc2626" : "#059669" },
-          { label: "SLA超過", value: slaBreach.length, suffix: "件", icon: Timer, color: slaBreach.length > 0 ? "#d97706" : "#059669" },
+          { label: "公開求人", value: activeJobs.length, suffix: "件", icon: Briefcase, color: "var(--color-accent)" },
+          { label: "選考中", value: activeApps.length, suffix: "名", icon: Users, color: "var(--color-gold)" },
+          { label: "要対応", value: actionCount, suffix: "件", icon: AlertTriangle, color: actionCount > 0 ? "var(--color-destructive)" : "var(--color-success)" },
+          { label: "SLA超過", value: slaBreach.length, suffix: "件", icon: Timer, color: slaBreach.length > 0 ? "var(--color-warning)" : "var(--color-success)" },
         ].map((metric, i) => (
           <Card key={i} className="border shadow-none">
             <CardContent className="p-4">

@@ -42,7 +42,7 @@ const priorityColors = {
   urgent: "bg-red-100 text-red-700 border-red-200",
   high: "bg-amber-100 text-amber-700 border-amber-200",
   medium: "bg-blue-100 text-blue-700 border-blue-200",
-  low: "bg-slate-100 text-slate-600 border-slate-200",
+  low: "bg-muted text-muted-foreground border-border",
 };
 
 const priorityLabels = { urgent: "緊急", high: "高", medium: "中", low: "低" };
@@ -145,7 +145,7 @@ export default function CandidateDetailPage({
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-100 to-violet-100 text-xl font-bold text-indigo-700">
+            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-accent-light text-xl font-bold text-accent">
               {application.applicantName.charAt(0)}
             </div>
             <div>
@@ -616,7 +616,7 @@ export default function CandidateDetailPage({
           <Link href="/dashboard/operations">
             <Card className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500">
+                <div className="p-2 rounded-lg bg-gold">
                   <Shield className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">

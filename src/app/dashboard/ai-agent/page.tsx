@@ -68,43 +68,43 @@ const capabilities = [
     icon: Sparkles,
     title: "求人票AI生成",
     description: "AIが最適な求人票を自動生成",
-    gradient: "from-indigo-500 to-violet-500",
-    bg: "bg-indigo-50",
+    gradient: "from-accent to-accent",
+    bg: "bg-accent/10",
   },
   {
     icon: Users,
     title: "候補者スコアリング",
     description: "応募者と求人のマッチング分析",
-    gradient: "from-violet-500 to-fuchsia-500",
-    bg: "bg-violet-50",
+    gradient: "from-accent to-accent",
+    bg: "bg-accent/10",
   },
   {
     icon: Layout,
     title: "採用ページ最適化",
     description: "AIがページ改善を提案",
-    gradient: "from-fuchsia-500 to-pink-500",
-    bg: "bg-fuchsia-50",
+    gradient: "from-accent to-accent",
+    bg: "bg-accent/10",
   },
   {
     icon: MessageSquare,
     title: "選考アシスタント",
     description: "面接質問・評価テンプレート生成",
-    gradient: "from-blue-500 to-indigo-500",
-    bg: "bg-blue-50",
+    gradient: "from-accent to-accent",
+    bg: "bg-accent/10",
   },
   {
     icon: BarChart3,
     title: "レポート生成",
     description: "採用データの自動分析・レポート",
-    gradient: "from-cyan-500 to-blue-500",
-    bg: "bg-cyan-50",
+    gradient: "from-accent to-accent",
+    bg: "bg-accent/10",
   },
   {
     icon: Mail,
     title: "メール文面作成",
     description: "候補者への連絡文を自動生成",
-    gradient: "from-teal-500 to-cyan-500",
-    bg: "bg-teal-50",
+    gradient: "from-accent to-accent",
+    bg: "bg-accent/10",
   },
 ];
 
@@ -197,7 +197,7 @@ export default function AIAgentPage() {
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25">
+          <div className="p-2.5 rounded-lg bg-accent shadow-sm">
             <Bot className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -222,7 +222,7 @@ export default function AIAgentPage() {
             {/* Chat Header */}
             <div className="flex items-center gap-3 px-5 py-3.5 border-b bg-gradient-to-r from-indigo-50 to-violet-50">
               <div className="relative">
-                <div className="p-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500">
+                <div className="p-1.5 rounded-full bg-accent">
                   <Bot className="h-4 w-4 text-white" />
                 </div>
                 <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 border-2 border-white" />
@@ -248,7 +248,7 @@ export default function AIAgentPage() {
                 >
                   {msg.role === "ai" && (
                     <div className="shrink-0 mr-2 mt-1">
-                      <div className="p-1 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500">
+                      <div className="p-1 rounded-full bg-accent">
                         <Bot className="h-3 w-3 text-white" />
                       </div>
                     </div>
@@ -256,7 +256,7 @@ export default function AIAgentPage() {
                   <div
                     className={`max-w-[80%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-br-lg"
+                        ? "bg-accent text-white rounded-br-lg"
                         : "bg-white border shadow-sm rounded-bl-lg"
                     }`}
                   >

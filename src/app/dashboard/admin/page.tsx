@@ -129,7 +129,7 @@ export default function AdminPage() {
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
+          <div className="p-2.5 rounded-lg bg-gold shadow-sm">
             <Shield className="h-6 w-6 text-white" />
           </div>
           <div>
