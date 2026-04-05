@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NexosLogo } from "@/components/icons/clinic-logos";
+import { NECO_FOR_MEDICAL_URL } from "@/lib/neco-links";
 
 export function PublicFooter() {
   return (
@@ -30,27 +31,21 @@ export function PublicFooter() {
             <h4 className="text-sm font-semibold mb-5 text-slate-300">求職者の方へ</h4>
             <ul className="space-y-3">
               <li>
+                <a
+                  href={NECO_FOR_MEDICAL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-slate-400 hover:text-white transition-colors"
+                >
+                  求人を探す（Neco）
+                </a>
+              </li>
+              <li>
                 <Link
                   href="/jobs"
                   className="text-sm text-slate-400 hover:text-white transition-colors"
                 >
-                  求人を探す
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/jobs?category=医師"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
-                >
-                  医師の求人
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/jobs?category=看護師"
-                  className="text-sm text-slate-400 hover:text-white transition-colors"
-                >
-                  看護師の求人
+                  NEXOS掲載求人
                 </Link>
               </li>
             </ul>
