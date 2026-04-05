@@ -33,9 +33,28 @@
 - **「完成度を高めて」「よく考えて」「しっかり作って」などの指示は、ハーネスエンジニアリングのフルサイクルを回す合図とみなす**
 
 ## デザインルール
+- **DESIGN.mdを必ず参照する** — プロジェクトルートのDESIGN.mdがデザインの最上位判断基準
 - AI的なフォントや構成を避け、人間らしい自然なデザインを心がける
 - Canvaなどの拡張機能を活用し、状況に応じてイメージを生成しながらデザインする
+- Figma MCPが利用可能な場合は積極的に活用する
 - デザインに絵文字を使わない（厳守）
+
+### Anti-AI-Slop（AIっぽいデザインの排除）
+UIを生成・修正する際、以下のパターンは**絶対に使用しない**:
+- Inter / Roboto / Arial フォント
+- 紫・シアンのグラデーション背景
+- 16px超の角丸（rounded-xl, rounded-2xl）
+- グラスモーフィズム（backdrop-filter: blur）
+- 浮遊・グロー・パルスの無限アニメーション
+- 均等3列カードグリッド
+- 意味のない装飾アイコン
+
+### デザインの美学方向: Editorial Medical
+- 見出し: Cormorant Garamond（セリフ体）で知性と信頼を表現
+- 本文: Noto Sans JP で読みやすさを確保
+- 配色: ダークネイビー(#1a1f36) + オフホワイト(#faf9f7) + ディープティール(#0d7377)
+- レイアウト: 非対称グリッド、左寄せ基本、余白に意味を持たせる
+- アニメーション: 状態変化の説明のみ。装飾的アニメーション禁止
 
 ## ワークフロールール（全プロジェクト共通）
 1. `claude/` ブランチで開発する
@@ -53,6 +72,7 @@ Orchestratorが統括し、Planner / Generator / Evaluator の役割を自動的
 ### エージェント構成
 - **Orchestrator** (`.claude/agents/orchestrator.md`): 全体を統括し、自動的にサイクルを回す
 - **Planner** (`.claude/agents/planner.md`): 要件を分析し、スプリント計画書を作成する
+- **Designer** (`.claude/agents/designer.md`): DESIGN.mdに基づきデザイン仕様を策定・レビューする
 - **Generator** (`.claude/agents/generator.md`): 計画書に基づきコードを1機能ずつ実装する
 - **Evaluator** (`.claude/agents/evaluator.md`): 実装をテスト・レビューし、フィードバックを返す
 
@@ -91,12 +111,12 @@ Orchestratorが統括し、Planner / Generator / Evaluator の役割を自動的
     |
     v
 [Phase 1: 計画] 要件分析 -> スプリント計画書を作成 -> docs/sprint/に保存
-    |
+    |               UIタスクの場合: Designer がデザイン仕様を追記
     v
 [Phase 2: 実装ループ] タスクごとに繰り返す
-    |   実装（Generator）-> 評価（Evaluator）
+    |   実装（Generator）-> 評価（Evaluator + Designer）
     |       |
-    |       +-- 合格 -> コミット -> 次のタスクへ
+    |       +-- 合格（機能+デザイン両方）-> コミット -> 次のタスクへ
     |       +-- 不合格 -> 修正 -> 再評価（最大3回）
     |
     v
