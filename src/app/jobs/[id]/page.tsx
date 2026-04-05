@@ -69,7 +69,7 @@ export default function JobDetailPage({
               <div className="flex items-start gap-4">
                 <Link href={`/clinics/${clinic.slug}`}>
                   <div
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl hover:scale-105 transition-transform"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg hover:scale-105 transition-transform"
                     style={{ backgroundColor: clinic.brand.brandColorLight }}
                   >
                     <ClinicLogo clinicId={clinic.id} size={32} color={clinic.brand.brandColor} />
@@ -100,14 +100,14 @@ export default function JobDetailPage({
 
               {/* Key info */}
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50">
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                   <MapPin className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-xs text-muted-foreground">勤務地</p>
                     <p className="text-sm font-medium">{job.location}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50">
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                   <DollarSign className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-xs text-muted-foreground">年収</p>
@@ -117,7 +117,7 @@ export default function JobDetailPage({
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50">
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                   <Clock className="h-5 w-5 text-muted-foreground" />
                   <div>
                     <p className="text-xs text-muted-foreground">掲載日</p>
@@ -211,7 +211,7 @@ export default function JobDetailPage({
                 <Link href={`/clinics/${clinic.slug}`} className="group">
                   <div className="flex items-center gap-3">
                     <div
-                      className="flex h-12 w-12 items-center justify-center rounded-xl"
+                      className="flex h-12 w-12 items-center justify-center rounded-lg"
                       style={{ backgroundColor: clinic.brand.brandColorLight }}
                     >
                       <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />

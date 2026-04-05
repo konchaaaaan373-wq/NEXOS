@@ -197,7 +197,7 @@ export default function AIAgentPage() {
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25">
+          <div className="p-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/25">
             <Bot className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -254,7 +254,7 @@ export default function AIAgentPage() {
                     </div>
                   )}
                   <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    className={`max-w-[80%] rounded-lg px-4 py-3 text-sm leading-relaxed ${
                       msg.role === "user"
                         ? "bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-br-lg"
                         : "bg-white border shadow-sm rounded-bl-lg"
@@ -302,7 +302,7 @@ export default function AIAgentPage() {
                 <Button
                   onClick={handleSend}
                   disabled={!inputValue.trim()}
-                  variant="gradient"
+                  variant="accent"
                   className="px-4"
                 >
                   <Send className="h-4 w-4" />
@@ -335,8 +335,8 @@ export default function AIAgentPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.3 + index * 0.05 }}
                 >
-                  <button className="w-full group flex items-center gap-3 p-2.5 rounded-xl hover:bg-muted/50 transition-all cursor-pointer text-left">
-                    <div className={`p-2 rounded-xl bg-gradient-to-r ${cap.gradient} shrink-0`}>
+                  <button className="w-full group flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/50 transition-all cursor-pointer text-left">
+                    <div className={`p-2 rounded-lg bg-gradient-to-r ${cap.gradient} shrink-0`}>
                       <cap.icon className="h-4 w-4 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">

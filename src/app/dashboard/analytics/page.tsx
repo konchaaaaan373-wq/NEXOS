@@ -141,7 +141,7 @@ export default function AnalyticsPage() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground">{metric.label}</p>
-                <div className={`${metric.bg} p-2 rounded-xl`}>
+                <div className={`${metric.bg} p-2 rounded-lg`}>
                   <metric.icon className="h-4 w-4" style={{ color: metric.iconColor }} />
                 </div>
               </div>
@@ -295,7 +295,7 @@ export default function AnalyticsPage() {
                       <Link
                         key={app.id}
                         href={`/dashboard/candidates/${app.id}`}
-                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors group"
+                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
                       >
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-100 to-violet-100 text-xs font-semibold text-indigo-700 shrink-0">
                           {app.applicantName.charAt(0)}
@@ -351,7 +351,7 @@ export default function AnalyticsPage() {
                     ? Math.round((job.applyCompleteCount / job.applyStartCount) * 100)
                     : 0;
                   return (
-                    <div key={job.id} className="p-4 rounded-xl bg-muted/30 space-y-2">
+                    <div key={job.id} className="p-4 rounded-lg bg-muted/30 space-y-2">
                       <h4 className="text-sm font-medium">{job.title}</h4>
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>

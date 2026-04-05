@@ -192,7 +192,7 @@ export default function OperationsPage() {
         transition={{ duration: 0.4 }}
         className="flex items-center gap-4"
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/20">
+        <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/20">
           <Shield className="h-6 w-6 text-white" />
         </div>
         <div>
@@ -244,7 +244,7 @@ export default function OperationsPage() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">{metric.label}</p>
-                <div className={`${metric.bg} p-2 rounded-xl`}>
+                <div className={`${metric.bg} p-2 rounded-lg`}>
                   <metric.icon className={`h-4 w-4 ${metric.color}`} />
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function OperationsPage() {
           <CardContent>
             {unresolvedAlerts.length === 0 && !showResolved ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-3 rounded-2xl bg-emerald-50 mb-4">
+                <div className="p-3 rounded-lg bg-emerald-50 mb-4">
                   <CheckCircle2 className="h-8 w-8 text-emerald-500" />
                 </div>
                 <p className="text-sm font-medium text-slate-700">すべてのアラートが解決済みです</p>
@@ -300,7 +300,7 @@ export default function OperationsPage() {
                 {unresolvedAlerts.map((alert) => (
                   <div
                     key={alert.id}
-                    className={`flex items-start gap-4 p-4 rounded-xl border-l-4 ${getSeverityBorder(alert.severity)} ${getSeverityBg(alert.severity)}`}
+                    className={`flex items-start gap-4 p-4 rounded-lg border-l-4 ${getSeverityBorder(alert.severity)} ${getSeverityBg(alert.severity)}`}
                   >
                     <div className="mt-0.5 shrink-0">
                       {getSeverityIcon(alert.severity)}
@@ -345,7 +345,7 @@ export default function OperationsPage() {
                     {resolvedAlerts.map((alert) => (
                       <div
                         key={alert.id}
-                        className="flex items-start gap-4 p-4 rounded-xl bg-slate-50 opacity-60"
+                        className="flex items-start gap-4 p-4 rounded-lg bg-slate-50 opacity-60"
                       >
                         <div className="mt-0.5 shrink-0">
                           <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
@@ -404,7 +404,7 @@ export default function OperationsPage() {
           <CardContent>
             {allTasks.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-3 rounded-2xl bg-slate-50 mb-4">
+                <div className="p-3 rounded-lg bg-slate-50 mb-4">
                   <ListTodo className="h-8 w-8 text-slate-400" />
                 </div>
                 <p className="text-sm font-medium text-slate-700">タスクはありません</p>
@@ -487,7 +487,7 @@ export default function OperationsPage() {
           <CardContent>
             {activeApplications.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="p-3 rounded-2xl bg-slate-50 mb-4">
+                <div className="p-3 rounded-lg bg-slate-50 mb-4">
                   <Users className="h-8 w-8 text-slate-400" />
                 </div>
                 <p className="text-sm font-medium text-slate-700">アクティブな候補者はいません</p>
@@ -511,7 +511,7 @@ export default function OperationsPage() {
                   return (
                     <div
                       key={app.id}
-                      className="p-4 rounded-xl bg-slate-50/80 hover:bg-slate-50 transition-colors"
+                      className="p-4 rounded-lg bg-slate-50/80 hover:bg-slate-50 transition-colors"
                     >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3 min-w-0">
@@ -625,11 +625,11 @@ export default function OperationsPage() {
                   return (
                     <div
                       key={clinic.id}
-                      className="p-5 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow"
+                      className="p-5 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center gap-3 mb-4">
                         <div
-                          className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-sm"
+                          className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-sm"
                           style={{ backgroundColor: clinic.brand.brandColor }}
                         >
                           {clinic.name.charAt(0)}
@@ -643,15 +643,15 @@ export default function OperationsPage() {
                       </div>
 
                       <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="p-2 rounded-xl bg-red-50">
+                        <div className="p-2 rounded-lg bg-red-50">
                           <p className="text-lg font-bold text-red-600">{clinicAlertCount}</p>
                           <p className="text-[10px] text-red-500">アラート</p>
                         </div>
-                        <div className="p-2 rounded-xl bg-amber-50">
+                        <div className="p-2 rounded-lg bg-amber-50">
                           <p className="text-lg font-bold text-amber-600">{clinicTaskCount}</p>
                           <p className="text-[10px] text-amber-500">タスク</p>
                         </div>
-                        <div className="p-2 rounded-xl bg-indigo-50">
+                        <div className="p-2 rounded-lg bg-indigo-50">
                           <p className="text-lg font-bold text-indigo-600">{clinicAppCount}</p>
                           <p className="text-[10px] text-indigo-500">候補者</p>
                         </div>
@@ -686,7 +686,7 @@ function TaskRow({
 
   return (
     <div
-      className={`flex items-center gap-4 p-3.5 rounded-xl transition-colors ${
+      className={`flex items-center gap-4 p-3.5 rounded-lg transition-colors ${
         isOverdue
           ? "bg-red-50/80"
           : isCompleted

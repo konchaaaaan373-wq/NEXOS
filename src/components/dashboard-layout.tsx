@@ -40,7 +40,7 @@ function ClinicSwitcher() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors text-left"
+        className="w-full flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-left"
       >
         <div
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
@@ -67,7 +67,7 @@ function ClinicSwitcher() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 top-full mt-1 bg-white border rounded-xl shadow-lg z-50 overflow-hidden"
+            className="absolute left-0 right-0 top-full mt-1 bg-white border rounded-lg shadow-lg z-50 overflow-hidden"
           >
             <div className="p-1.5">
               <p className="px-3 py-1.5 text-xs font-medium text-muted-foreground">
@@ -146,7 +146,7 @@ function UserSwitcher() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 bottom-full mb-1 bg-white border rounded-xl shadow-lg z-50 overflow-hidden max-h-72 overflow-y-auto"
+            className="absolute left-0 right-0 bottom-full mb-1 bg-white border rounded-lg shadow-lg z-50 overflow-hidden max-h-72 overflow-y-auto"
           >
             <div className="p-1.5">
               <p className="px-3 py-1.5 text-xs font-medium text-muted-foreground">

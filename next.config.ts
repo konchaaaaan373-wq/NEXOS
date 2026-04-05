@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_HAS_DATABASE: process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL ? "true" : "",
   },
+  // Turbopackのルートディレクトリ設定
+  turbopack: {
+    root: ".",
+  },
 };
 
 export default nextConfig;

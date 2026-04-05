@@ -109,7 +109,7 @@ export default function ApplyPage({
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg"
                   style={{ backgroundColor: clinic.brand.brandColorLight }}
                 >
                   <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />

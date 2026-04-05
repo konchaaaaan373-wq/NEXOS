@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { clinics, jobPostings } from "@/data/seed";
 import { ClinicLogo } from "@/components/icons/clinic-logos";
-import { MapPin, Search, Briefcase, Building2, DollarSign, Sparkles } from "lucide-react";
+import { MapPin, Search, Briefcase, Building2, DollarSign } from "lucide-react";
 
 export default function JobsPage() {
   const searchParams = useSearchParams();
@@ -51,45 +51,38 @@ export default function JobsPage() {
   }, [searchQuery, selectedCategory, selectedClinic, selectedType, activeJobs]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-paper">
       <PublicHeader />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 py-16 sm:py-20">
-        <div className="absolute inset-0 gradient-mesh-dark" />
-        <div className="absolute top-10 right-10 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 left-10 w-60 h-60 bg-fuchsia-500/10 rounded-full blur-3xl" />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {/* Hero: ダーク背景、セリフ体見出し */}
+      <section className="bg-ink py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
+            transition={{ duration: 0.4 }}
           >
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-sm text-indigo-300 mb-6">
-              <Sparkles className="h-3.5 w-3.5" />
-              AI搭載の医療採用プラットフォーム
-            </div>
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
-              あなたに合った{" "}
-              <span className="text-gradient">医療の仕事</span>
-              を見つける
+            <p className="text-sm font-medium text-accent-light tracking-wide mb-4">
+              Medical Careers
+            </p>
+            <h1 className="text-4xl sm:text-5xl font-serif font-light tracking-tight text-white">
+              あなたに合った<span className="font-bold">医療の仕事</span>を見つける
             </h1>
-            <p className="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">
+            <p className="mt-4 text-base text-gray-400 max-w-2xl">
               {activeJobs.length}件の求人から、あなたの経験とスキルにマッチする職場を見つけてください
             </p>
           </motion.div>
 
-          {/* Filters */}
+          {/* フィルター: シンプルなボーダーカード */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-10 glass rounded-2xl p-4 sm:p-6"
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="mt-8 rounded-lg border border-white/10 bg-white/5 p-4 sm:p-6"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               <div className="relative lg:col-span-2">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="キーワードで検索..."
                   value={searchQuery}
@@ -136,9 +129,9 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Results */}
+      {/* 求人一覧 */}
       <section className="py-10 sm:py-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mb-6 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
               {filteredJobs.length}件の求人が見つかりました
@@ -157,7 +150,7 @@ export default function JobsPage() {
               {filteredJobs.length === 0 ? (
                 <div className="text-center py-20">
                   <Briefcase className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold">
+                  <h3 className="text-lg font-bold">
                     条件に合う求人が見つかりませんでした
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground">
@@ -182,32 +175,32 @@ export default function JobsPage() {
                   return (
                     <motion.div
                       key={job.id}
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                      transition={{ duration: 0.3, delay: i * 0.04 }}
                     >
                       <Link href={`/jobs/${job.id}`}>
-                        <Card className="group hover:shadow-lg hover:border-accent/30 transition-all duration-300 border-0 shadow-sm">
+                        <Card className="group">
                           <CardContent className="p-6">
                             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                               <div
-                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md"
                                 style={{
                                   backgroundColor: clinic.brand.brandColorLight,
                                 }}
                               >
-                                <ClinicLogo clinicId={clinic.id} size={28} color={clinic.brand.brandColor} />
+                                <ClinicLogo clinicId={clinic.id} size={24} color={clinic.brand.brandColor} />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                  <h3 className="text-lg font-semibold group-hover:text-accent transition-colors">
+                                  <h3 className="text-lg font-bold group-hover:text-accent transition-colors">
                                     {job.title}
                                   </h3>
                                   <div className="flex gap-2">
-                                    <Badge variant="secondary" className="rounded-lg">
+                                    <Badge variant="secondary">
                                       {job.category}
                                     </Badge>
-                                    <Badge variant="accent" className="rounded-lg">
+                                    <Badge variant="accent">
                                       {job.type === "full-time"
                                         ? "常勤"
                                         : job.type === "part-time"

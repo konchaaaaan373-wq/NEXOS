@@ -129,7 +129,7 @@ export default function AdminPage() {
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
+          <div className="p-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 shadow-lg shadow-amber-500/25">
             <Shield className="h-6 w-6 text-white" />
           </div>
           <div>
@@ -140,7 +140,7 @@ export default function AdminPage() {
       </motion.div>
 
       {/* タブ切り替え */}
-      <div className="flex gap-1 bg-muted/50 p-1 rounded-xl w-fit">
+      <div className="flex gap-1 bg-muted/50 p-1 rounded-lg w-fit">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -199,7 +199,7 @@ export default function AdminPage() {
                     <CardContent className="p-5">
                       <div className="flex items-center gap-3 mb-4">
                         <div
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"
                           style={{ backgroundColor: clinic.brand.brandColorLight }}
                         >
                           <ClinicLogo clinicId={clinic.id} size={24} color={clinic.brand.brandColor} />
@@ -266,9 +266,9 @@ export default function AdminPage() {
                   return (
                     <div
                       key={user.id}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted/50 transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
                     >
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r ${roleColors[user.role]} text-white text-sm font-semibold shrink-0`}>
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-r ${roleColors[user.role]} text-white text-sm font-semibold shrink-0`}>
                         {user.name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -358,7 +358,7 @@ export default function AdminPage() {
                   href={NECO_ADMIN_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors"
                 >
                   <Shield className="h-5 w-5 text-amber-600" />
                   <div>
@@ -370,7 +370,7 @@ export default function AdminPage() {
                   href={NECO_FOR_MEDICAL_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors"
                 >
                   <Building2 className="h-5 w-5 text-blue-600" />
                   <div>
@@ -382,7 +382,7 @@ export default function AdminPage() {
                   href={NECO_BASE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
+                  className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
                 >
                   <Globe className="h-5 w-5 text-slate-600" />
                   <div>
@@ -407,7 +407,7 @@ export default function AdminPage() {
                   { label: "メール配信", status: process.env.NEXT_PUBLIC_RESEND_API_KEY ? "接続済み" : "未設定", icon: Mail, color: process.env.NEXT_PUBLIC_RESEND_API_KEY ? "text-emerald-500" : "text-amber-500" },
                   { label: "ファイルストレージ", status: "未設定", icon: CheckCircle2, color: "text-amber-500" },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-muted/50">
+                  <div key={i} className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                     <item.icon className={`h-5 w-5 ${item.color}`} />
                     <div>
                       <p className="text-sm font-medium">{item.label}</p>

@@ -63,7 +63,7 @@ export default function ApplySuccessPage({
                 選考結果は、ご登録いただいたメールアドレスにご連絡いたします。
               </p>
 
-              <div className="mt-8 p-4 rounded-xl bg-muted/50 max-w-sm mx-auto">
+              <div className="mt-8 p-4 rounded-lg bg-muted/50 max-w-sm mx-auto">
                 <div className="flex items-center gap-3">
                   <div
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg"

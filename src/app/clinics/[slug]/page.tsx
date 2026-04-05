@@ -58,7 +58,7 @@ export default function ClinicPage({
         <div
           className={`bg-gradient-to-r ${clinic.brand.coverImageGradient} py-20 sm:py-32`}
         >
-          <div className="absolute inset-0 gradient-mesh-dark opacity-30" />
+          <div className="absolute inset-0 opacity-30" />
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -142,7 +142,7 @@ export default function ClinicPage({
 
                 {/* Key info cards */}
                 <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="p-6 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors">
+                  <div className="p-6 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors">
                     <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                       <Sparkles className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
                       診療科目
@@ -156,7 +156,7 @@ export default function ClinicPage({
                     </div>
                   </div>
 
-                  <div className="p-6 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors">
+                  <div className="p-6 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors">
                     <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                       <Building2 className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
                       基本情報
@@ -177,7 +177,7 @@ export default function ClinicPage({
                     </ul>
                   </div>
 
-                  <div className="p-6 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors">
+                  <div className="p-6 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors">
                     <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                       <GraduationCap className="h-4 w-4" style={{ color: clinic.brand.brandColor }} />
                       採用実績
@@ -214,7 +214,7 @@ export default function ClinicPage({
                   {clinic.culture.map((c, i) => (
                     <div
                       key={c}
-                      className="p-5 rounded-xl border hover:shadow-sm transition-shadow"
+                      className="p-5 rounded-lg border hover:shadow-sm transition-shadow"
                       style={{ borderLeftWidth: 3, borderLeftColor: clinic.brand.brandColor }}
                     >
                       <div className="flex items-center gap-3">
@@ -247,7 +247,7 @@ export default function ClinicPage({
                   {clinic.benefits.map((b) => (
                     <div
                       key={b}
-                      className="flex items-center gap-3 p-4 rounded-xl bg-muted/50"
+                      className="flex items-center gap-3 p-4 rounded-lg bg-muted/50"
                     >
                       <CheckCircle2
                         className="h-4.5 w-4.5 shrink-0"
@@ -280,7 +280,7 @@ export default function ClinicPage({
                 </div>
 
                 {clinicJobs.length === 0 ? (
-                  <div className="text-center py-16 bg-muted/30 rounded-2xl">
+                  <div className="text-center py-16 bg-muted/30 rounded-lg">
                     <Briefcase className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
                     <p className="text-muted-foreground">
                       現在、公開中の求人はありません
