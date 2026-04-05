@@ -41,3 +41,59 @@
 3. originへプッシュする
 4. `gh pr create` でPR作成し、URLをユーザーに返す
 5. PRリンクを必ず提示して終了する（ユーザーの操作は"Merge"のみ）
+
+## ハーネスエンジニアリング運用ルール
+
+### 概要
+3つのサブエージェント（Planner / Generator / Evaluator）が連携し、自律的にアプリ開発を進めるシステム。
+
+### エージェント構成
+- **Planner** (`.claude/agents/planner.md`): 要件を分析し、スプリント計画書を作成する
+- **Generator** (`.claude/agents/generator.md`): 計画書に基づきコードを1機能ずつ実装する
+- **Evaluator** (`.claude/agents/evaluator.md`): 実装をテスト・レビューし、フィードバックを返す
+
+### 開発サイクル
+```
+ユーザーの要件
+    |
+    v
+[Planner] 要件分析 -> スプリント計画書を作成
+    |
+    v
+[Generator] 1タスクずつ実装 -> コミット
+    |
+    v
+[Evaluator] テスト・レビュー
+    |
+    +-- 合格 -> 次のタスクへ（Generatorに戻る）
+    |
+    +-- 不合格 -> フィードバック付きでGeneratorに差し戻し
+                  （最大3回リトライ、超過時はユーザーに確認）
+```
+
+### 運用ルール
+1. **1タスク1サイクル**: Generatorは1タスクずつ実装し、必ずEvaluatorの評価を受ける
+2. **計画優先**: Generatorは計画書にないタスクを勝手に追加しない
+3. **フィードバック必須**: Evaluatorが不合格を出した場合、Generatorは必ず修正する
+4. **リトライ上限**: 同一タスクの修正は最大3回まで。超過時はユーザーに判断を仰ぐ
+5. **スプリント記録**: 計画書と評価結果は`docs/sprint/`に保存する
+6. **Playwright活用**: Webアプリの場合、EvaluatorはPlaywright MCPでブラウザ動作を確認する
+
+### 実行方法
+自律的なループを回す場合は以下のフラグを推奨:
+```bash
+claude --dangerously-skip-permissions
+```
+
+### Playwright MCPの追加
+ブラウザテストを有効にするには、Playwright MCPサーバーを設定に追加する:
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@anthropic-ai/mcp-server-playwright"]
+    }
+  }
+}
+```
