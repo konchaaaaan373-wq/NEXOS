@@ -1,7 +1,19 @@
 import { NextResponse } from "next/server";
-import { addApplication } from "@/data/seed";
+import { applications, addApplication } from "@/data/seed";
 import { applicationSchema } from "@/lib/validations";
 import type { Application } from "@/data/types";
+
+// 応募一覧を取得
+export async function GET() {
+  try {
+    return NextResponse.json(applications);
+  } catch {
+    return NextResponse.json(
+      { error: "応募一覧の取得に失敗しました" },
+      { status: 500 }
+    );
+  }
+}
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
@@ -29,7 +41,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "リクエストボディが不正です" },
+        { status: 400 }
+      );
+    }
     const parsed = applicationSchema.safeParse(body);
 
     if (!parsed.success) {

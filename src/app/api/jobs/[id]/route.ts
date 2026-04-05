@@ -1,6 +1,31 @@
 import { NextResponse } from "next/server";
 import { jobPostings } from "@/data/seed";
 
+// 求人詳細を取得
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const job = jobPostings.find((j) => j.id === id);
+
+    if (!job) {
+      return NextResponse.json(
+        { error: "求人が見つかりません" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(job);
+  } catch {
+    return NextResponse.json(
+      { error: "求人の取得に失敗しました" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

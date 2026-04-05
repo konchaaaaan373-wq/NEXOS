@@ -13,7 +13,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "リクエストボディが不正です" },
+        { status: 400 }
+      );
+    }
     const { title, description, category, clinicName } = body;
 
     if (!title || !description) {
