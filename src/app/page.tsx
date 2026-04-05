@@ -54,10 +54,10 @@ export default function HomePage() {
             <p className="text-sm font-medium text-accent-light tracking-wide mb-6">
               Next-Generation Recruitment OS
             </p>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light text-white leading-[1.15] tracking-tight font-serif">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.15] tracking-tight font-serif">
               すべての医療機関に、
               <br />
-              <span className="font-bold">専属の採用チームを。</span>
+              専属の採用チームを。
             </h1>
             <p className="mt-8 text-base sm:text-lg text-gray-400 leading-relaxed max-w-2xl">
               NEXOSは、各医療機関が自院名義で採用ページ・求人・選考を運営できる採用OS。
@@ -90,13 +90,16 @@ export default function HomePage() {
             className="mt-16 flex items-start gap-12 sm:gap-20"
           >
             {[
-              { label: "導入医療機関", value: `${clinics.length}院` },
-              { label: "公開求人数", value: `${activeJobs.length}件` },
-              { label: "対応職種", value: `${categories.length}カテゴリ` },
+              { label: "導入医療機関", value: `${clinics.length}`, unit: "院" },
+              { label: "公開求人数", value: `${activeJobs.length}`, unit: "件" },
+              { label: "対応職種", value: `${categories.length}`, unit: "カテゴリ" },
             ].map((stat, i) => (
               <div key={i}>
-                <p className="text-3xl font-bold text-gold font-serif">{stat.value}</p>
-                <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+                <p className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold text-gold font-serif leading-none">{stat.value}</span>
+                  <span className="text-sm text-gray-400">{stat.unit}</span>
+                </p>
+                <p className="text-xs text-gray-500 mt-1.5">{stat.label}</p>
               </div>
             ))}
           </motion.div>
@@ -185,10 +188,10 @@ export default function HomePage() {
             className="mb-16"
           >
             <p className="text-sm font-medium text-accent tracking-wide mb-3">Why NEXOS</p>
-            <h2 className="text-3xl sm:text-4xl font-serif font-light tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">
               採用ページも、求人管理も、選考も。
               <br className="hidden sm:block" />
-              <span className="font-bold">自院の名前で、自院が運営する。</span>
+              自院の名前で、自院が運営する。
             </h2>
             <p className="mt-5 text-base text-muted-foreground max-w-2xl leading-relaxed">
               人材紹介会社に頼り切りにならない。自院が主体となって採用活動を行える基盤を、NEXOSが提供します。
@@ -262,8 +265,8 @@ export default function HomePage() {
             className="mb-14"
           >
             <p className="text-sm font-medium text-accent tracking-wide mb-3">Partner Clinics</p>
-            <h2 className="text-3xl sm:text-4xl font-serif font-light tracking-tight">
-              自院の採用ページを運営する<span className="font-bold">医療機関たち</span>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">
+              自院の採用ページを運営する医療機関たち
             </h2>
             <p className="mt-4 text-base text-muted-foreground max-w-2xl">
               NEXOSを導入した各院が、自分たちの名前とブランドで採用活動を行っています
@@ -332,8 +335,8 @@ export default function HomePage() {
             <div className="flex items-end justify-between">
               <div>
                 <p className="text-sm font-medium text-accent tracking-wide mb-3">Latest Jobs</p>
-                <h2 className="text-3xl sm:text-4xl font-serif font-light tracking-tight">
-                  各院が公開中の<span className="font-bold">求人</span>
+                <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">
+                  各院が公開中の求人
                 </h2>
                 <p className="mt-3 text-base text-muted-foreground">
                   医療機関が直接発信する求人情報
@@ -414,8 +417,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} viewport={{ once: true }} className="mb-16">
             <p className="text-sm font-medium text-accent tracking-wide mb-3">How it works</p>
-            <h2 className="text-3xl sm:text-4xl font-serif font-light tracking-tight">
-              3ステップで、自院専属の<span className="font-bold">採用チームが稼働</span>
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">
+              3ステップで、自院専属の採用チームが稼働
             </h2>
           </motion.div>
 
@@ -465,10 +468,10 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             <motion.div {...fadeUp} viewport={{ once: true }} className="lg:col-span-7">
               <p className="text-sm font-medium text-accent tracking-wide mb-3">Co-Operation</p>
-              <h2 className="text-3xl sm:text-4xl font-serif font-light tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight leading-tight">
                 人材紹介会社に丸投げしない。
                 <br />
-                <span className="font-bold">でも、一人で抱えない。</span>
+                でも、一人で抱えない。
               </h2>
               <p className="mt-6 text-muted-foreground leading-relaxed">
                 自院が採用の主体となりながら、必要に応じてNecoが共同で運用に入る。
@@ -511,10 +514,10 @@ export default function HomePage() {
       <section className="py-20 sm:py-28 bg-ink">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeUp} viewport={{ once: true }} className="max-w-2xl">
-            <h2 className="text-3xl sm:text-4xl font-serif font-light text-white tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight leading-tight">
               自院専属の採用チームを、
               <br />
-              <span className="font-bold">今日から立ち上げよう。</span>
+              今日から立ち上げよう。
             </h2>
             <p className="mt-6 text-base text-gray-400 leading-relaxed">
               採用ページの構築から、求人公開、選考管理、そして採用完遂まで。

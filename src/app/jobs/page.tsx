@@ -65,8 +65,8 @@ export default function JobsPage() {
             <p className="text-sm font-medium text-accent-light tracking-wide mb-4">
               Medical Careers
             </p>
-            <h1 className="text-4xl sm:text-5xl font-serif font-light tracking-tight text-white">
-              あなたに合った<span className="font-bold">医療の仕事</span>を見つける
+            <h1 className="text-4xl sm:text-5xl font-serif font-bold tracking-tight text-white">
+              あなたに合った医療の仕事を見つける
             </h1>
             <p className="mt-4 text-base text-gray-400 max-w-2xl">
               {activeJobs.length}件の求人から、あなたの経験とスキルにマッチする職場を見つけてください
