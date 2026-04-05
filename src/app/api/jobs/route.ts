@@ -3,9 +3,29 @@ import { jobPostings } from "@/data/seed";
 import { jobPostingSchema } from "@/lib/validations";
 import type { JobPosting } from "@/data/types";
 
+// 求人一覧を取得
+export async function GET() {
+  try {
+    return NextResponse.json(jobPostings);
+  } catch {
+    return NextResponse.json(
+      { error: "求人一覧の取得に失敗しました" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "リクエストボディが不正です" },
+        { status: 400 }
+      );
+    }
     const parsed = jobPostingSchema.safeParse(body);
 
     if (!parsed.success) {
