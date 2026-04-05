@@ -190,16 +190,41 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { currentClinic, isNeco, currentUser, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navItems = [
-    { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
-    { href: "/dashboard/facilities", label: "拠点・人員配置", icon: Building2 },
-    { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle },
-    { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
-    { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
-    { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
-    { href: "/dashboard/ai-agent", label: "AI補助", icon: Bot },
-    { href: "/dashboard/page-editor", label: "採用ページ", icon: FileEdit },
-    ...(isNeco ? [{ href: "/dashboard/admin", label: "Neco管理", icon: Shield }] : []),
+  // ナビゲーションをグループ分けして分かりやすく
+  const navGroups = [
+    {
+      items: [
+        { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard, exact: true },
+      ],
+    },
+    {
+      label: "採用管理",
+      items: [
+        { href: "/dashboard/jobs", label: "求人管理", icon: Briefcase },
+        { href: "/dashboard/candidates", label: "候補者管理", icon: Users },
+      ],
+    },
+    {
+      label: "運営",
+      items: [
+        { href: "/dashboard/facilities", label: "拠点・人員配置", icon: Building2 },
+        { href: "/dashboard/operations", label: "オペレーション", icon: AlertTriangle },
+        { href: "/dashboard/analytics", label: "分析", icon: BarChart3 },
+      ],
+    },
+    {
+      label: "ツール",
+      items: [
+        { href: "/dashboard/ai-agent", label: "AI補助", icon: Bot },
+        { href: "/dashboard/page-editor", label: "採用ページ", icon: FileEdit },
+      ],
+    },
+    ...(isNeco ? [{
+      label: "管理",
+      items: [
+        { href: "/dashboard/admin", label: "Neco管理", icon: Shield },
+      ],
+    }] : []),
   ];
 
   const sidebarContent = (
@@ -221,28 +246,39 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <ClinicSwitcher />
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navItems.map((item) => {
-          const isActive = item.exact
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setSidebarOpen(false)}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                isActive
-                  ? "bg-accent/10 text-accent"
-                  : "text-muted-foreground hover:bg-gray-100 hover:text-primary"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+        {navGroups.map((group, gi) => (
+          <div key={gi}>
+            {group.label && (
+              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                {group.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {group.items.map((item) => {
+                const isActive = ("exact" in item && item.exact)
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                      isActive
+                        ? "bg-accent/10 text-accent"
+                        : "text-muted-foreground hover:bg-gray-100 hover:text-primary"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       <div className="border-t">
