@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { clinics, jobPostings } from "@/data/seed";
 import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { IconPageEdit, IconSparkle, IconClipboard, IconChart } from "@/components/icons/feature-icons";
+import { NECO_FOR_MEDICAL_URL } from "@/lib/neco-links";
 import {
   ArrowRight,
   Building2,
@@ -81,7 +82,7 @@ export default function HomePage() {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/jobs">
+              <a href={NECO_FOR_MEDICAL_URL} target="_blank" rel="noopener noreferrer">
                 <Button
                   size="lg"
                   variant="outline"
@@ -89,7 +90,7 @@ export default function HomePage() {
                 >
                   求人を探す
                 </Button>
-              </Link>
+              </a>
             </div>
           </motion.div>
 

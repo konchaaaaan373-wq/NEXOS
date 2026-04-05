@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/clinic-context";
+import { NECO_BASE_URL, NECO_ADMIN_URL, NECO_FOR_MEDICAL_URL } from "@/lib/neco-links";
 import { ClinicLogo } from "@/components/icons/clinic-logos";
 import { clinics, jobPostings, applications, adminUsers } from "@/data/seed";
 import { ROLE_LABELS } from "@/data/types";
@@ -341,7 +342,59 @@ export default function AdminPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
+          className="space-y-6"
         >
+          {/* Neco連携 */}
+          <Card className="border shadow-none">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Neco連携サービス</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Neco社の各サービスへ直接アクセスできます。管理チームは1つのため、ここから横断的に管理できます。
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <a
+                  href={NECO_ADMIN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors"
+                >
+                  <Shield className="h-5 w-5 text-amber-600" />
+                  <div>
+                    <p className="text-sm font-medium text-amber-900">Neco管理画面</p>
+                    <p className="text-xs text-amber-700">人材紹介の統合管理</p>
+                  </div>
+                </a>
+                <a
+                  href={NECO_FOR_MEDICAL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors"
+                >
+                  <Building2 className="h-5 w-5 text-blue-600" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">医療機関向けページ</p>
+                    <p className="text-xs text-blue-700">求職者の入口</p>
+                  </div>
+                </a>
+                <a
+                  href={NECO_BASE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 transition-colors"
+                >
+                  <Globe className="h-5 w-5 text-slate-600" />
+                  <div>
+                    <p className="text-sm font-medium text-slate-900">Necoトップ</p>
+                    <p className="text-xs text-slate-700">necofindjob.com</p>
+                  </div>
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* システムステータス */}
           <Card className="border shadow-none">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">システムステータス</CardTitle>

@@ -8,10 +8,11 @@ import { NexosLogo } from "@/components/icons/clinic-logos";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { NECO_FOR_MEDICAL_URL } from "@/lib/neco-links";
 
 const navLinks = [
-  { href: "/jobs", label: "求人を探す" },
-  { href: "/dashboard/ai-agent", label: "AI Agent" },
+  { href: NECO_FOR_MEDICAL_URL, label: "求人を探す", external: true },
+  { href: "/dashboard/ai-agent", label: "AI Agent", external: false },
 ];
 
 export function PublicHeader() {
@@ -49,20 +50,32 @@ export function PublicHeader() {
 
         {/* デスクトップナビ */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-sm font-medium transition-colors",
-                pathname.startsWith(link.href)
-                  ? "text-cyan-600"
-                  : "text-muted-foreground hover:text-primary"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) =>
+            link.external ? (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "text-sm font-medium transition-colors",
+                  pathname.startsWith(link.href)
+                    ? "text-cyan-600"
+                    : "text-muted-foreground hover:text-primary"
+                )}
+              >
+                {link.label}
+              </Link>
+            )
+          )}
           <Link href="/login">
             <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
               ログイン
@@ -95,21 +108,34 @@ export function PublicHeader() {
           animate={{ opacity: 1, height: "auto" }}
           className="md:hidden border-t glass px-4 py-4 space-y-3"
         >
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "block text-sm font-medium py-2",
-                pathname.startsWith(link.href)
-                  ? "text-cyan-600"
-                  : "text-primary"
-              )}
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) =>
+            link.external ? (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-sm font-medium py-2 text-primary"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "block text-sm font-medium py-2",
+                  pathname.startsWith(link.href)
+                    ? "text-cyan-600"
+                    : "text-primary"
+                )}
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </Link>
+            )
+          )}
           <Link href="/login" className="block" onClick={() => setMobileOpen(false)}>
             <Button variant="outline" size="sm" className="w-full">ログイン</Button>
           </Link>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { NECO_FOR_MEDICAL_URL } from "@/lib/neco-links";
 import { FileQuestion, Home, Search } from "lucide-react";
 
 export default function NotFound() {
@@ -23,12 +24,12 @@ export default function NotFound() {
               トップページへ
             </Button>
           </Link>
-          <Link href="/jobs">
+          <a href={NECO_FOR_MEDICAL_URL} target="_blank" rel="noopener noreferrer">
             <Button variant="outline" size="lg">
               <Search className="h-4 w-4" />
               求人を探す
             </Button>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

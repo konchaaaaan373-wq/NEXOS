@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/clinic-context";
 import { ROLE_LABELS } from "@/data/types";
 import { ClinicLogo, NexosLogo } from "@/components/icons/clinic-logos";
 import { UserAvatar } from "@/components/icons/feature-icons";
+import { NECO_BASE_URL, NECO_ADMIN_URL } from "@/lib/neco-links";
 import {
   LayoutDashboard,
   Briefcase,
@@ -302,6 +303,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <ChevronLeft className="h-4 w-4" />
             公開サイトへ戻る
           </Link>
+          {isNeco && (
+            <a
+              href={NECO_ADMIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Neco管理サイト
+            </a>
+          )}
           <button
             onClick={() => {
               logout();
