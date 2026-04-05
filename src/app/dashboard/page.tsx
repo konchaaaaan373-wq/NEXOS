@@ -28,8 +28,9 @@ import {
 } from "lucide-react";
 import { formatRelativeDate } from "@/lib/utils";
 
+// 現在日時からステージ滞留日数を計算
 function getDaysInStage(updatedAt: string): number {
-  const now = new Date("2026-04-02");
+  const now = new Date();
   return Math.floor((now.getTime() - new Date(updatedAt).getTime()) / (1000 * 60 * 60 * 24));
 }
 
@@ -85,7 +86,7 @@ export default function DashboardPage() {
             {isNeco ? "Neco 管理ダッシュボード" : currentClinic.name}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {new Date("2026-04-02").toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" })} の採用状況
+            {new Date().toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric", weekday: "short" })} の採用状況
           </p>
         </div>
         <Link href="/dashboard/jobs/new">

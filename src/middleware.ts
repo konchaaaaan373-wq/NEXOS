@@ -1,28 +1,37 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Middleware: protect /dashboard routes
-// In MVP mode (no DB), skip auth checks
-// When DATABASE_URL is set, NextAuth session will be validated
+// セキュリティヘッダー（全レスポンスに付与）
+const SECURITY_HEADERS: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "X-XSS-Protection": "1; mode=block",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+};
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const response = NextResponse.next();
 
-  // Only protect dashboard routes
+  // 全レスポンスにセキュリティヘッダーを付与
+  for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
+    response.headers.set(key, value);
+  }
+
+  // ダッシュボード以外はそのまま通過
   if (!pathname.startsWith("/dashboard")) {
-    return NextResponse.next();
+    return response;
   }
 
-  // MVP mode: allow all access when no DATABASE_URL
-  // In production: check for auth session
-  const hasDB = !!process.env.DATABASE_URL;
-
+  // MVPモード：DBなしの場合はデモアクセスを許可
+  const hasDB = !!(process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL);
   if (!hasDB) {
-    // MVP mode — no auth required, use mock user switcher
-    return NextResponse.next();
+    return response;
   }
 
-  // Production mode — check for NextAuth session token
+  // 本番モード：NextAuthセッションを確認
   const sessionToken =
     request.cookies.get("authjs.session-token")?.value ||
     request.cookies.get("__Secure-authjs.session-token")?.value;
@@ -33,9 +42,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [
+    // ダッシュボード（認証必須）
+    "/dashboard/:path*",
+    // 公開ページ（セキュリティヘッダーのみ）
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
 };
