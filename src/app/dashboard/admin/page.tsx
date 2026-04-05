@@ -34,10 +34,10 @@ import {
 const hasDatabase = !!process.env.NEXT_PUBLIC_HAS_DATABASE;
 
 const roleColors: Record<UserRole, string> = {
-  neco_admin: "from-amber-500 to-orange-500",
-  neco_editor: "from-violet-500 to-purple-500",
-  clinic_admin: "from-blue-500 to-indigo-500",
-  clinic_editor: "from-slate-500 to-slate-600",
+  neco_admin: "bg-gold",
+  neco_editor: "bg-accent",
+  clinic_admin: "bg-info",
+  clinic_editor: "bg-slate-500",
 };
 
 const roleBgColors: Record<UserRole, string> = {
@@ -167,16 +167,16 @@ export default function AdminPage() {
           {/* サマリー */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: "管理クリニック", value: clinics.length, suffix: "院", icon: Building2, color: "#3b82f6" },
-              { label: "公開求人数", value: totalJobs, suffix: "件", icon: Briefcase, color: "#8b5cf6" },
-              { label: "全候補者数", value: totalApps, suffix: "名", icon: Users, color: "#d946ef" },
-              { label: "登録ユーザー", value: adminUsers.filter((u) => u.isActive).length, suffix: "名", icon: Users, color: "#10b981" },
+              { label: "管理クリニック", value: clinics.length, suffix: "院", icon: Building2, colorClass: "text-blue-600" },
+              { label: "公開求人数", value: totalJobs, suffix: "件", icon: Briefcase, colorClass: "text-violet-600" },
+              { label: "全候補者数", value: totalApps, suffix: "名", icon: Users, colorClass: "text-fuchsia-600" },
+              { label: "登録ユーザー", value: adminUsers.filter((u) => u.isActive).length, suffix: "名", icon: Users, colorClass: "text-emerald-600" },
             ].map((metric, i) => (
               <Card key={i} className="border shadow-none">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-xs text-muted-foreground">{metric.label}</p>
-                    <metric.icon className="h-4 w-4" style={{ color: metric.color }} />
+                    <metric.icon className={`h-4 w-4 ${metric.colorClass}`} />
                   </div>
                   <p className="text-2xl font-bold">
                     {metric.value}
@@ -268,7 +268,7 @@ export default function AdminPage() {
                       key={user.id}
                       className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
                     >
-                      <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-r ${roleColors[user.role]} text-white text-sm font-semibold shrink-0`}>
+                      <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${roleColors[user.role]} text-white text-sm font-semibold shrink-0`}>
                         {user.name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">

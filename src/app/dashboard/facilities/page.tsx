@@ -52,7 +52,7 @@ function getTypeBadge(type: ComplianceRule["type"]) {
   switch (type) {
     case "facility_standard":
       return (
-        <Badge variant="outline" className="text-xs text-slate-600">
+        <Badge variant="outline" className="text-xs text-muted-foreground">
           施設基準
         </Badge>
       );
@@ -132,8 +132,8 @@ export default function FacilitiesPage() {
         <Card className="border shadow-sm">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100">
-                <Building2 className="h-5 w-5 text-slate-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                <Building2 className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">管理拠点数</p>
@@ -192,8 +192,8 @@ export default function FacilitiesPage() {
               <CardHeader className="pb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 shrink-0">
-                      <Building2 className="h-5 w-5 text-slate-600" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted shrink-0">
+                      <Building2 className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
                       <CardTitle className="text-lg">{facility.name}</CardTitle>
@@ -219,7 +219,7 @@ export default function FacilitiesPage() {
                     人員配置状況
                   </h3>
                   <div className="rounded-lg border overflow-hidden">
-                    <div className="bg-gray-50 px-4 py-2 grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground">
+                    <div className="bg-muted px-4 py-2 grid grid-cols-12 gap-2 text-xs font-medium text-muted-foreground">
                       <div className="col-span-3">職種</div>
                       <div className="col-span-2 text-center">現員/必要数</div>
                       <div className="col-span-5">充足状況</div>
@@ -253,7 +253,7 @@ export default function FacilitiesPage() {
                             <span className="text-muted-foreground">/{sr.requiredCount}名</span>
                           </div>
                           <div className="col-span-5">
-                            <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all ${
                                   isShort ? "bg-red-400" : "bg-emerald-400"
@@ -316,7 +316,7 @@ export default function FacilitiesPage() {
                                 ? "text-red-600"
                                 : rule.riskLevel === "at_risk"
                                 ? "text-amber-600"
-                                : "text-slate-600"
+                                : "text-muted-foreground"
                             }`}>
                               {formatRevenue(rule.monthlyRevenueImpact)}/月
                             </p>
@@ -338,7 +338,7 @@ export default function FacilitiesPage() {
                       {facImpacts.map((impact, idx) => (
                         <div
                           key={`${impact.facilityId}-${impact.qualificationName}-${idx}`}
-                          className="rounded-lg border bg-gray-50 p-4"
+                          className="rounded-lg border bg-muted p-4"
                         >
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                             <div className="flex-1 space-y-2">

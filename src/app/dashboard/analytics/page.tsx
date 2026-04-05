@@ -131,11 +131,11 @@ export default function AnalyticsPage() {
         className="grid grid-cols-2 lg:grid-cols-5 gap-4"
       >
         {[
-          { label: "総閲覧数", value: totalViews.toLocaleString(), icon: Eye, bg: "bg-gradient-to-br from-blue-50 to-indigo-50", iconColor: "#3b82f6" },
-          { label: "応募開始", value: totalApplyStarts.toLocaleString(), icon: MousePointerClick, bg: "bg-gradient-to-br from-violet-50 to-purple-50", iconColor: "#8b5cf6" },
-          { label: "応募完了", value: totalApplyCompletes.toLocaleString(), icon: CheckCircle2, bg: "bg-gradient-to-br from-emerald-50 to-teal-50", iconColor: "#10b981" },
-          { label: "完了率", value: `${conversionRate}%`, icon: TrendingUp, bg: "bg-gradient-to-br from-amber-50 to-orange-50", iconColor: "#f59e0b" },
-          { label: "SLA遵守率", value: `${slaComplianceRate}%`, icon: Timer, bg: slaComplianceRate >= 80 ? "bg-gradient-to-br from-emerald-50 to-teal-50" : "bg-gradient-to-br from-red-50 to-rose-50", iconColor: slaComplianceRate >= 80 ? "#10b981" : "#ef4444" },
+          { label: "総閲覧数", value: totalViews.toLocaleString(), icon: Eye, bg: "bg-gradient-to-br from-blue-50 to-indigo-50", iconColor: "var(--color-accent)" },
+          { label: "応募開始", value: totalApplyStarts.toLocaleString(), icon: MousePointerClick, bg: "bg-gradient-to-br from-violet-50 to-purple-50", iconColor: "var(--color-gold)" },
+          { label: "応募完了", value: totalApplyCompletes.toLocaleString(), icon: CheckCircle2, bg: "bg-gradient-to-br from-emerald-50 to-teal-50", iconColor: "var(--color-success)" },
+          { label: "完了率", value: `${conversionRate}%`, icon: TrendingUp, bg: "bg-gradient-to-br from-amber-50 to-orange-50", iconColor: "var(--color-warning)" },
+          { label: "SLA遵守率", value: `${slaComplianceRate}%`, icon: Timer, bg: slaComplianceRate >= 80 ? "bg-gradient-to-br from-emerald-50 to-teal-50" : "bg-gradient-to-br from-red-50 to-rose-50", iconColor: slaComplianceRate >= 80 ? "var(--color-success)" : "#ef4444" },
         ].map((metric, i) => (
           <Card key={i} className="border-0 shadow-sm">
             <CardContent className="p-5">
@@ -168,9 +168,9 @@ export default function AnalyticsPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="flex items-center gap-4 text-xs">
-                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-blue-500" /> 閲覧数</div>
-                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-violet-500" /> 応募開始</div>
-                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-emerald-500" /> 応募完了</div>
+                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-accent" /> 閲覧数</div>
+                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-gold" /> 応募開始</div>
+                  <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-sm bg-success" /> 応募完了</div>
                 </div>
                 <div className="space-y-2">
                   {last14Days.map((metric, i) => {
@@ -180,9 +180,9 @@ export default function AnalyticsPage() {
                       <div key={i} className="flex items-center gap-3">
                         <span className="text-xs text-muted-foreground w-10 text-right shrink-0">{label}</span>
                         <div className="flex-1 flex gap-0.5">
-                          <div className="h-4 rounded-l-sm bg-blue-500/80 transition-all" style={{ width: `${(metric.views / maxMetric) * 100}%`, minWidth: "2px" }} />
-                          <div className="h-4 bg-violet-500/80 transition-all" style={{ width: `${((metric.applyStarts * 5) / maxMetric) * 100}%`, minWidth: "1px" }} />
-                          <div className="h-4 rounded-r-sm bg-emerald-500/80 transition-all" style={{ width: `${((metric.applyCompletes * 10) / maxMetric) * 100}%`, minWidth: "1px" }} />
+                          <div className="h-4 rounded-l-sm bg-accent/80 transition-all" style={{ width: `${(metric.views / maxMetric) * 100}%`, minWidth: "2px" }} />
+                          <div className="h-4 bg-gold/80 transition-all" style={{ width: `${((metric.applyStarts * 5) / maxMetric) * 100}%`, minWidth: "1px" }} />
+                          <div className="h-4 rounded-r-sm bg-success/80 transition-all" style={{ width: `${((metric.applyCompletes * 10) / maxMetric) * 100}%`, minWidth: "1px" }} />
                         </div>
                         <span className="text-xs text-muted-foreground w-8 shrink-0">{metric.views}</span>
                       </div>
