@@ -106,8 +106,8 @@ export default function LoginPage() {
               <NexosLogo size={40} />
               <span className="text-xl font-bold text-white font-serif">NEXOS</span>
             </Link>
-            <h1 className="text-3xl font-serif font-light text-white tracking-tight">
-              管理画面に<span className="font-bold">ログイン</span>
+            <h1 className="text-3xl font-serif font-bold text-white tracking-tight">
+              管理画面にログイン
             </h1>
             <p className="mt-2 text-gray-400 text-sm">
               医療機関の採用OSへアクセス
