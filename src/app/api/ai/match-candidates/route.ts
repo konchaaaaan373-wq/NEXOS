@@ -1,35 +1,48 @@
-import { NextResponse } from "next/server";
+import { z } from "zod";
+import { getApiUser } from "@/lib/api-auth";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { recordAuditLog } from "@/lib/audit";
+import {
+  apiSuccess,
+  apiValidationError,
+  apiUnauthorized,
+  apiRateLimited,
+  apiError,
+  apiServerError,
+} from "@/lib/api-response";
 
-// AI-powered candidate matching score
-// Analyzes how well a candidate's profile matches a job posting
+// リクエストのバリデーション
+const matchSchema = z.object({
+  jobDescription: z.string().min(1, "求人内容は必須です").max(5000),
+  jobRequirements: z.array(z.string()).optional(),
+  candidateMotivation: z.string().min(1, "候補者情報は必須です").max(5000),
+  candidatePosition: z.string().max(200).optional(),
+  candidateExperience: z.number().int().min(0).max(99).optional(),
+});
 
 export async function POST(request: Request) {
   try {
+    const user = await getApiUser();
+    if (!user) return apiUnauthorized();
+
     if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: "AI機能は現在設定されていません" },
-        { status: 503 }
-      );
+      return apiError("AI_NOT_CONFIGURED", "AI機能は現在設定されていません", 503);
     }
+
+    // AI APIはユーザーあたり1分に10回まで
+    const rl = checkRateLimit(`ai:match:${user.id}`, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.allowed) return apiRateLimited();
 
     let body;
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: "リクエストボディが不正です" },
-        { status: 400 }
-      );
+      return apiError("INVALID_JSON", "リクエストボディが不正です", 400);
     }
-    const { jobDescription, jobRequirements, candidateMotivation, candidatePosition, candidateExperience } = body;
+    const parsed = matchSchema.safeParse(body);
+    if (!parsed.success) return apiValidationError(parsed.error);
 
-    if (!jobDescription || !candidateMotivation) {
-      return NextResponse.json(
-        { error: "求人内容と候補者情報は必須です" },
-        { status: 400 }
-      );
-    }
-
+    const data = parsed.data;
     const { generateText } = await import("ai");
     const { anthropic } = await import("@ai-sdk/anthropic");
 
@@ -46,33 +59,41 @@ export async function POST(request: Request) {
   "recommendation": "短い推薦コメント"
 }`,
       prompt: `【求人情報】
-仕事内容: ${jobDescription}
-応募要件: ${(jobRequirements || []).join("、")}
+仕事内容: ${data.jobDescription}
+応募要件: ${(data.jobRequirements || []).join("、")}
 
 【候補者情報】
-現在の職種: ${candidatePosition || "未入力"}
-経験年数: ${candidateExperience || 0}年
-志望動機: ${candidateMotivation}`,
+現在の職種: ${data.candidatePosition || "未入力"}
+経験年数: ${data.candidateExperience || 0}年
+志望動機: ${data.candidateMotivation}`,
       maxOutputTokens: 800,
     });
 
-    // Parse JSON from response
+    // レスポンスのJSON解析
+    let result: { score: number | null; strengths?: string[]; concerns?: string[]; recommendation: string };
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        return NextResponse.json(parsed);
+        result = JSON.parse(jsonMatch[0]);
+      } else {
+        result = { recommendation: text, score: null };
       }
     } catch {
-      // If JSON parsing fails, return raw text
+      result = { recommendation: text, score: null };
     }
 
-    return NextResponse.json({ recommendation: text, score: null });
-  } catch (error) {
-    console.error("AI matching failed:", error);
-    return NextResponse.json(
-      { error: "AI分析に失敗しました" },
-      { status: 500 }
-    );
+    // 監査ログ
+    await recordAuditLog({
+      userId: user.id,
+      userName: user.name,
+      userRole: user.role,
+      action: "ai_match",
+      entity: "ai",
+      details: { score: result.score },
+    });
+
+    return apiSuccess(result);
+  } catch (err) {
+    return apiServerError(err, "ai.match-candidates");
   }
 }

@@ -220,6 +220,7 @@ model Application {
   job    JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
   clinic Clinic     @relation(fields: [clinicId], references: [id], onDelete: Cascade)
   notes  CandidateNote[]
+  stageHistory StageHistory[]
 
   appliedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -263,6 +264,128 @@ model EventMetric {
 }
 
 // ============================================================
+// Audit Log — 操作履歴の記録
+// ============================================================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userName  String?
+  userRole  String?
+  clinicId  String?
+  action    String          // create, update, delete, stage_change, login, etc.
+  entity    String          // application, job_posting, clinic, note, etc.
+  entityId  String?
+  details   Json?           // 変更内容の詳細（before/after）
+  ipAddress String?
+  requestId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([clinicId, createdAt])
+  @@index([entity, entityId])
+  @@index([userId, createdAt])
+}
+
+// ============================================================
+// Stage History — 選考ステージ変更履歴
+// ============================================================
+
+model StageHistory {
+  id            String        @id @default(cuid())
+  applicationId String
+  fromStage     PipelineStage
+  toStage       PipelineStage
+  changedById   String?
+  changedByName String?
+  note          String?       @db.Text
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([applicationId, createdAt])
+}
+
+// ============================================================
+// Tasks — タスク管理
+// ============================================================
+
+model Task {
+  id            String     @id @default(cuid())
+  clinicId      String
+  applicationId String?
+  jobId         String?
+  title         String
+  description   String?    @db.Text
+  assignedToId  String?
+  assignedToName String?
+  status        TaskStatus @default(pending)
+  priority      TaskPriority @default(medium)
+  dueDate       DateTime?
+  completedAt   DateTime?
+  createdById   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clinicId, status])
+  @@index([assignedToId, status])
+}
+
+enum TaskStatus {
+  pending
+  in_progress
+  completed
+  overdue
+}
+
+enum TaskPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+// ============================================================
+// Alerts — アラート管理
+// ============================================================
+
+model Alert {
+  id                String       @id @default(cuid())
+  clinicId          String
+  type              AlertType
+  severity          AlertSeverity
+  title             String
+  message           String       @db.Text
+  relatedEntityId   String?
+  relatedEntityType String?
+  isResolved        Boolean      @default(false)
+  resolvedAt        DateTime?
+  resolvedById      String?
+
+  createdAt DateTime @default(now())
+
+  @@index([clinicId, isResolved])
+  @@index([severity, isResolved])
+}
+
+enum AlertType {
+  stagnation
+  unresponded
+  interview_unset
+  sla_breach
+  kpi_drop
+  job_incomplete
+}
+
+enum AlertSeverity {
+  info
+  warning
+  critical
+}
+
+// ============================================================
 // Uploads
 // ============================================================
 
@@ -273,7 +396,7 @@ model Upload {
   fileType  String
   fileSize  Int
   url       String
-  key       String   // S3 key
+  key       String   // S3キー
   uploadedById String?
 
   createdAt DateTime @default(now())

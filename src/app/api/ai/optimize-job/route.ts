@@ -1,37 +1,47 @@
-import { NextResponse } from "next/server";
+import { z } from "zod";
+import { getApiUser } from "@/lib/api-auth";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { recordAuditLog } from "@/lib/audit";
+import {
+  apiSuccess,
+  apiValidationError,
+  apiUnauthorized,
+  apiRateLimited,
+  apiError,
+  apiServerError,
+} from "@/lib/api-response";
 
-// AI-powered job description optimizer
-// Uses Anthropic Claude via Vercel AI SDK
+// リクエストのバリデーション
+const optimizeSchema = z.object({
+  title: z.string().min(1, "求人タイトルは必須です").max(200),
+  description: z.string().min(1, "仕事内容は必須です").max(5000),
+  category: z.string().max(100).optional(),
+  clinicName: z.string().max(200).optional(),
+});
 
 export async function POST(request: Request) {
   try {
-    // Check if AI is configured
+    const user = await getApiUser();
+    if (!user) return apiUnauthorized();
+
     if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: "AI機能は現在設定されていません" },
-        { status: 503 }
-      );
+      return apiError("AI_NOT_CONFIGURED", "AI機能は現在設定されていません", 503);
     }
+
+    // AI APIはユーザーあたり1分に10回まで
+    const rl = checkRateLimit(`ai:optimize:${user.id}`, { maxRequests: 10, windowMs: 60_000 });
+    if (!rl.allowed) return apiRateLimited();
 
     let body;
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json(
-        { error: "リクエストボディが不正です" },
-        { status: 400 }
-      );
+      return apiError("INVALID_JSON", "リクエストボディが不正です", 400);
     }
-    const { title, description, category, clinicName } = body;
+    const parsed = optimizeSchema.safeParse(body);
+    if (!parsed.success) return apiValidationError(parsed.error);
 
-    if (!title || !description) {
-      return NextResponse.json(
-        { error: "求人タイトルと仕事内容は必須です" },
-        { status: 400 }
-      );
-    }
-
-    // Dynamic import to avoid build errors when key is not set
+    const data = parsed.data;
     const { generateText } = await import("ai");
     const { anthropic } = await import("@ai-sdk/anthropic");
 
@@ -49,20 +59,26 @@ export async function POST(request: Request) {
 出力は日本語で、マークダウン形式で、簡潔にまとめてください。`,
       prompt: `以下の求人票を改善してください。
 
-クリニック名: ${clinicName || "未設定"}
-職種カテゴリ: ${category || "未設定"}
-求人タイトル: ${title}
+クリニック名: ${data.clinicName || "未設定"}
+職種カテゴリ: ${data.category || "未設定"}
+求人タイトル: ${data.title}
 仕事内容:
-${description}`,
+${data.description}`,
       maxOutputTokens: 1500,
     });
 
-    return NextResponse.json({ suggestions: text });
-  } catch (error) {
-    console.error("AI optimization failed:", error);
-    return NextResponse.json(
-      { error: "AI分析に失敗しました。もう一度お試しください。" },
-      { status: 500 }
-    );
+    // 監査ログ
+    await recordAuditLog({
+      userId: user.id,
+      userName: user.name,
+      userRole: user.role,
+      action: "ai_optimize",
+      entity: "ai",
+      details: { jobTitle: data.title },
+    });
+
+    return apiSuccess({ suggestions: text });
+  } catch (err) {
+    return apiServerError(err, "ai.optimize-job");
   }
 }
