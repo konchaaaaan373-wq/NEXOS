@@ -25,18 +25,15 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // MVPモード：DBなしの場合はデモアクセスを許可
+  // 認証チェック：NextAuthセッション or デモセッションが必要
   const hasDB = !!(process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL);
-  if (!hasDB) {
-    return response;
-  }
-
-  // 本番モード：NextAuthセッションを確認
   const sessionToken =
     request.cookies.get("authjs.session-token")?.value ||
     request.cookies.get("__Secure-authjs.session-token")?.value;
-
-  if (!sessionToken) {
+  // デモ認証はsessionStorageで管理（サーバー側では確認不可）
+  // DB無しの場合はデモモードとしてアクセスを許可
+  // DB有りの場合はNextAuthセッションを要求
+  if (hasDB && !sessionToken) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);

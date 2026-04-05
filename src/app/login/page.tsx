@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import type { AdminUser } from "@/data/types";
 import { ROLE_LABELS } from "@/data/types";
 
 const DEMO_PASSWORD = "nexos2026";
+// DB接続があればNextAuthを使う
+const hasDatabase = !!process.env.NEXT_PUBLIC_HAS_DATABASE;
 
 const quickLoginUsers = [
   { user: adminUsers[0], description: "全クリニック横断管理", icon: Shield, gradient: "from-amber-500 to-orange-500" },
@@ -26,6 +28,8 @@ const quickLoginUsers = [
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [isLoading, setIsLoading] = useState(false);
   const [loadingUser, setLoadingUser] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -34,10 +38,10 @@ export default function LoginPage() {
   function handleDemoLogin(user: AdminUser) {
     setLoadingUser(user.id);
     setError("");
-    // Store selected user in sessionStorage for the demo auth context
+    // デモ認証：sessionStorageにユーザーを保存
     sessionStorage.setItem("nexos_demo_user", JSON.stringify(user));
     setTimeout(() => {
-      router.push("/dashboard");
+      router.push(callbackUrl);
     }, 600);
   }
 
@@ -50,7 +54,29 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // In demo mode, validate against seed data
+    if (hasDatabase) {
+      // 本番モード：NextAuth signInを使用
+      try {
+        const { signIn } = await import("next-auth/react");
+        const result = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+        if (result?.error) {
+          setError("メールアドレスまたはパスワードが正しくありません");
+          setIsLoading(false);
+          return;
+        }
+        router.push(callbackUrl);
+      } catch {
+        setError("ログインに失敗しました。もう一度お試しください。");
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    // デモモード：シードデータで検証
     const user = adminUsers.find((u) => u.email === email);
     if (!user) {
       setError("メールアドレスが見つかりません");
@@ -65,7 +91,7 @@ export default function LoginPage() {
 
     sessionStorage.setItem("nexos_demo_user", JSON.stringify(user));
     setTimeout(() => {
-      router.push("/dashboard");
+      router.push(callbackUrl);
     }, 600);
   }
 
