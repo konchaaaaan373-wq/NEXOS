@@ -226,7 +226,7 @@ export default function DashboardPage() {
                         <Link
                           key={app.id}
                           href={`/dashboard/candidates/${app.id}`}
-                          className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                          className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors group"
                         >
                           <div className="flex items-center gap-3">
                             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-sm font-semibold text-gray-600">

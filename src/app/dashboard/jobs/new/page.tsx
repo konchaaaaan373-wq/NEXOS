@@ -117,7 +117,7 @@ export default function NewJobPage() {
 
   // Checklist panel component (reused in desktop sidebar and mobile inline)
   const checklistPanel = (
-    <Card className="border-0 shadow-sm rounded-2xl">
+    <Card className="border-0 shadow-sm rounded-lg">
       <CardContent className="p-5 space-y-4">
         <h3 className="text-sm font-semibold tracking-tight">公開準備チェックリスト</h3>
 
@@ -204,7 +204,7 @@ export default function NewJobPage() {
           {/* Form column: 2/3 width */}
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit}>
-              <Card className="border-0 shadow-sm rounded-2xl">
+              <Card className="border-0 shadow-sm rounded-lg">
                 <CardContent className="p-6 sm:p-8 space-y-6">
                   {error && (
                     <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">

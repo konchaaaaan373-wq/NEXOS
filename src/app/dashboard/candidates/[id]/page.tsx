@@ -145,7 +145,7 @@ export default function CandidateDetailPage({
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100 text-xl font-bold text-indigo-700">
+            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-100 to-violet-100 text-xl font-bold text-indigo-700">
               {application.applicantName.charAt(0)}
             </div>
             <div>
@@ -194,7 +194,7 @@ export default function CandidateDetailPage({
             {candidateAlerts.map((alert) => (
               <div
                 key={alert.id}
-                className={`flex items-start gap-3 p-4 rounded-xl border ${
+                className={`flex items-start gap-3 p-4 rounded-lg border ${
                   alert.severity === "critical"
                     ? "bg-red-50 border-red-200"
                     : "bg-amber-50 border-amber-200"
@@ -257,7 +257,7 @@ export default function CandidateDetailPage({
                       key={stage.id}
                       onClick={() => handleStageChange(stage.id)}
                       disabled={stageUpdating}
-                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border disabled:opacity-50 cursor-pointer ${
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all border disabled:opacity-50 cursor-pointer ${
                         currentStage === stage.id
                           ? "text-white border-transparent shadow-sm"
                           : "border-border text-muted-foreground hover:bg-muted/50"
@@ -318,7 +318,7 @@ export default function CandidateDetailPage({
                     {application.tasks.map((task) => (
                       <div
                         key={task.id}
-                        className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
+                        className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                       >
                         <div className={`p-1 rounded-lg ${
                           task.status === "completed" ? "bg-emerald-100" : task.status === "overdue" ? "bg-red-100" : "bg-blue-100"
@@ -455,7 +455,7 @@ export default function CandidateDetailPage({
                 {notes.map((note) => (
                   <div
                     key={note.id}
-                    className="p-4 rounded-xl bg-muted/30 space-y-2"
+                    className="p-4 rounded-lg bg-muted/30 space-y-2"
                   >
                     <p className="text-sm leading-relaxed">{note.content}</p>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -520,7 +520,7 @@ export default function CandidateDetailPage({
             <CardContent className="space-y-4">
               <a
                 href={`mailto:${application.applicantEmail}`}
-                className="flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-muted/50 transition-colors"
+                className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <div>
@@ -530,7 +530,7 @@ export default function CandidateDetailPage({
               </a>
               <a
                 href={`tel:${application.applicantPhone}`}
-                className="flex items-center gap-3 p-2 -mx-2 rounded-xl hover:bg-muted/50 transition-colors"
+                className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <Phone className="h-4 w-4 text-muted-foreground" />
                 <div>
@@ -616,7 +616,7 @@ export default function CandidateDetailPage({
           <Link href="/dashboard/operations">
             <Card className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-4 flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500">
+                <div className="p-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500">
                   <Shield className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">

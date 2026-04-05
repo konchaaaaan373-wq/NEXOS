@@ -131,7 +131,7 @@ export default function PageEditorPage() {
           <CardContent>
             <div className="flex items-center gap-6">
               <div
-                className="flex h-16 w-16 items-center justify-center rounded-xl"
+                className="flex h-16 w-16 items-center justify-center rounded-lg"
                 style={{ backgroundColor: currentClinic.brand.brandColorLight }}
               >
                 <ClinicLogo clinicId={currentClinic.id} size={40} color={currentClinic.brand.brandColor} />
@@ -190,7 +190,7 @@ export default function PageEditorPage() {
               >
                 <button
                   onClick={() => setEditingId(section.id)}
-                  className={`w-full text-left p-4 rounded-xl border transition-all ${
+                  className={`w-full text-left p-4 rounded-lg border transition-all ${
                     editingId === section.id
                       ? "border-accent bg-accent/5 shadow-sm"
                       : "border-border bg-white hover:shadow-sm"
@@ -372,7 +372,7 @@ export default function PageEditorPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="flex items-center justify-center h-64 rounded-xl border-2 border-dashed border-border">
+            <div className="flex items-center justify-center h-64 rounded-lg border-2 border-dashed border-border">
               <div className="text-center">
                 <FileEdit className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
                 <p className="text-sm text-muted-foreground">

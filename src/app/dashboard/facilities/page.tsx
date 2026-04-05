@@ -111,7 +111,7 @@ export default function FacilitiesPage() {
         transition={{ duration: 0.3 }}
         className="flex items-start gap-4"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 shrink-0">
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 shrink-0">
           <Building2 className="h-6 w-6 text-accent" />
         </div>
         <div>

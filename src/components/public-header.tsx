@@ -34,18 +34,18 @@ export function PublicHeader() {
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.3 }}
       className={cn(
-        "sticky top-0 z-50 transition-all duration-300",
+        "sticky top-0 z-50 transition-all duration-200",
         scrolled
-          ? "glass shadow-sm shadow-slate-200/50"
+          ? "bg-paper/95 border-b border-border shadow-sm"
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5 group">
           <NexosLogo size={36} />
-          <span className="text-xl font-bold tracking-tight">NEXOS</span>
+          <span className="text-xl font-bold tracking-tight font-serif">NEXOS</span>
         </Link>
 
         {/* デスクトップナビ */}
@@ -57,7 +57,7 @@ export function PublicHeader() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-ink transition-colors"
               >
                 {link.label}
               </a>
@@ -68,8 +68,8 @@ export function PublicHeader() {
                 className={cn(
                   "text-sm font-medium transition-colors",
                   pathname.startsWith(link.href)
-                    ? "text-cyan-600"
-                    : "text-muted-foreground hover:text-primary"
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-ink"
                 )}
               >
                 {link.label}
@@ -77,12 +77,12 @@ export function PublicHeader() {
             )
           )}
           <Link href="/login">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-ink">
               ログイン
             </Button>
           </Link>
           <Link href="/dashboard">
-            <Button variant="accent" size="sm" className="shadow-sm shadow-cyan-500/15">
+            <Button variant="accent" size="sm">
               管理画面
             </Button>
           </Link>
@@ -90,7 +90,7 @@ export function PublicHeader() {
 
         {/* モバイルメニュー */}
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
+          className="md:hidden p-2 rounded-md hover:bg-secondary transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={mobileOpen ? "メニューを閉じる" : "メニューを開く"}
         >
@@ -106,7 +106,7 @@ export function PublicHeader() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="md:hidden border-t glass px-4 py-4 space-y-3"
+          className="md:hidden border-t border-border bg-paper px-4 py-4 space-y-3"
         >
           {navLinks.map((link) =>
             link.external ? (
@@ -115,7 +115,7 @@ export function PublicHeader() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-sm font-medium py-2 text-primary"
+                className="block text-sm font-medium py-2 text-ink"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
@@ -127,8 +127,8 @@ export function PublicHeader() {
                 className={cn(
                   "block text-sm font-medium py-2",
                   pathname.startsWith(link.href)
-                    ? "text-cyan-600"
-                    : "text-primary"
+                    ? "text-accent"
+                    : "text-ink"
                 )}
                 onClick={() => setMobileOpen(false)}
               >
